@@ -1,27 +1,86 @@
 /*----------------*/
 /* style for menu */
 /*----------------*/
-.menu-trigger {
+.hamburger {
   position: fixed;
+  right: 20px;
   bottom: 60px;
-  right: 25px;
-  -webkit-appearance: none;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: $menu-button;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: $red-s-t;
+  line-height: 0;
+  z-index: 21;
+  display: inline-block;
   cursor: pointer;
-  -webkit-tap-highlight-color: $menu-button-tap;
-  z-index: 5;
+  transition-property: opacity, filter;
+  transition-duration: 0.15s;
+  transition-timing-function: linear;
+  font: inherit;
+  color: inherit;
+  text-transform: none;
+  border: 0;
+  margin: 0;
+  overflow: visible;
 }
 .menu-trigger:hover {
-  opacity: 0.8;
-  -webkit-opacity: 0.8;
+  opacity: 0.7;
 }
-.menu-trigger:before {
-  font-family: 'FontAwesome';
-  content: '\f053';
-  font-size: 24px;
+.menu-trigger.is-active:hover {
+  opacity: 0.7;
+}
+.menu-trigger.is-active .hamburger-inner,
+.menu-trigger.is-active .hamburger-inner::before,
+.menu-trigger.is-active .hamburger-inner::after {
+  background-color: $white;
+}
+.hamburger-box {
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  position: relative;
+}
+.hamburger-inner {
+  display: block;
+  top: 50%;
+  margin-top: -1px;
+  margin-left: 4px;
+}
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after {
+  width: 21px;
+  height: 2px;
+  background-color: $white;
+  border-radius: 4px;
+  position: absolute;
+  transition-property: transform;
+  transition-duration: 0.15s;
+  transition-timing-function: ease;
+}
+.hamburger-inner::before,
+.hamburger-inner::after {
+  content: "";
+  display: block;
+}
+.hamburger-inner::before {
+  top: -5px;
+}
+.hamburger-inner::after {
+  bottom: -5px;
+}
+.hamburger--arrow-r.is-active .hamburger-inner::before {
+  transform: translate3d(8px, 0, 0) rotate(45deg) scale(0.7, 1);
+}
+.hamburger--arrow-r.is-active .hamburger-inner::after {
+  transform: translate3d(8px, 0, 0) rotate(-45deg) scale(0.7, 1);
+}
+.menu {
+  position: fixed;
+  z-index: 20;
+}
+.menu.visibility {
+  visibility: hidden;
 }
 :root {
   --skin: $black-g;
@@ -34,7 +93,6 @@
   left: 0;
 }
 .menu-container {
-  font-family: $font;
   overflow: auto;
   display: block;
   top: 120px;
@@ -172,20 +230,6 @@
   font-size: 11px;
   bottom: 32px;
   display: block;
-}
-.dim-overlay {
-  display: none;
-}
-.dim-overlay:before {
-  content: "";
-  background-color: $black-t-5;
-  height: 100vh;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  overflow: hidden;
-  z-index: 15;
 }
 /*skins*/
 .red {
@@ -337,8 +381,8 @@
 }
 /* Flickr */
 .flickr {
-  --theme-color: $fli-2;
-  background: $fli-2;
+  --theme-color: #ff0084;
+  background: #ff0084;
 /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #33001b, #ff0084);
 /* Chrome 10-25, Safari 5.1-6 */
