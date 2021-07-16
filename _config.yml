@@ -8,7 +8,9 @@ subtitle: 心中有座观澜阁，土木付炬皆尘生
 description: Work & Life & learn
 keywords: fornt-end,react,node,raspberry,Linux,docker,java,javascript,algorithm
 author: Ashes Born
-language: zh
+language: 
+  zh
+  en
 timezone: Asia/ShangHai
 
 # URL
@@ -35,7 +37,7 @@ titlecase: false # Transform title into titlecase
 external_link: true # Open external links in new tab
 filename_case: 0
 render_drafts: true
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 highlight:
