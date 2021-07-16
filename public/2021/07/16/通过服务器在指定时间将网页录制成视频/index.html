@@ -137,7 +137,9 @@
 <li><code>getDisplayMedia</code>的性能，在多网页并发录制时优化空间小，而且最致命的问题时，录制过程的性能开销，是由浏览器负担的。这意味着，如果页面本身对性能比较敏感，使用这个api基本无法录制出网页正常运行的情况。</li>
 <li>puppeteer按帧数截图受到了chrome-devtools本身的限制，导致一秒只能截取出10+图。在数据可视化的场景中，大量的实时数据渲染，显然也是无法接受的。</li>
 </ul>
-<h4 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a>核心流程</h4><p>![录制核心流程]](/images/recorder_base_procedure.png)</p>
+<h4 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a>核心流程</h4><!-- ![录制核心流程]](/images/recorder_base_procedure.png) -->
+<img src="/images/recorder_base_procedure.png">
+
 <h4 id="关键点："><a href="#关键点：" class="headerlink" title="关键点："></a>关键点：</h4><ol>
 <li>使用node调用xvfb，创建虚拟桌面：开源库<code>node-xvfb</code>存在一些问题，创建的虚拟桌面，似乎共享了同一个流的缓冲区，在并发录制时，会出现抢占的情况，导致视频内容出现加速，所以需要封装一个新的node调用xvfb的功能</li>
 </ol>
