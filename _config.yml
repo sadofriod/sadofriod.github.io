@@ -83,3 +83,23 @@ deploy:
   type: git
   repo: https://github.com/sadofriod/sadofriod.github.io.git
   branch: master
+
+# RSS support
+feed:
+  enable: true
+  type:
+    rss2
+  path:
+    rss2.xml
+  limit: 140
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
+  order_by: -date
+  icon: https://avatars.githubusercontent.com/u/23006024?v=4
+  autodiscovery: true
+
+#Comment
+
+disqus_shortname: ashess-blog
