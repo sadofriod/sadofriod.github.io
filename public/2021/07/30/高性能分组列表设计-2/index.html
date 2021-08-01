@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content="#58b77a">
+  <title>高性能分组列表设计-2 | Ashes Born&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Ashes Born">
+  <meta name="keywords" content="fornt-end,react,node,raspberry,Linux,docker,java,javascript,algorithm">
+  <meta name="description" content="Work & Life & learn">
+  <script id="hexo-configurations">
+  var CONFIG = {
+    root: '/',
+    theme: 'lx',
+    version: '0.3.10',
+    localsearch:{
+      "enable": false,
+      "trigger": "auto",
+      "top_n_per_article": 1,
+      "unescape": false,
+      "preload": false
+      },
+    path: 'null'
+  };
+</script>
+
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/css/main.min.css">
+  <style type="text/css">
+    pre,
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+    html {
+      font-family: sans-serif;
+    }
+    body {
+      font-family: sans-serif;
+    }
+    h1, h2, h3, h4, h5, figure {
+      font-family: sans-serif;
+    }
+    .menu-container{
+      font-family: sans-serif;
+    }
+  </style>
+
+  <script src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.jside.menu.js"></script>
+	<script>
+	$(document).ready(function(){
+	$(".menu-container").jSideMenu({
+	    jSidePosition: "position-right",
+	    jSideSticky: true,
+	    jSideSkin: "greenish",
+	     });
+	}); 
+	</script>
+  <!--Google_Analytics-->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-167566818-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-167566818-3');
+</script>
+
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Fira Code:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+</head>
+<body>
+<div class="single">
+
+<div id="page">
+<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/post_cover.jpeg)" data-stellar-background-ratio="0.5">
+  <div class="overlay">
+  <div class="page-title">
+    <div class="avatar"><a href="/"><img src="/images/avatar.jpeg"></a></div>
+    <span>2021-07-30</span>
+    <h2>高性能分组列表设计-2</h2>
+    <div class="tags"><i class="fa fa-tag"></i><a class="tag-link" href="/tags/project/">project</a></div>
+    </div>
+</div>
+</div>
+
+<div id="lx-main-content">
+  <div class="lx-post">
+    <div class="lx-entry padding">
+      <div>
+        <h2 id="通过改变列表项位置更新分组关系"><a href="#通过改变列表项位置更新分组关系" class="headerlink" title="通过改变列表项位置更新分组关系"></a>通过改变列表项位置更新分组关系</h2><img width="300px" src="/images/moveGroup.png">
+
+<h2 id="要解决的问题"><a href="#要解决的问题" class="headerlink" title="要解决的问题"></a>要解决的问题</h2><ul>
+<li>移动分组时，分组所有的子项都要移动，且保持相对位置和关系不变</li>
+<li>批量移动未分组列表项到分组内时，相对位置应不变</li>
+<li>已分组列表项移动出分组范围时应，应解除分组关系</li>
+</ul>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>当分组移动时，所有分组的子项都不变，首先需要搜索到分组内所有的子项。然后记录该子项在分组内的相对位置，以及在整体列表中的位置。<br>这样在移动时，方便进行计算。</p>
+<p>整体来讲，这个移动过程中的搜索部分将使用<strong>深度优先搜索</strong>的一种变种。移动后的排序，只需遵守搜索中分组和其子项的相对顺序遍历即可。</p>
+<p>分组子项搜索流程如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!groupCache.includes(hasGroup)) &#123;</span><br><span class="line">      <span class="comment">//组件的分组不在查询的分组内。弹出所有的分组缓存</span></span><br><span class="line">      groupCache = [];</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result.push(item); <span class="comment">//组件的分组在分组缓存中</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (hasGroup !== groupCache[groupCache.length - <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// 如果组件的分组不在缓存的顶层</span></span><br><span class="line">        <span class="keyword">const</span> hasGroupCacheIndex = groupCache.indexOf(hasGroup);</span><br><span class="line">        groupCache = groupCache.slice(<span class="number">0</span>, hasGroupCacheIndex + <span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (compDatas[item].compCode === <span class="string">'group'</span>) &#123;</span><br><span class="line">        <span class="comment">// 组件本身是分组组件</span></span><br><span class="line">        groupCache.push(item);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>列表项排序流程如下：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * compDatas 所有的列表项&#123;[code]:&#123; config: &#123; [groupCode]:groupCode &#125; &#125; &#125;</span></span><br><span class="line"><span class="comment">  * topLestSelectComps 和第一个要移动的列表项在同级的组件（处理批量移动的情况），数据结构与compDatas一致</span></span><br><span class="line"><span class="comment">  * nearLowBoundsGroup 将要移动列表项所在的分组的下界，数据结构与compDatas一致</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">if</span> (isToplest) &#123;</span><br><span class="line">    <span class="comment">//如果移动位置在插入区间的顶部，表明组件在最外层</span></span><br><span class="line">    topLestSelectComps.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      </span><br><span class="line">      result[item] = &#123; newGroup: <span class="literal">undefined</span>, oldGroup: compDatas[item].config.groupCode &#125;;</span><br><span class="line">      <span class="keyword">return</span> (compDatas[item].config.groupCode = <span class="literal">undefined</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (nearLowBoundsGroup !== firstCompPrev) &#123;</span><br><span class="line">    <span class="comment">//如果移动位置的下界的分组code不等于移动组件的code，则解除或更新分组关系</span></span><br><span class="line">    topLestSelectComps.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (item !== nearLowBoundsGroup) &#123;</span><br><span class="line">        result[item] = &#123; newGroup: nearLowBoundsGroup, oldGroup: compDatas[item].config.groupCode &#125;;</span><br><span class="line">        compDatas[item].config.groupCode = nearLowBoundsGroup;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result[item] = &#123; newGroup: compDatas[item].config.groupCode, oldGroup: compDatas[item].config.groupCode &#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><details>
+  <summary>分组子项查询详细代码</summary>
+  <pre>
+    <code>
+
+<pre><code>interface GroupConfigStruct {
+  groupItemCode: string[];
+}
+
+interface groupMapValueStruct {
+  //分组内组件相对于分组索引的偏移量
+  offsetNumer: number;
+  //分组的索引
+  currentIndex: number;
+}
+
+/**
+*根据分组关系排序一维数组
+*@param compCodes 所有组件的code
+*@param compDatas 所有组件的数据
+*/
+const sortListItem = (compCodes: string[], compDatas: JDV.State[&apos;compDatas&apos;]) =&gt; {
+  const groupCodeCache = new Map&lt;string, groupMapValueStruct&gt;();
+  const result: string[] = [];
+
+  /**
+  *递归的回溯当前分组的前驱分组，更新前驱分组的长度偏移量
+  *@param groupCode 分组组件的code
+  *@param offsetNumber 分组长度的偏移量
+  */
+  const recursiveBacktracking = (groupCode: string, offsetNumber: number): null =&gt; {
+    const parentGroupCode = compDatas[groupCode].config.groupCode;
+    const belongGroup = groupCodeCache.get(groupCode) as groupMapValueStruct;
+    groupCodeCache.set(groupCode, {
+      //更新分组缓存，每此插入组件，偏移量+1
+      ...belongGroup,
+      offsetNumer: belongGroup.offsetNumer + 1,
+    });
+    if (parentGroupCode) {
+      // 如果分组有父分组，回溯一步
+      return recursiveBacktracking(parentGroupCode, offsetNumber + 1);
+    } else {
+      return null;
+    }
+  };
+  compCodes.forEach((item, index) =&gt; {
+    const group = compDatas[item].config.groupCode ? compDatas[item].config.groupCode : null;
+    if (compDatas[item].compCode === &apos;group&apos;) {
+      //如果组件是分组组件，将code推入分组缓冲内
+      groupCodeCache.set(item, { offsetNumer: 0, currentIndex: index });
+    }
+    if (group) {
+      //在分组内
+      if (groupCodeCache.has(group)) {
+        // 组件的分组在缓存中
+        const belongGroup = groupCodeCache.get(group) as groupMapValueStruct;
+
+        // 分组内组件插入的位置
+        const targetIndex = belongGroup.currentIndex + belongGroup.offsetNumer;
+
+        result.splice(targetIndex + 1, 0, item);
+        recursiveBacktracking(group, belongGroup.offsetNumer);
+      }
+    } else {
+      result.push(item);
+    }
+  });
+  return result;
+};
+
+export default sortListItem;
+&lt;/code&gt;</code></pre><p>  </p></code></pre><p></p>
+</details>
+
+<details>
+  <summary>分组移动后排序详细代码</summary>
+  <pre>
+    <code>
+    /**
+ * 组件排序时处理分组的逻辑。
+ * @param compCodes 所有组件的code
+ * @param compDatas 所有组件的数据
+ * @param code 当前组件code
+ * @param destination 目标位置
+ * @returns result {Result} 返回组件排序后的分组关系，用于分组关系变化后，处理分组的尺寸。
+ */
+export const groupResort = (
+  compCodes: string[],
+  selectedCompCodes: string[],
+  compDatas: JDV.State['compDatas'],
+  destination: number
+): Result => {
+  const isToplest = destination === 0;
+  const isBottomlest = destination + 1 === compCodes.length - 1;
+  const lowBounds = isBottomlest ? compCodes.length - 1 : destination + 1;
+  const interval = compCodes.slice(0, lowBounds); //插入区间
+  const intervalLastComp = compDatas[compCodes[lowBounds]];
+  const nearLowBoundsGroup = interval.find((item) => intervalLastComp && item === intervalLastComp.config.groupCode); //插入区间最下面的分组段
+  const firstCompPrev = compDatas[selectedCompCodes[0]] && compDatas[selectedCompCodes[0]].config.groupCode; // 第一个选中组件的分组
+  const topLestSelectComps = selectedCompCodes.filter((item) => compDatas[item].config.groupCode === firstCompPrev); // 和第一个选中在同级的所有选中组件
+  const result: Result = {};
+
+<p>  if (isToplest) {<br>    //如果移动位置在插入区间的顶部，表明组件在最外层<br>    topLestSelectComps.forEach((item) =&gt; {<br>      result[item] = { newGroup: undefined, oldGroup: compDatas[item].config.groupCode };<br>      return (compDatas[item].config.groupCode = undefined);<br>    });</p>
+<pre><code>return result;</code></pre><p>  }<br>  if (nearLowBoundsGroup !== firstCompPrev) {<br>    //如果移动位置的下界的分组code不等于移动组件的code，则解除或更新分组关系<br>    topLestSelectComps.forEach((item) =&gt; {<br>      if (item !== nearLowBoundsGroup) {<br>        result[item] = { newGroup: nearLowBoundsGroup, oldGroup: compDatas[item].config.groupCode };<br>        compDatas[item].config.groupCode = nearLowBoundsGroup;<br>      } else {<br>        result[item] = { newGroup: compDatas[item].config.groupCode, oldGroup: compDatas[item].config.groupCode };<br>      }<br>    });<br>    return result;<br>  }<br>  return result;<br>};</p>
+<pre><code>&lt;/code&gt;</code></pre><p>  </p></code></pre><p></p>
+</details>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lx-navigation">
+	<div class="lx-cover prev lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/footer-l.jpeg)">
+		<div class="overlay"></div>
+		<a class="copy" href="#">
+			<div class="display-t">
+				<div class="display-tc">
+					<div>
+						<span>Next</span>
+						<h3>No newer post</h3>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+        <div class="lx-cover next lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/footer-r.jpeg)">
+		<div class="overlay"></div>
+		<a class="copy" href="/2021/07/28/高性能分组列表设计-1/">
+			<div class="display-t">
+				<div class="display-tc">
+					<div>
+						<span>Prev</span>
+						<h3>高性能分组列表...</h3>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+</div>
+
+</div>
+
+<footer>
+  <div>
+  Copyright &copy; 2021.<a href="/">Ashes Born's Blog</a><br>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme <a href="https://lx.js.org" target="_blank">Lx</a><br>
+  </div>
+</footer>
+
+</div>
+
+<button class="hamburger hamburger--arrow-r" type="button">
+    <div class="hamburger-box">
+      <div class="hamburger-inner"></div>
+    </div>
+</button> 
+<div class="menu visibility">
+  <div class="menu-head">
+    <span class="layer">
+      <div class="col">
+        <div class="row for-pic">
+          <div class="profile-pic">
+            <a href="/"><img src="/images/avatar.jpeg" alt="Ashes Born"></a>
+          </div>
+        </div>
+        <div class="row for-name">
+          <p>Ashes Born</p>
+          <span class="tagline">Hello, World!</span>
+        </div>
+      </div>
+    </span>
+  </div>
+  <nav class="menu-container">
+  <ul class="menu-items">
+    <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
+    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+    
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-bookmark fa-fw"></i>Pages</span>
+        <ul>
+          <li><a href="/guestbook/">Guestbook</a></li>
+        <li><a href="/about/">About</a></li>
+        </ul>
+    </li>
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-link fa-fw"></i>Friends</span>
+        <ul>
+          <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
+        </ul>
+    </li>
+  </ul>
+  </nav>
+</div>
+
+<div class="gototop js-top">
+  <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
+</div>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.easing.min.js"></script>
+<script>
+(function () {
+	"use strict";
+	var goToTop = function() {
+		$(".js-gotop").on("click", function(event){
+			event.preventDefault();
+			$("html, body").animate({
+				scrollTop: $("html").offset().top
+			}, 500, "easeInOutExpo");
+			return false;
+		});
+		$(window).scroll(function(){
+			var $win = $(window);
+			if ($win.scrollTop() > 200) {
+				$(".js-top").addClass("active");
+			} else {
+				$(".js-top").removeClass("active");
+			}
+		});
+	};
+	$(function(){
+		goToTop();
+	});
+}());
+</script>
+
+
+</body>
+</html>
