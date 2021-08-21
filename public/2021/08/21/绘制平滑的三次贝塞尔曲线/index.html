@@ -94,10 +94,9 @@
     <div class="lx-post">
       <div class="lx-entry padding">
         <div>
-          <img src="/images/ezgif.com-gif-maker.gif"/>
-
-<p>[TOC]</p>
-<h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><p>阅读之前你需要知道的知识包括</p>
+          <p><img src="/images/ezgif.com-gif-maker.gif"/></p>
+<p>[TOC] ## 基础知识</p>
+<p>阅读之前你需要知道的知识包括</p>
 <ul>
 <li>canvas的坐标系</li>
 <li>直角坐标中两点的中点公式</li>
@@ -106,13 +105,36 @@
 <li>投影基础知识</li>
 <li>canvas绘制贝塞尔曲线</li>
 </ul>
-<h2 id="面临的问题"><a href="#面临的问题" class="headerlink" title="面临的问题"></a>面临的问题</h2><h3 id="1-选择二次贝塞尔曲线-or-三次贝塞尔曲线"><a href="#1-选择二次贝塞尔曲线-or-三次贝塞尔曲线" class="headerlink" title="1. 选择二次贝塞尔曲线 or 三次贝塞尔曲线"></a>1. 选择二次贝塞尔曲线 or 三次贝塞尔曲线</h3><h3 id="2-贝塞尔曲线控制点计算"><a href="#2-贝塞尔曲线控制点计算" class="headerlink" title="2. 贝塞尔曲线控制点计算"></a>2. 贝塞尔曲线控制点计算</h3><h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><h3 id="问题1："><a href="#问题1：" class="headerlink" title="问题1："></a>问题1：</h3><p>由于二次贝塞尔曲线绘制后，将只有一处弯曲，在多节点连接时，呈现效果很差。并且在45°，135°，225°，315°时，需要做特殊的处理，否侧得到的曲线的弧度过大。</p>
-<h3 id="问题2："><a href="#问题2：" class="headerlink" title="问题2："></a>问题2：</h3><p>在确定使用三次贝塞尔曲线后，需要通过计算得出曲线绘制时的两个控制点C1,C2。然后通过<code>CanvasRenderingContext2D.bezierCurveTo</code>进行绘制。</p>
-<p>由于我们需要两个控制点，所以，我们将会把起点<strong>SP(start point)<strong>和终点</strong>EP(end point)<strong>间的连线</strong>S-E</strong>均分为4份。得到如下点：<br>$$<br>\begin{align*}<br>Split_{m} = (\frac{(X_{SP}+X_{EP})}2,\frac{(Y_{SP}+Y_{EP})}2)\<br>\end{align*}<br>$$<br>得到S-E的公式L(x)为<br>$$<br>L(x) = \frac{X_{Split_{m}}}{Y_{Slit_{m}}}x<br>$$<br>根据L(x)可知S-E的斜率满足<br>$$<br>\tan \theta = \frac{X_{Split_{m}}}{Y_{Slit_{m}}}<br>$$<br>然后将$Split_{m}$作为坐标系的原点，建立直角坐标系，得到<br>$$<br>\begin{align*}<br>len = \sqrt{(X_{Split_{m}}-X_{SP})^{2}+(Y_{Split_{m}}-Y_{SP})^{2}}\<br>\<br>\theta = \arctan \frac{X_{Split_{m}}}{Y_{Slit_{m}}}\<br>\<br>Y_{offset} = len·\cos \theta \<br>\<br>C1=(X_{Split_{m}},Y_{Split_{m}}-len)\<br>C2=(X_{Split_{m}},Y_{Split_{m}}+len)<br>\end{align*}<br>$$</p>
-<h2 id="代码部分"><a href="#代码部分" class="headerlink" title="代码部分"></a>代码部分</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>props </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@typeof </span>props &#123;</span></span><br><span class="line"><span class="comment">		start: number[];</span></span><br><span class="line"><span class="comment">		end: number[];</span></span><br><span class="line"><span class="comment">		canvas: CanvasRenderingContext2D;</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> drawLine = <span class="function">(<span class="params">props: Common.LineProps</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">const</span> &#123; start, end, <span class="attr">canvas</span>: ctx, color &#125; = props;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> getMidCoord = <span class="function">(<span class="params">c1: <span class="built_in">number</span>, c2: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (c1 === c2) &#123;</span><br><span class="line">			<span class="keyword">return</span> c1;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> (c1 + c2) / <span class="number">2</span>;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> [x1, y1] = start;</span><br><span class="line">	<span class="keyword">const</span> [x2, y2] = end;</span><br><span class="line">	<span class="keyword">const</span> [midX, midY] = [getMidCoord(x1, x2), getMidCoord(y1, y2)];</span><br><span class="line">	<span class="keyword">const</span> drawMirror = <span class="function">(<span class="params">y1: <span class="built_in">number</span>, y2: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (y1 &gt; y2) &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.bezierCurveTo(control2[<span class="number">0</span>], control2[<span class="number">1</span>], control1[<span class="number">0</span>], control1[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.bezierCurveTo(control1[<span class="number">0</span>], control1[<span class="number">1</span>], control2[<span class="number">0</span>], control2[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">const</span> degCos = <span class="built_in">Math</span>.cos(<span class="built_in">Math</span>.atan((x1 - midX) / (y1 - midY)));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> lineLen = <span class="built_in">Math</span>.sqrt(<span class="built_in">Math</span>.pow(y1 - midY, <span class="number">2</span>) + <span class="built_in">Math</span>.pow(x1 - midX, <span class="number">2</span>)) * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> control1 = [midX, midY - degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line">	<span class="keyword">const</span> control2 = [midX, midY + degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line"></span><br><span class="line">	ctx.beginPath();</span><br><span class="line">	ctx.moveTo(start[<span class="number">0</span>], start[<span class="number">1</span>]);</span><br><span class="line">	drawMirror(y1, y2);</span><br><span class="line">	ctx.lineWidth = <span class="number">2</span>;</span><br><span class="line">	ctx.strokeStyle = color ? color : <span class="string">&quot;#000&quot;</span>;</span><br><span class="line">	ctx.stroke();</span><br><span class="line">	ctx.closePath();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
+<h2 id="面临的问题">面临的问题</h2>
+<h3 id="选择二次贝塞尔曲线-or-三次贝塞尔曲线">1. 选择二次贝塞尔曲线 or 三次贝塞尔曲线</h3>
+<h3 id="贝塞尔曲线控制点计算">2. 贝塞尔曲线控制点计算</h3>
+<h2 id="问题分析">问题分析</h2>
+<h3 id="问题1">问题1：</h3>
+<p>由于二次贝塞尔曲线绘制后，将只有一处弯曲，在多节点连接时，呈现效果很差。并且在45°，135°，225°，315°时，需要做特殊的处理，否侧得到的曲线的弧度过大。</p>
+<h3 id="问题2">问题2：</h3>
+<p>在确定使用三次贝塞尔曲线后，需要通过计算得出曲线绘制时的两个控制点C1,C2。然后通过<code>CanvasRenderingContext2D.bezierCurveTo</code>进行绘制。</p>
+<p>由于我们需要两个控制点，所以，我们将会把起点<strong>SP(start point)</strong>和终点<strong>EP(end point)</strong>间的连线<strong>S-E</strong>均分为4份。得到如下点： <span class="math display">\[
+\begin{align*}
+Split_{m} = (\frac{(X_{SP}+X_{EP})}2,\frac{(Y_{SP}+Y_{EP})}2)\\
+\end{align*}
+\]</span> 得到S-E的公式L(x)为 <span class="math display">\[
+L(x) = \frac{X_{Split_{m}}}{Y_{Slit_{m}}}x
+\]</span> 根据L(x)可知S-E的斜率满足 <span class="math display">\[
+\tan \theta = \frac{X_{Split_{m}}}{Y_{Slit_{m}}}
+\]</span> 然后将<span class="math inline">\(Split_{m}\)</span>作为坐标系的原点，建立直角坐标系，得到 <span class="math display">\[
+\begin{align*}
+len = \sqrt{(X_{Split_{m}}-X_{SP})^{2}+(Y_{Split_{m}}-Y_{SP})^{2}}\\
+\\
+\theta = \arctan \frac{X_{Split_{m}}}{Y_{Slit_{m}}}\\
+\\
+Y_{offset} = len·\cos \theta \\
+\\
+C1=(X_{Split_{m}},Y_{Split_{m}}-len)\\
+C2=(X_{Split_{m}},Y_{Split_{m}}+len)
+\end{align*}
+\]</span></p>
+<h2 id="代码部分">代码部分</h2>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>props </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@typeof </span>props &#123;</span></span><br><span class="line"><span class="comment">		start: number[];</span></span><br><span class="line"><span class="comment">		end: number[];</span></span><br><span class="line"><span class="comment">		canvas: CanvasRenderingContext2D;</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> drawLine = <span class="function">(<span class="params">props: Common.LineProps</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">const</span> &#123; start, end, <span class="attr">canvas</span>: ctx, color &#125; = props;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> getMidCoord = <span class="function">(<span class="params">c1: <span class="built_in">number</span>, c2: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (c1 === c2) &#123;</span><br><span class="line">			<span class="keyword">return</span> c1;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> (c1 + c2) / <span class="number">2</span>;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> [x1, y1] = start;</span><br><span class="line">	<span class="keyword">const</span> [x2, y2] = end;</span><br><span class="line">	<span class="keyword">const</span> [midX, midY] = [getMidCoord(x1, x2), getMidCoord(y1, y2)];</span><br><span class="line">	<span class="keyword">const</span> drawMirror = <span class="function">(<span class="params">y1: <span class="built_in">number</span>, y2: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (y1 &gt; y2) &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.bezierCurveTo(control2[<span class="number">0</span>], control2[<span class="number">1</span>], control1[<span class="number">0</span>], control1[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.bezierCurveTo(control1[<span class="number">0</span>], control1[<span class="number">1</span>], control2[<span class="number">0</span>], control2[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">const</span> degCos = <span class="built_in">Math</span>.cos(<span class="built_in">Math</span>.atan((x1 - midX) / (y1 - midY)));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> lineLen = <span class="built_in">Math</span>.sqrt(<span class="built_in">Math</span>.pow(y1 - midY, <span class="number">2</span>) + <span class="built_in">Math</span>.pow(x1 - midX, <span class="number">2</span>)) * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> control1 = [midX, midY - degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line">	<span class="keyword">const</span> control2 = [midX, midY + degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line"></span><br><span class="line">	ctx.beginPath();</span><br><span class="line">	ctx.moveTo(start[<span class="number">0</span>], start[<span class="number">1</span>]);</span><br><span class="line">	drawMirror(y1, y2);</span><br><span class="line">	ctx.lineWidth = <span class="number">2</span>;</span><br><span class="line">	ctx.strokeStyle = color ? color : <span class="string">&quot;#000&quot;</span>;</span><br><span class="line">	ctx.stroke();</span><br><span class="line">	ctx.closePath();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
         </div>
       </div>
@@ -255,5 +277,35 @@
 </script>
 
 
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+  TeX: {
+          extensions: ["mhchem.js"]
+    }
+  });
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') { next = next.nextSibling }
+        if (next && next.nodeName.toLowerCase() === 'br') { next.parentNode.removeChild(next) }
+      }
+    });
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      document.getElementById(all[i].inputID + '-Frame').parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>

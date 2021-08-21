@@ -94,100 +94,101 @@
     <div class="lx-post">
       <div class="lx-entry padding">
         <div>
-          <h2 id="通过改变列表项位置更新分组关系"><a href="#通过改变列表项位置更新分组关系" class="headerlink" title="通过改变列表项位置更新分组关系"></a>通过改变列表项位置更新分组关系</h2><img width="300px" src="/images/moveGroup.png">
-
-<h2 id="要解决的问题"><a href="#要解决的问题" class="headerlink" title="要解决的问题"></a>要解决的问题</h2><ul>
+          <h2 id="通过改变列表项位置更新分组关系">通过改变列表项位置更新分组关系</h2>
+<p><img width="300px" src="/images/moveGroup.png"></p>
+<h2 id="要解决的问题">要解决的问题</h2>
+<ul>
 <li>移动分组时，分组所有的子项都要移动，且保持相对位置和关系不变</li>
 <li>批量移动未分组列表项到分组内时，相对位置应不变</li>
 <li>已分组列表项移动出分组范围时应，应解除分组关系</li>
 </ul>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>当分组移动时，所有分组的子项都不变，首先需要搜索到分组内所有的子项。然后记录该子项在分组内的相对位置，以及在整体列表中的位置。<br>这样在移动时，方便进行计算。</p>
+<h2 id="分析">分析</h2>
+<p>当分组移动时，所有分组的子项都不变，首先需要搜索到分组内所有的子项。然后记录该子项在分组内的相对位置，以及在整体列表中的位置。 这样在移动时，方便进行计算。</p>
 <p>整体来讲，这个移动过程中的搜索部分将使用<strong>深度优先搜索</strong>的一种变种。移动后的排序，只需遵守搜索中分组和其子项的相对顺序遍历即可。</p>
-<p>分组子项搜索流程如下：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!groupCache.includes(hasGroup)) &#123;</span><br><span class="line">      <span class="comment">//组件的分组不在查询的分组内。弹出所有的分组缓存</span></span><br><span class="line">      groupCache = [];</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result.push(item); <span class="comment">//组件的分组在分组缓存中</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (hasGroup !== groupCache[groupCache.length - <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// 如果组件的分组不在缓存的顶层</span></span><br><span class="line">        <span class="keyword">const</span> hasGroupCacheIndex = groupCache.indexOf(hasGroup);</span><br><span class="line">        groupCache = groupCache.slice(<span class="number">0</span>, hasGroupCacheIndex + <span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (compDatas[item].compCode === <span class="string">&#x27;group&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">// 组件本身是分组组件</span></span><br><span class="line">        groupCache.push(item);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>列表项排序流程如下：</p>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * compDatas 所有的列表项&#123;[code]:&#123; config: &#123; [groupCode]:groupCode &#125; &#125; &#125;</span></span><br><span class="line"><span class="comment">  * topLestSelectComps 和第一个要移动的列表项在同级的组件（处理批量移动的情况），数据结构与compDatas一致</span></span><br><span class="line"><span class="comment">  * nearLowBoundsGroup 将要移动列表项所在的分组的下界，数据结构与compDatas一致</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">if</span> (isToplest) &#123;</span><br><span class="line">    <span class="comment">//如果移动位置在插入区间的顶部，表明组件在最外层</span></span><br><span class="line">    topLestSelectComps.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      </span><br><span class="line">      result[item] = &#123; <span class="attr">newGroup</span>: <span class="literal">undefined</span>, <span class="attr">oldGroup</span>: compDatas[item].config.groupCode &#125;;</span><br><span class="line">      <span class="keyword">return</span> (compDatas[item].config.groupCode = <span class="literal">undefined</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (nearLowBoundsGroup !== firstCompPrev) &#123;</span><br><span class="line">    <span class="comment">//如果移动位置的下界的分组code不等于移动组件的code，则解除或更新分组关系</span></span><br><span class="line">    topLestSelectComps.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (item !== nearLowBoundsGroup) &#123;</span><br><span class="line">        result[item] = &#123; <span class="attr">newGroup</span>: nearLowBoundsGroup, <span class="attr">oldGroup</span>: compDatas[item].config.groupCode &#125;;</span><br><span class="line">        compDatas[item].config.groupCode = nearLowBoundsGroup;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result[item] = &#123; <span class="attr">newGroup</span>: compDatas[item].config.groupCode, <span class="attr">oldGroup</span>: compDatas[item].config.groupCode &#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><details>
-  <summary>分组子项查询详细代码</summary>
-  <pre>
+<p>分组子项搜索流程如下： <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!groupCache.includes(hasGroup)) &#123;</span><br><span class="line">      <span class="comment">//组件的分组不在查询的分组内。弹出所有的分组缓存</span></span><br><span class="line">      groupCache = [];</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      result.push(item); <span class="comment">//组件的分组在分组缓存中</span></span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (hasGroup !== groupCache[groupCache.length - <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// 如果组件的分组不在缓存的顶层</span></span><br><span class="line">        <span class="keyword">const</span> hasGroupCacheIndex = groupCache.indexOf(hasGroup);</span><br><span class="line">        groupCache = groupCache.slice(<span class="number">0</span>, hasGroupCacheIndex + <span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (compDatas[item].compCode === <span class="string">&#x27;group&#x27;</span>) &#123;</span><br><span class="line">        <span class="comment">// 组件本身是分组组件</span></span><br><span class="line">        groupCache.push(item);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>列表项排序流程如下： <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * compDatas 所有的列表项&#123;[code]:&#123; config: &#123; [groupCode]:groupCode &#125; &#125; &#125;</span></span><br><span class="line"><span class="comment">  * topLestSelectComps 和第一个要移动的列表项在同级的组件（处理批量移动的情况），数据结构与compDatas一致</span></span><br><span class="line"><span class="comment">  * nearLowBoundsGroup 将要移动列表项所在的分组的下界，数据结构与compDatas一致</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  <span class="keyword">if</span> (isToplest) &#123;</span><br><span class="line">    <span class="comment">//如果移动位置在插入区间的顶部，表明组件在最外层</span></span><br><span class="line">    topLestSelectComps.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      </span><br><span class="line">      result[item] = &#123; <span class="attr">newGroup</span>: <span class="literal">undefined</span>, <span class="attr">oldGroup</span>: compDatas[item].config.groupCode &#125;;</span><br><span class="line">      <span class="keyword">return</span> (compDatas[item].config.groupCode = <span class="literal">undefined</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (nearLowBoundsGroup !== firstCompPrev) &#123;</span><br><span class="line">    <span class="comment">//如果移动位置的下界的分组code不等于移动组件的code，则解除或更新分组关系</span></span><br><span class="line">    topLestSelectComps.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (item !== nearLowBoundsGroup) &#123;</span><br><span class="line">        result[item] = &#123; <span class="attr">newGroup</span>: nearLowBoundsGroup, <span class="attr">oldGroup</span>: compDatas[item].config.groupCode &#125;;</span><br><span class="line">        compDatas[item].config.groupCode = nearLowBoundsGroup;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result[item] = &#123; <span class="attr">newGroup</span>: compDatas[item].config.groupCode, <span class="attr">oldGroup</span>: compDatas[item].config.groupCode &#125;;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h2 id="实现">实现</h2>
+<details>
+<summary>
+分组子项查询详细代码
+</summary>
+<pre>
     <code>
 
-<pre><code>interface GroupConfigStruct &#123;
-  groupItemCode: string[];
-&#125;
-
-interface groupMapValueStruct &#123;
-  //分组内组件相对于分组索引的偏移量
-  offsetNumer: number;
-  //分组的索引
-  currentIndex: number;
-&#125;
-
-/**
-*根据分组关系排序一维数组
-*@param compCodes 所有组件的code
-*@param compDatas 所有组件的数据
-*/
-const sortListItem = (compCodes: string[], compDatas: JDV.State[&#39;compDatas&#39;]) =&gt; &#123;
-  const groupCodeCache = new Map&lt;string, groupMapValueStruct&gt;();
-  const result: string[] = [];
-
-  /**
-  *递归的回溯当前分组的前驱分组，更新前驱分组的长度偏移量
-  *@param groupCode 分组组件的code
-  *@param offsetNumber 分组长度的偏移量
-  */
-  const recursiveBacktracking = (groupCode: string, offsetNumber: number): null =&gt; &#123;
-    const parentGroupCode = compDatas[groupCode].config.groupCode;
-    const belongGroup = groupCodeCache.get(groupCode) as groupMapValueStruct;
-    groupCodeCache.set(groupCode, &#123;
-      //更新分组缓存，每此插入组件，偏移量+1
-      ...belongGroup,
-      offsetNumer: belongGroup.offsetNumer + 1,
-    &#125;);
-    if (parentGroupCode) &#123;
-      // 如果分组有父分组，回溯一步
-      return recursiveBacktracking(parentGroupCode, offsetNumber + 1);
-    &#125; else &#123;
-      return null;
+    interface GroupConfigStruct &#123;
+      groupItemCode: string[];
     &#125;
-  &#125;;
-  compCodes.forEach((item, index) =&gt; &#123;
-    const group = compDatas[item].config.groupCode ? compDatas[item].config.groupCode : null;
-    if (compDatas[item].compCode === &#39;group&#39;) &#123;
-      //如果组件是分组组件，将code推入分组缓冲内
-      groupCodeCache.set(item, &#123; offsetNumer: 0, currentIndex: index &#125;);
+
+    interface groupMapValueStruct &#123;
+      //分组内组件相对于分组索引的偏移量
+      offsetNumer: number;
+      //分组的索引
+      currentIndex: number;
     &#125;
-    if (group) &#123;
-      //在分组内
-      if (groupCodeCache.has(group)) &#123;
-        // 组件的分组在缓存中
-        const belongGroup = groupCodeCache.get(group) as groupMapValueStruct;
 
-        // 分组内组件插入的位置
-        const targetIndex = belongGroup.currentIndex + belongGroup.offsetNumer;
+    /**
+    *根据分组关系排序一维数组
+    *@param compCodes 所有组件的code
+    *@param compDatas 所有组件的数据
+    */
+    const sortListItem = (compCodes: string[], compDatas: JDV.State['compDatas']) => &#123;
+      const groupCodeCache = new Map<string, groupMapValueStruct>();
+      const result: string[] = [];
 
-        result.splice(targetIndex + 1, 0, item);
-        recursiveBacktracking(group, belongGroup.offsetNumer);
-      &#125;
-    &#125; else &#123;
-      result.push(item);
-    &#125;
-  &#125;);
-  return result;
-&#125;;
+      /**
+      *递归的回溯当前分组的前驱分组，更新前驱分组的长度偏移量
+      *@param groupCode 分组组件的code
+      *@param offsetNumber 分组长度的偏移量
+      */
+      const recursiveBacktracking = (groupCode: string, offsetNumber: number): null => &#123;
+        const parentGroupCode = compDatas[groupCode].config.groupCode;
+        const belongGroup = groupCodeCache.get(groupCode) as groupMapValueStruct;
+        groupCodeCache.set(groupCode, &#123;
+          //更新分组缓存，每此插入组件，偏移量+1
+          ...belongGroup,
+          offsetNumer: belongGroup.offsetNumer + 1,
+        &#125;);
+        if (parentGroupCode) &#123;
+          // 如果分组有父分组，回溯一步
+          return recursiveBacktracking(parentGroupCode, offsetNumber + 1);
+        &#125; else &#123;
+          return null;
+        &#125;
+      &#125;;
+      compCodes.forEach((item, index) => &#123;
+        const group = compDatas[item].config.groupCode ? compDatas[item].config.groupCode : null;
+        if (compDatas[item].compCode === 'group') &#123;
+          //如果组件是分组组件，将code推入分组缓冲内
+          groupCodeCache.set(item, &#123; offsetNumer: 0, currentIndex: index &#125;);
+        &#125;
+        if (group) &#123;
+          //在分组内
+          if (groupCodeCache.has(group)) &#123;
+            // 组件的分组在缓存中
+            const belongGroup = groupCodeCache.get(group) as groupMapValueStruct;
 
-export default sortListItem;
-&lt;/code&gt;
-</code></pre>
-<p>  </pre></p>
+            // 分组内组件插入的位置
+            const targetIndex = belongGroup.currentIndex + belongGroup.offsetNumer;
+
+            result.splice(targetIndex + 1, 0, item);
+            recursiveBacktracking(group, belongGroup.offsetNumer);
+          &#125;
+        &#125; else &#123;
+          result.push(item);
+        &#125;
+      &#125;);
+      return result;
+    &#125;;
+
+    export default sortListItem;
+    </code>
+  </pre>
 </details>
-
 <details>
-  <summary>分组移动后排序详细代码</summary>
-  <pre>
+<summary>
+分组移动后排序详细代码
+</summary>
+<pre>
     <code>
     /**
  * 组件排序时处理分组的逻辑。
@@ -213,13 +214,32 @@ export const groupResort = (
   const topLestSelectComps = selectedCompCodes.filter((item) => compDatas[item].config.groupCode === firstCompPrev); // 和第一个选中在同级的所有选中组件
   const result: Result = &#123;&#125;;
 
-<p>  if (isToplest) &#123;<br>    //如果移动位置在插入区间的顶部，表明组件在最外层<br>    topLestSelectComps.forEach((item) =&gt; &#123;<br>      result[item] = &#123; newGroup: undefined, oldGroup: compDatas[item].config.groupCode &#125;;<br>      return (compDatas[item].config.groupCode = undefined);<br>    &#125;);</p>
-<pre><code>return result;
-</code></pre>
-<p>  }<br>  if (nearLowBoundsGroup !== firstCompPrev) {<br>    //如果移动位置的下界的分组code不等于移动组件的code，则解除或更新分组关系<br>    topLestSelectComps.forEach((item) =&gt; {<br>      if (item !== nearLowBoundsGroup) {<br>        result[item] = { newGroup: nearLowBoundsGroup, oldGroup: compDatas[item].config.groupCode };<br>        compDatas[item].config.groupCode = nearLowBoundsGroup;<br>      } else {<br>        result[item] = { newGroup: compDatas[item].config.groupCode, oldGroup: compDatas[item].config.groupCode };<br>      }<br>    });<br>    return result;<br>  }<br>  return result;<br>};</p>
-<pre><code>&lt;/code&gt;
-</code></pre>
-<p>  </pre></p>
+  if (isToplest) &#123;
+    //如果移动位置在插入区间的顶部，表明组件在最外层
+    topLestSelectComps.forEach((item) => &#123;
+      result[item] = &#123; newGroup: undefined, oldGroup: compDatas[item].config.groupCode &#125;;
+      return (compDatas[item].config.groupCode = undefined);
+    &#125;);
+
+    return result;
+  &#125;
+  if (nearLowBoundsGroup !== firstCompPrev) &#123;
+    //如果移动位置的下界的分组code不等于移动组件的code，则解除或更新分组关系
+    topLestSelectComps.forEach((item) => &#123;
+      if (item !== nearLowBoundsGroup) &#123;
+        result[item] = &#123; newGroup: nearLowBoundsGroup, oldGroup: compDatas[item].config.groupCode &#125;;
+        compDatas[item].config.groupCode = nearLowBoundsGroup;
+      &#125; else &#123;
+        result[item] = &#123; newGroup: compDatas[item].config.groupCode, oldGroup: compDatas[item].config.groupCode &#125;;
+      &#125;
+    &#125;);
+    return result;
+  &#125;
+  return result;
+&#125;;
+
+    </code>
+  </pre>
 </details>
 
         </div>
