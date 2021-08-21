@@ -175,6 +175,11 @@ command-exists@^1.2.8:
   resolved "https://registry.yarnpkg.com/command-exists/-/command-exists-1.2.8.tgz#715acefdd1223b9c9b37110a149c6392c2852291"
   integrity sha512-PM54PkseWbiiD/mMsbvW351/u+dafwTJ0ye2qB60G1aGQP9j3xK2gmMDc+R34L3nDtx4qMCitXT75mkbkGJDLw==
 
+commander@^2.19.0:
+  version "2.20.3"
+  resolved "https://registry.nlark.com/commander/download/commander-2.20.3.tgz?cache=0&sync_timestamp=1627359190297&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcommander%2Fdownload%2Fcommander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
+  integrity sha1-/UhehMA+tIgcIHIrpIA16FMa6zM=
+
 commander@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
@@ -546,6 +551,15 @@ hexo-log@^2.0.0:
   dependencies:
     chalk "^4.0.0"
 
+hexo-math@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.nlark.com/hexo-math/download/hexo-math-4.0.0.tgz#329a56a122466a55720536078f4d84da0e50238a"
+  integrity sha1-MppWoSJGalVyBTYHj02E2g5QI4o=
+  dependencies:
+    hexo-util "^2.2.0"
+    katex "^0.12.0"
+    mathjax "^3.0.5"
+
 hexo-pagination@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/hexo-pagination/-/hexo-pagination-1.0.0.tgz#c9c0ca3665267b9e9d0a89fc3edcaf3276907dc1"
@@ -588,7 +602,7 @@ hexo-server@^2.0.0:
     open "^7.0.0"
     serve-static "^1.14.1"
 
-hexo-util@^2.0.0, hexo-util@^2.1.0, hexo-util@^2.4.0:
+hexo-util@^2.0.0, hexo-util@^2.1.0, hexo-util@^2.2.0, hexo-util@^2.4.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hexo-util/-/hexo-util-2.5.0.tgz#de5635341116ba2563a789a0ebceb55a875221ad"
   integrity sha512-l0zkqcg2524KPO84HQe0JROpPlCM/dEnCJaJrZ1qsq+3+/YxhDa0zxiGtUVY1dtrWzOK/V11Zj+UEklhGP8Jeg==
@@ -742,6 +756,13 @@ jsonparse@^1.2.0:
   resolved "https://registry.yarnpkg.com/jsonparse/-/jsonparse-1.3.1.tgz#3f4dae4a91fac315f71062f8521cc239f1366280"
   integrity sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=
 
+katex@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.nlark.com/katex/download/katex-0.12.0.tgz#2fb1c665dbd2b043edcf8a1f5c555f46beaa0cb9"
+  integrity sha1-L7HGZdvSsEPtz4ofXFVfRr6qDLk=
+  dependencies:
+    commander "^2.19.0"
+
 lower-case@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-2.0.2.tgz#6fa237c63dbdc4a82ca0fd882e4722dc5e634e28"
@@ -753,6 +774,11 @@ marked@^2.0.0:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/marked/-/marked-2.1.3.tgz#bd017cef6431724fd4b27e0657f5ceb14bff3753"
   integrity sha512-/Q+7MGzaETqifOMWYEA7HVMaZb4XbcRfaOzcSsHZEith83KGlvaSG33u0SKu89Mj5h+T8V2hM+8O45Qc5XTgwA==
+
+mathjax@^3.0.5:
+  version "3.2.0"
+  resolved "https://registry.nlark.com/mathjax/download/mathjax-3.2.0.tgz#ea7c317f8c81776ecfc83b294fc313046bf7f726"
+  integrity sha1-6nwxf4yBd27PyDspT8MTBGv39yY=
 
 micromatch@^4.0.2:
   version "4.0.4"
