@@ -13,7 +13,7 @@
   var CONFIG = {
     root: '/',
     theme: 'lx',
-    version: '0.3.10',
+    version: '0.3.9',
     localsearch:{
       "enable": false,
       "trigger": "auto",
@@ -26,7 +26,7 @@
 </script>
 
   <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/css/main.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/css/main.min.css">
   <style type="text/css">
     pre,
     code {
@@ -47,7 +47,7 @@
   </style>
 
   <script src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.jside.menu.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.jside.menu.js"></script>
 	<script>
 	$(document).ready(function(){
 	$(".menu-container").jSideMenu({
@@ -73,14 +73,17 @@
 
 <div id="page">
 
-<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/cover.jpeg)">
+<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/cover.jpeg)">
   <div class="overlay">
   <div class="featured">
     <div class="avatar"><a href="/"><img src="/images/avatar.jpeg"></a></div>
     <span>Ashes Born</span>
     <h1>Ashes Born's Blog</h1>
     <span>——心中有座观澜阁，土木付炬皆尘生</span>
-    
+    <div class="social-links">
+    <a href="https://github.com/sadofriod" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+    <a href="justlikeashes@gmail.com" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+</div>
   </div>
   </div>
 </div>
@@ -126,7 +129,7 @@
         </div>
         <div class="row for-name">
           <p>Ashes Born</p>
-          <span class="tagline">Hello, World!</span>
+          <span class="tagline">切图仔 / 兴趣使然的数学学习者 @ cutaway man / Interest driven mathematics learners</span>
         </div>
       </div>
     </span>
@@ -135,18 +138,21 @@
   <ul class="menu-items">
     <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
     <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
-    
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-th-list fa-fw"></i>Categories</span>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/interesting/">interesting</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/project/">project</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/typescript/">typescript</a></li></ul>
+    </li>
     <li class="has-sub"><span class="dropdown-heading">
       <i class="fa fa-bookmark fa-fw"></i>Pages</span>
         <ul>
           <li><a href="/guestbook/">Guestbook</a></li>
-        <li><a href="/about/">About</a></li>
         </ul>
     </li>
     <li class="has-sub"><span class="dropdown-heading">
       <i class="fa fa-link fa-fw"></i>Friends</span>
         <ul>
           <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
+        <li> <a href="https://brightzoe.top" target="_blank">brightzoe-blog</a></li>
         </ul>
     </li>
   </ul>
@@ -156,7 +162,7 @@
 <div class="gototop js-top">
   <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
 </div>
-<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.easing.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.easing.min.js"></script>
 <script>
 (function () {
 	"use strict";

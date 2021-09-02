@@ -13,7 +13,7 @@
   var CONFIG = {
     root: '/',
     theme: 'lx',
-    version: '0.3.10',
+    version: '0.3.9',
     localsearch:{
       "enable": false,
       "trigger": "auto",
@@ -26,7 +26,7 @@
 </script>
 
   <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/css/main.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/css/main.min.css">
   <style type="text/css">
     pre,
     code {
@@ -47,7 +47,7 @@
   </style>
 
   <script src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.jside.menu.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.jside.menu.js"></script>
 	<script>
 	$(document).ready(function(){
 	$(".menu-container").jSideMenu({
@@ -71,36 +71,39 @@
 </head>
 <body>
 <div class="single">
-
+  
 <div id="page">
-<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/post_cover.jpeg)" data-stellar-background-ratio="0.5">
+<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/post_cover.jpeg)" data-stellar-background-ratio="0.5">
   <div class="overlay">
   <div class="page-title">
     <div class="avatar"><a href="/"><img src="/images/avatar.jpeg"></a></div>
     <span>2020-05-26</span>
     <h2>数组中k个数的最大偶数和</h2>
     <div class="tags"><i class="fa fa-tag"></i><a class="tag-link" href="/tags/algorithm/">algorithm</a></div>
-    </div>
+    <div class="social-links">
+    <a href="https://github.com/sadofriod" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+    <a href="justlikeashes@gmail.com" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+</div></div>
 </div>
 </div>
 
-<div id="lx-main-content">
-  <div class="lx-post">
-    <div class="lx-entry padding">
-      <div>
-        <h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>长度为m的数组，是否存在k个数的和为偶数，且和为最大和。<br>example：</p>
+  <div id="lx-main-content">
+    <div class="lx-post">
+      <div class="lx-entry padding">
+        <div>
+          <h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>长度为m的数组，是否存在k个数的和为偶数，且和为最大和。<br>example：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">input: [<span class="number">123</span>,<span class="number">12</span>,<span class="number">424</span>,<span class="number">32</span>,<span class="number">43</span>,<span class="number">25</span>,<span class="number">46</span>] <span class="number">4</span>;</span><br><span class="line">output: <span class="number">636</span>;</span><br><span class="line"></span><br><span class="line">input:[<span class="number">1000</span>] <span class="number">2</span>;</span><br><span class="line">output:<span class="number">-1</span></span><br><span class="line"></span><br><span class="line">input: [<span class="number">1</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">7</span>,<span class="number">9</span>] <span class="number">3</span>;</span><br><span class="line">output: <span class="number">-1</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="分析过程"><a href="#分析过程" class="headerlink" title="分析过程"></a>分析过程</h2><p>首先判断数组M的长度是否小于k，如果小于k，则直接返回-1。<br>如果数组长度不小于k，则对现有数组进行排序，取排序结果N的前k位的和。判断当前k个数的和是否是偶数，如果是，返回当前和。如果不是，则循环判断排序N-K~N位置中是否存在一个数，使得结果成立。<br>ps：这里只判断是否存在一个数是因为，当最大和存在，但不为偶数的情况成立，则k mod 2 ≠ 0且构成N的数都为奇数。</p>
 <h2 id="排序方式"><a href="#排序方式" class="headerlink" title="排序方式"></a>排序方式</h2><p>将数组的第Q项作为基准项（基准项为base。这里将Q取为0，但事实上，用任意一项都可以）。判断M[i]（0&lt;＝i&lt;M）是否大于base，如果大于，则替换base与M[i]值的位置，调换之后，遍历i-1～0（M的子数组subM，该数组已经是有序数组），将M[i]的值插入到subM中。如果小于等于，base＝M[i]。</p>
 <h2 id="逻辑结构"><a href="#逻辑结构" class="headerlink" title="逻辑结构"></a>逻辑结构</h2><p>排序的过程是按照中序遍历创建一颗二叉树，只要树的最左子树的节点个数等于k，则这个子树就是数组的最大和。如果最大和不是偶数，则按照中序遍历的规则，顺序寻找上层子树的节点是否存在可以满足的值。</p>
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> result = <span class="function">(<span class="params">test, k</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">let</span> base = test[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">let</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">let</span> tempK = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">let</span> sort = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">let</span> tempOutside = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">let</span> tempInside = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">let</span> baseIndex = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span> (k &gt; test.length) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">let</span> index = <span class="number">1</span>; index &lt; test.length; index++) &#123;</span><br><span class="line">		<span class="keyword">const</span> element = test[index];</span><br><span class="line">		<span class="keyword">if</span> (element &gt; base) &#123;</span><br><span class="line">			tempOutside = test[index];</span><br><span class="line">			test[index] = base;</span><br><span class="line">			test[baseIndex] = tempOutside;</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">let</span> j = index - <span class="number">1</span>; j &gt;= <span class="number">0</span>; j--) &#123;</span><br><span class="line">				<span class="keyword">if</span> (element &gt; test[j]) &#123;</span><br><span class="line">					tempInside = test[j];</span><br><span class="line">					test[j] = test[j + <span class="number">1</span>];</span><br><span class="line">					test[j + <span class="number">1</span>] = tempInside;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			base = test[index];</span><br><span class="line">		&#125;</span><br><span class="line">		baseIndex++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span> (tempK &lt; k) &#123;</span><br><span class="line">		sum += test[sort];</span><br><span class="line">		<span class="keyword">if</span> (tempK === k - <span class="number">1</span> &amp;&amp; sum % <span class="number">2</span> !== <span class="number">0</span>) &#123;</span><br><span class="line">			sum -= test[tempK];</span><br><span class="line">			tempK--;</span><br><span class="line">		&#125;</span><br><span class="line">		tempK++;</span><br><span class="line">		sort++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="lx-navigation">
-	<div class="lx-cover prev lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/footer-l.jpeg)">
+  <div class="lx-navigation">
+	<div class="lx-cover prev lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/footer-l.jpeg)">
 		<div class="overlay"></div>
 		<a class="copy" href="/2021/07/16/通过服务器在指定时间将网页录制成视频/">
 			<div class="display-t">
@@ -113,7 +116,7 @@
 			</div>
 		</a>
 	</div>
-        <div class="lx-cover next lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/footer-r.jpeg)">
+        <div class="lx-cover next lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/footer-r.jpeg)">
 		<div class="overlay"></div>
 		<a class="copy" href="/2020/01/04/typescript/typescript/">
 			<div class="display-t">
@@ -125,17 +128,39 @@
 				</div>
 			</div>
 		</a>
-	</div>
-</div>
-
-</div>
-
-<footer>
-  <div>
-  Copyright &copy; 2021.<a href="/">Ashes Born's Blog</a><br>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme <a href="https://lx.js.org" target="_blank">Lx</a><br>
   </div>
-</footer>
+  
+  <script type="text/javascript">
+    var disqus_shortname = 'ashess-blog';
+    var disqus_config = function () {
+      this.page.url = 'http://sadofriod.github.io/2020/05/26/algorithm/数组中k个数的最大偶数和/';
+      this.page.identifier = '/2020/05/26/algorithm/数组中k个数的最大偶数和/';
+      this.page.title = '数组中k个数的最大偶数和';
+    };
+    (function () {
+      var d = document;
+      var dsq = d.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (d.head || d.body).appendChild(dsq);
+    })();
+  </script>
+  
+</div>
 
+</div>
+
+
+<div class="comment">
+  <section id="comment">
+    
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by
+          Disqus.</a></noscript>
+    </div>
+    
+  </section>
 </div>
 
 <button class="hamburger hamburger--arrow-r" type="button">
@@ -154,7 +179,7 @@
         </div>
         <div class="row for-name">
           <p>Ashes Born</p>
-          <span class="tagline">Hello, World!</span>
+          <span class="tagline">切图仔 / 兴趣使然的数学学习者 @ cutaway man / Interest driven mathematics learners</span>
         </div>
       </div>
     </span>
@@ -163,18 +188,21 @@
   <ul class="menu-items">
     <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
     <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
-    
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-th-list fa-fw"></i>Categories</span>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/interesting/">interesting</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/project/">project</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/typescript/">typescript</a></li></ul>
+    </li>
     <li class="has-sub"><span class="dropdown-heading">
       <i class="fa fa-bookmark fa-fw"></i>Pages</span>
         <ul>
           <li><a href="/guestbook/">Guestbook</a></li>
-        <li><a href="/about/">About</a></li>
         </ul>
     </li>
     <li class="has-sub"><span class="dropdown-heading">
       <i class="fa fa-link fa-fw"></i>Friends</span>
         <ul>
           <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
+        <li> <a href="https://brightzoe.top" target="_blank">brightzoe-blog</a></li>
         </ul>
     </li>
   </ul>
@@ -184,7 +212,7 @@
 <div class="gototop js-top">
   <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
 </div>
-<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.easing.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.easing.min.js"></script>
 <script>
 (function () {
 	"use strict";
@@ -212,5 +240,5 @@
 </script>
 
 
-</body>
+</div></body>
 </html>

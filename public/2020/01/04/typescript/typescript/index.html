@@ -13,7 +13,7 @@
   var CONFIG = {
     root: '/',
     theme: 'lx',
-    version: '0.3.10',
+    version: '0.3.9',
     localsearch:{
       "enable": false,
       "trigger": "auto",
@@ -26,7 +26,7 @@
 </script>
 
   <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/css/main.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/css/main.min.css">
   <style type="text/css">
     pre,
     code {
@@ -47,7 +47,7 @@
   </style>
 
   <script src="//cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.jside.menu.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.jside.menu.js"></script>
 	<script>
 	$(document).ready(function(){
 	$(".menu-container").jSideMenu({
@@ -71,24 +71,27 @@
 </head>
 <body>
 <div class="single">
-
+  
 <div id="page">
-<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/post_cover.jpeg)" data-stellar-background-ratio="0.5">
+<div id="lx-aside" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/post_cover.jpeg)" data-stellar-background-ratio="0.5">
   <div class="overlay">
   <div class="page-title">
     <div class="avatar"><a href="/"><img src="/images/avatar.jpeg"></a></div>
     <span>2020-01-04</span>
     <h2>在TS中使用字符串作为索...</h2>
     <div class="tags"><i class="fa fa-tag"></i><a class="tag-link" href="/tags/typescript/">typescript</a></div>
-    </div>
+    <div class="social-links">
+    <a href="https://github.com/sadofriod" target="_blank"><i class="fa fa-github fa-fw"></i></a>
+    <a href="justlikeashes@gmail.com" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+</div></div>
 </div>
 </div>
 
-<div id="lx-main-content">
-  <div class="lx-post">
-    <div class="lx-entry padding">
-      <div>
-        <h2 id="场景-amp-问题"><a href="#场景-amp-问题" class="headerlink" title="场景 &amp; 问题"></a>场景 &amp; 问题</h2><p>在访问对象的成员变量时，经常会用到使用字符串作为索引。在JS中，这样的用法是可以的。但是在TS中，当被访问的对象被赋予类型之后，这样的操作将会抛出异常，示例如下：</p>
+  <div id="lx-main-content">
+    <div class="lx-post">
+      <div class="lx-entry padding">
+        <div>
+          <h2 id="场景-amp-问题"><a href="#场景-amp-问题" class="headerlink" title="场景 &amp; 问题"></a>场景 &amp; 问题</h2><p>在访问对象的成员变量时，经常会用到使用字符串作为索引。在JS中，这样的用法是可以的。但是在TS中，当被访问的对象被赋予类型之后，这样的操作将会抛出异常，示例如下：</p>
 <h2 id="JS中"><a href="#JS中" class="headerlink" title="JS中"></a>JS中</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> testObj = &#123;</span><br><span class="line">    key1: <span class="number">1</span>,</span><br><span class="line">    key2:<span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获得存有当前对象所有Key（浅层）的一个数组 ["key1"，"key2"]</span></span><br><span class="line"><span class="keyword">const</span> tempKeys = <span class="built_in">Object</span>.keys(testObj); </span><br><span class="line">tempKeys.forEach(<span class="function">(<span class="params">item</span>)=&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正常输出testObj中的值</span></span><br><span class="line">    <span class="built_in">console</span>.log(testObj[key]); </span><br><span class="line">&#125;);</span><br><span class="line"><span class="string">``</span><span class="string">` </span></span><br><span class="line"><span class="string">上述代码将输出我们预期的结果。</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">## TS中</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span> ts</span><br><span class="line">interface TestObjType &#123;</span><br><span class="line">    key1:number;</span><br><span class="line">    key2:number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> testObj:TestObjType = &#123;</span><br><span class="line">    key1:<span class="number">1</span>,</span><br><span class="line">    key2:<span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line">type tempKeysType = keyof TestObjType</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获得存有当前对象所有Key（浅层）的一个数组 ["key1"，"key2"]</span></span><br><span class="line"><span class="keyword">const</span> tempKeys = <span class="built_in">Object</span>.keys(testObj) <span class="keyword">as</span> <span class="built_in">Array</span> &lt;keyof TestObjType&gt;; </span><br><span class="line"></span><br><span class="line"><span class="comment">//这里将会有一个报错，提示 :</span></span><br><span class="line"><span class="comment">//参数“item”和“value” 的类型不兼容。`不能将类型“string”分配给类型“"key1" | "key2"”.</span></span><br><span class="line"><span class="comment">//这表明了，即使tempKeysType是通过keyof 从TestObjType中获取到的，但是forEach的callback的参数类型，仍然无法通过TS的类型兼容性检查。</span></span><br><span class="line">tempKeys.forEach(<span class="function">(<span class="params">item:tempKeysType</span>)=&gt;</span>&#123; </span><br><span class="line"></span><br><span class="line"><span class="comment">//这里也会有一个报错：Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'TestObjType'。</span></span><br><span class="line"><span class="comment">// TS的类型推断，表示item存在隐式的any类型，而any类型在TS中无法作为obj的索引。同样这也表示了在进行对象的遍历时（在当前代码片段中），不能将any作为item的类型，去访问对象</span></span><br><span class="line">    <span class="built_in">console</span>.log(testObj[key]); </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">tempKeys.forEach(<span class="function">(<span class="params">item:string</span>)=&gt;</span>&#123; </span><br><span class="line">    </span><br><span class="line">    <span class="comment">//这里会有同样报错</span></span><br><span class="line">    <span class="built_in">console</span>.log(testObj[key]); </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <h2 id="解决思路"><a href="#解决思路" class="headerlink" title="解决思路"></a>解决思路</h2><p>对于这一问题的出现，猜测可能是由于在</p>
@@ -103,12 +106,12 @@
 
 <p>上述代码将输出我们预期的结果。</p>
 
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="lx-navigation">
-	<div class="lx-cover prev lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/footer-l.jpeg)">
+  <div class="lx-navigation">
+	<div class="lx-cover prev lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/footer-l.jpeg)">
 		<div class="overlay"></div>
 		<a class="copy" href="/2020/05/26/algorithm/数组中k个数的最大偶数和/">
 			<div class="display-t">
@@ -121,7 +124,7 @@
 			</div>
 		</a>
 	</div>
-        <div class="lx-cover next lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/images/footer-r.jpeg)">
+        <div class="lx-cover next lx-cover-sm" style="background-image: url(//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/images/footer-r.jpeg)">
 		<div class="overlay"></div>
 		<a class="copy" href="/2019/10/05/about/about/">
 			<div class="display-t">
@@ -133,17 +136,39 @@
 				</div>
 			</div>
 		</a>
-	</div>
-</div>
-
-</div>
-
-<footer>
-  <div>
-  Copyright &copy; 2021.<a href="/">Ashes Born's Blog</a><br>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme <a href="https://lx.js.org" target="_blank">Lx</a><br>
   </div>
-</footer>
+  
+  <script type="text/javascript">
+    var disqus_shortname = 'ashess-blog';
+    var disqus_config = function () {
+      this.page.url = 'http://sadofriod.github.io/2020/01/04/typescript/typescript/';
+      this.page.identifier = '/2020/01/04/typescript/typescript/';
+      this.page.title = '在TS中使用字符串作为索引访问对象';
+    };
+    (function () {
+      var d = document;
+      var dsq = d.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (d.head || d.body).appendChild(dsq);
+    })();
+  </script>
+  
+</div>
 
+</div>
+
+
+<div class="comment">
+  <section id="comment">
+    
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by
+          Disqus.</a></noscript>
+    </div>
+    
+  </section>
 </div>
 
 <button class="hamburger hamburger--arrow-r" type="button">
@@ -162,7 +187,7 @@
         </div>
         <div class="row for-name">
           <p>Ashes Born</p>
-          <span class="tagline">Hello, World!</span>
+          <span class="tagline">切图仔 / 兴趣使然的数学学习者 @ cutaway man / Interest driven mathematics learners</span>
         </div>
       </div>
     </span>
@@ -171,18 +196,21 @@
   <ul class="menu-items">
     <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
     <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
-    
+    <li class="has-sub"><span class="dropdown-heading">
+      <i class="fa fa-th-list fa-fw"></i>Categories</span>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/interesting/">interesting</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/project/">project</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/typescript/">typescript</a></li></ul>
+    </li>
     <li class="has-sub"><span class="dropdown-heading">
       <i class="fa fa-bookmark fa-fw"></i>Pages</span>
         <ul>
           <li><a href="/guestbook/">Guestbook</a></li>
-        <li><a href="/about/">About</a></li>
         </ul>
     </li>
     <li class="has-sub"><span class="dropdown-heading">
       <i class="fa fa-link fa-fw"></i>Friends</span>
         <ul>
           <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
+        <li> <a href="https://brightzoe.top" target="_blank">brightzoe-blog</a></li>
         </ul>
     </li>
   </ul>
@@ -192,7 +220,7 @@
 <div class="gototop js-top">
   <a href="#" class="js-gotop"><i class="fa fa-arrow-up"></i></a>
 </div>
-<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.10-fixed/source/js/jquery.easing.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/theme-lx@0.3.9/source/js/jquery.easing.min.js"></script>
 <script>
 (function () {
 	"use strict";
@@ -220,5 +248,5 @@
 </script>
 
 
-</body>
+</div></body>
 </html>
