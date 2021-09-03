@@ -110,6 +110,7 @@ math:
   mathjax:
     src: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML  
 
+#插件
 markdown:
   plugins:
     - markdown-it-footnote
@@ -118,3 +119,13 @@ markdown:
     - markdown-it-abbr
     - markdown-it-emoji
     - hexo-math
+#目录
+toc:
+  maxDepth: 3
+  class: toc
+  slugify: transliteration
+  decodeEntities: false
+  anchor:
+    position: after
+    symbol: '#'
+    style: header-anchor

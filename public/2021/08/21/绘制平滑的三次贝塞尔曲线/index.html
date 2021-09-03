@@ -94,8 +94,30 @@
     <div class="lx-post">
       <div class="lx-entry padding">
         <div>
-          <p><img src="/images/ezgif.com-gif-maker.gif"/></p>
-<p>[TOC] ## 基础知识</p>
+          <p><img src="/images/ezgif.com-gif-maker.gif"></p>
+<div class="tocStart">
+
+</div>
+<!-- toc -->
+<ul>
+<li><a href="#ji-chu-zhi-shi">基础知识</a></li>
+<li><a href="#mian-lin-de-wen-ti">面临的问题</a>
+<ul>
+<li><a href="#1-xuan-ze-er-ci-bei-sai-er-qu-xian-or-san-ci-bei-sai-er-qu-xian">1. 选择二次贝塞尔曲线 or 三次贝塞尔曲线</a></li>
+<li><a href="#2-bei-sai-er-qu-xian-kong-zhi-dian-ji-suan">2. 贝塞尔曲线控制点计算</a></li>
+</ul></li>
+<li><a href="#wen-ti-fen-xi">问题分析</a>
+<ul>
+<li><a href="#wen-ti-1">问题1：</a></li>
+<li><a href="#wen-ti-2">问题2：</a></li>
+</ul></li>
+<li><a href="#dai-ma-bu-fen">代码部分</a></li>
+</ul>
+<!-- tocstop -->
+<div class="tocEnd">
+
+</div>
+<h2><span id="ji-chu-zhi-shi">基础知识</span><a href="#ji-chu-zhi-shi" class="header-anchor">#</a></h2>
 <p>阅读之前你需要知道的知识包括</p>
 <ul>
 <li>canvas的坐标系</li>
@@ -105,13 +127,13 @@
 <li>投影基础知识</li>
 <li>canvas绘制贝塞尔曲线</li>
 </ul>
-<h2 id="面临的问题">面临的问题</h2>
-<h3 id="选择二次贝塞尔曲线-or-三次贝塞尔曲线">1. 选择二次贝塞尔曲线 or 三次贝塞尔曲线</h3>
-<h3 id="贝塞尔曲线控制点计算">2. 贝塞尔曲线控制点计算</h3>
-<h2 id="问题分析">问题分析</h2>
-<h3 id="问题1">问题1：</h3>
+<h2><span id="mian-lin-de-wen-ti">面临的问题</span><a href="#mian-lin-de-wen-ti" class="header-anchor">#</a></h2>
+<h3><span id="1-xuan-ze-er-ci-bei-sai-er-qu-xian-or-san-ci-bei-sai-er-qu-xian">1. 选择二次贝塞尔曲线 or 三次贝塞尔曲线</span><a href="#1-xuan-ze-er-ci-bei-sai-er-qu-xian-or-san-ci-bei-sai-er-qu-xian" class="header-anchor">#</a></h3>
+<h3><span id="2-bei-sai-er-qu-xian-kong-zhi-dian-ji-suan">2. 贝塞尔曲线控制点计算</span><a href="#2-bei-sai-er-qu-xian-kong-zhi-dian-ji-suan" class="header-anchor">#</a></h3>
+<h2><span id="wen-ti-fen-xi">问题分析</span><a href="#wen-ti-fen-xi" class="header-anchor">#</a></h2>
+<h3><span id="wen-ti-1">问题1：</span><a href="#wen-ti-1" class="header-anchor">#</a></h3>
 <p>由于二次贝塞尔曲线绘制后，将只有一处弯曲，在多节点连接时，呈现效果很差。并且在45°，135°，225°，315°时，需要做特殊的处理，否侧得到的曲线的弧度过大。</p>
-<h3 id="问题2">问题2：</h3>
+<h3><span id="wen-ti-2">问题2：</span><a href="#wen-ti-2" class="header-anchor">#</a></h3>
 <p>在确定使用三次贝塞尔曲线后，需要通过计算得出曲线绘制时的两个控制点C1,C2。然后通过<code>CanvasRenderingContext2D.bezierCurveTo</code>进行绘制。</p>
 <p>由于我们需要两个控制点，所以，我们将会把起点<strong>SP(start point)</strong>和终点<strong>EP(end point)</strong>间的连线<strong>S-E</strong>均分为4份。得到如下点： <span class="math display">\[
 \begin{align*}
@@ -133,7 +155,7 @@ C1=(X_{Split_{m}},Y_{Split_{m}}-len)\\
 C2=(X_{Split_{m}},Y_{Split_{m}}+len)
 \end{align*}
 \]</span></p>
-<h2 id="代码部分">代码部分</h2>
+<h2><span id="dai-ma-bu-fen">代码部分</span><a href="#dai-ma-bu-fen" class="header-anchor">#</a></h2>
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param </span>props </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@typeof </span>props &#123;</span></span><br><span class="line"><span class="comment">		start: number[];</span></span><br><span class="line"><span class="comment">		end: number[];</span></span><br><span class="line"><span class="comment">		canvas: CanvasRenderingContext2D;</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> drawLine = <span class="function">(<span class="params">props: Common.LineProps</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">const</span> &#123; start, end, <span class="attr">canvas</span>: ctx, color &#125; = props;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> getMidCoord = <span class="function">(<span class="params">c1: <span class="built_in">number</span>, c2: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (c1 === c2) &#123;</span><br><span class="line">			<span class="keyword">return</span> c1;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> (c1 + c2) / <span class="number">2</span>;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> [x1, y1] = start;</span><br><span class="line">	<span class="keyword">const</span> [x2, y2] = end;</span><br><span class="line">	<span class="keyword">const</span> [midX, midY] = [getMidCoord(x1, x2), getMidCoord(y1, y2)];</span><br><span class="line">	<span class="keyword">const</span> drawMirror = <span class="function">(<span class="params">y1: <span class="built_in">number</span>, y2: <span class="built_in">number</span></span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (y1 &gt; y2) &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.bezierCurveTo(control2[<span class="number">0</span>], control2[<span class="number">1</span>], control1[<span class="number">0</span>], control1[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.bezierCurveTo(control1[<span class="number">0</span>], control1[<span class="number">1</span>], control2[<span class="number">0</span>], control2[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">const</span> degCos = <span class="built_in">Math</span>.cos(<span class="built_in">Math</span>.atan((x1 - midX) / (y1 - midY)));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> lineLen = <span class="built_in">Math</span>.sqrt(<span class="built_in">Math</span>.pow(y1 - midY, <span class="number">2</span>) + <span class="built_in">Math</span>.pow(x1 - midX, <span class="number">2</span>)) * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> control1 = [midX, midY - degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line">	<span class="keyword">const</span> control2 = [midX, midY + degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line"></span><br><span class="line">	ctx.beginPath();</span><br><span class="line">	ctx.moveTo(start[<span class="number">0</span>], start[<span class="number">1</span>]);</span><br><span class="line">	drawMirror(y1, y2);</span><br><span class="line">	ctx.lineWidth = <span class="number">2</span>;</span><br><span class="line">	ctx.strokeStyle = color ? color : <span class="string">&quot;#000&quot;</span>;</span><br><span class="line">	ctx.stroke();</span><br><span class="line">	ctx.closePath();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
         </div>
@@ -148,7 +170,7 @@ C2=(X_{Split_{m}},Y_{Split_{m}}+len)
 				<div class="display-tc">
 					<div>
 						<span>Next</span>
-						<h3>No newer post</h3>
+						<h3>没有更新的文章</h3>
 					</div>
 				</div>
 			</div>
@@ -224,20 +246,20 @@ C2=(X_{Split_{m}},Y_{Split_{m}}+len)
   </div>
   <nav class="menu-container">
   <ul class="menu-items">
-    <li><a href="/"><i class="fa fa-home fa-fw"></i>Home</a></li>
-    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+    <li><a href="/"><i class="fa fa-home fa-fw"></i>首页</a></li>
+    <li><a href="/archives/"><i class="fa fa-archive fa-fw"></i>归档</a></li>
     <li class="has-sub"><span class="dropdown-heading">
-      <i class="fa fa-th-list fa-fw"></i>Categories</span>
+      <i class="fa fa-th-list fa-fw"></i>分类</span>
         <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/project/">project</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/typescript/">typescript</a></li></ul>
     </li>
     <li class="has-sub"><span class="dropdown-heading">
-      <i class="fa fa-bookmark fa-fw"></i>Pages</span>
+      <i class="fa fa-bookmark fa-fw"></i>页面</span>
         <ul>
           <li><a href="/guestbook/">Guestbook</a></li>
         </ul>
     </li>
     <li class="has-sub"><span class="dropdown-heading">
-      <i class="fa fa-link fa-fw"></i>Friends</span>
+      <i class="fa fa-link fa-fw"></i>友链</span>
         <ul>
           <li> <a href="https://lx.js.org" target="_blank">Theme-Lx</a></li>
         </ul>
