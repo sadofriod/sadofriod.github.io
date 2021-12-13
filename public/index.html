@@ -96,6 +96,53 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/2021/12/13/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA-%E7%9B%AE%E5%BD%95%E4%BB%A5%E5%8F%8ARSS%E8%AE%A2%E9%98%85/">Hexo的一些增强--目录以及RSS订阅</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2021-12-13 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/interesting/">interesting</a></span>
+      <p><div class="tocStart">
+
+</div>
+<!-- toc -->
+<ul>
+<li><a href="#yue-du-zhi-qian">阅读之前</a>
+<ul>
+<li><a href="#ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua">你需要知道的知识包括</a></li>
+<li><a href="#qian-zhi-de-yi-xie-huan-jing">前置的一些环境</a></li>
+</ul></li>
+<li><a href="#shi-ni-de-hexo-zhi-chi-mu-lu">使你的Hexo支持目录</a></li>
+<li><a href="#chang-shi-gou-jian">尝试构建</a></li>
+</ul>
+<!-- tocstop -->
+<div class="tocEnd">
+
+</div>
+<h2><span id="yue-du-zhi-qian">阅读之前</span><a href="#yue-du-zhi-qian" class="header-anchor">#</a></h2>
+<h3><span id="ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua">你需要知道的知识包括</span><a href="#ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua" class="header-anchor">#</a></h3>
+<ul>
+<li>使用npm/yarn管理项目的依赖</li>
+<li>Hexo的基本使用</li>
+</ul>
+<h3><span id="qian-zhi-de-yi-xie-huan-jing">前置的一些环境</span><a href="#qian-zhi-de-yi-xie-huan-jing" class="header-anchor">#</a></h3>
+<ul>
+<li>Node.js &amp; NPM</li>
+</ul>
+<h2><span id="shi-ni-de-hexo-zhi-chi-mu-lu">使你的Hexo支持目录</span><a href="#shi-ni-de-hexo-zhi-chi-mu-lu" class="header-anchor">#</a></h2>
+<p>进入Hexo项目的根目录中，使用npm/yarn添加依赖 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-toc #当你使用npm时</span><br><span class="line"><span class="meta">#</span><span class="bash"> or</span></span><br><span class="line">yarn add hexo-toc #当你使用yarn时</span><br></pre></td></tr></table></figure></p>
+<p>之后在根目录中的<code>_config.yml</code>添加:</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#目录</span></span><br><span class="line"><span class="attr">toc:</span></span><br><span class="line">  <span class="attr">maxDepth:</span> <span class="number">3</span> <span class="comment">#目录层级</span></span><br><span class="line">  <span class="attr">class:</span> <span class="string">toc</span></span><br><span class="line">  <span class="attr">slugify:</span> <span class="string">transliteration</span></span><br><span class="line">  <span class="attr">decodeEntities:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">anchor:</span></span><br><span class="line">    <span class="attr">position:</span> <span class="string">after</span></span><br><span class="line">    <span class="attr">symbol:</span> <span class="string">&#x27;#&#x27;</span></span><br><span class="line">    <span class="attr">style:</span> <span class="string">header-anchor</span> <span class="comment">#基础样式</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 为你的博客生成RSS源</span><br><span class="line"></span><br><span class="line">进入Hexo项目的根目录中，使用npm/yarn添加依赖</span><br><span class="line">``` shell</span><br><span class="line">  npm install hexo-generator-feed #当你使用npm时</span><br><span class="line">  # or</span><br><span class="line">  yarn add hexo-generator-feed #当你使用yarn时</span><br></pre></td></tr></table></figure>
+<p>之后在根目录中的<code>_config.yml</code>添加:</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#目录</span></span><br><span class="line"><span class="attr">toc:</span></span><br><span class="line">  <span class="attr">maxDepth:</span> <span class="number">3</span> <span class="comment">#目录层级</span></span><br><span class="line">  <span class="attr">class:</span> <span class="string">toc</span></span><br><span class="line">  <span class="attr">slugify:</span> <span class="string">transliteration</span></span><br><span class="line">  <span class="attr">decodeEntities:</span> <span class="literal">false</span></span><br><span class="line">  <span class="attr">anchor:</span></span><br><span class="line">    <span class="attr">position:</span> <span class="string">after</span></span><br><span class="line">    <span class="attr">symbol:</span> <span class="string">&#x27;#&#x27;</span></span><br><span class="line">    <span class="attr">style:</span> <span class="string">header-anchor</span> <span class="comment">#基础样式</span></span><br></pre></td></tr></table></figure>
+<p>如果已经构建过项目，请先进入项目根目录下运行，清除缓存 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># RSS support</span></span><br><span class="line"><span class="attr">feed:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">type:</span></span><br><span class="line">    <span class="string">rss2</span> <span class="comment"># 与path关联</span></span><br><span class="line">  <span class="attr">path:</span></span><br><span class="line">    <span class="string">rss2.xml</span> <span class="comment"># 与type关联</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">140</span></span><br><span class="line">  <span class="attr">hub:</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">content_limit:</span> <span class="number">140</span></span><br><span class="line">  <span class="attr">content_limit_delim:</span> <span class="string">&#x27; &#x27;</span></span><br><span class="line">  <span class="attr">order_by:</span> <span class="string">-date</span></span><br><span class="line">  <span class="attr">icon:</span> <span class="string">https://avatars.githubusercontent.com/u/23006024?v=4</span> <span class="comment">#RSS 展示的图标</span></span><br><span class="line">  <span class="attr">autodiscovery:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<p>如果已经构建过项目，请先进入项目根目录下运行，清除缓存 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure></p>
+<h2><span id="chang-shi-gou-jian">尝试构建</span><a href="#chang-shi-gou-jian" class="header-anchor">#</a></h2>
+<p>然后进行正常的hexo的生成和测试 ``` shell hexo g &amp; hexo s</p>
+</p>
+      <div class="post-button"><a class="btn" href="/2021/12/13/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA-%E7%9B%AE%E5%BD%95%E4%BB%A5%E5%8F%8ARSS%E8%AE%A2%E9%98%85/" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>阅读更多</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/2021/12/09/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA--%E6%B8%B2%E6%9F%93Latex%E5%85%AC%E5%BC%8F/">Hexo的一些增强--渲染Latex公式</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2021-12-09 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/interesting/">interesting</a></span>
       <p><div class="tocStart">
@@ -103,7 +150,11 @@
 </div>
 <!-- toc -->
 <ul>
-<li><a href="#yue-du-zhi-qian">阅读之前</a></li>
+<li><a href="#yue-du-zhi-qian">阅读之前</a>
+<ul>
+<li><a href="#ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua">你需要知道的知识包括</a></li>
+<li><a href="#qian-zhi-de-yi-xie-huan-jing">前置的一些环境</a></li>
+</ul></li>
 <li><a href="#dui-hexo-xiang-mu-jin-xing-xiu-gai">对Hexo项目进行修改</a>
 <ul>
 <li><a href="#yi-lai-an-zhuang">依赖安装</a></li>
@@ -117,13 +168,13 @@
 
 </div>
 <h2><span id="yue-du-zhi-qian">阅读之前</span><a href="#yue-du-zhi-qian" class="header-anchor">#</a></h2>
-<p>你需要知道的知识包括</p>
+<h3><span id="ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua">你需要知道的知识包括</span><a href="#ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua" class="header-anchor">#</a></h3>
 <ul>
 <li>Hexo基本命令</li>
 <li>Shell的使用</li>
 <li>laTex的使用</li>
 </ul>
-<p>前置的一些环境</p>
+<h3><span id="qian-zhi-de-yi-xie-huan-jing">前置的一些环境</span><a href="#qian-zhi-de-yi-xie-huan-jing" class="header-anchor">#</a></h3>
 <ul>
 <li>Node.js</li>
 <li>Linux shell/ macOS shell</li>
