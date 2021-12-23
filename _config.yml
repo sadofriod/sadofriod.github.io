@@ -17,8 +17,7 @@ timezone: Asia/ShangHai
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://sadofriod.github.io
 root: /
-permalink: :year/:month/:day/:title/
-permalink_defaults:
+permalink: :title.html
 
 # Directory
 source_dir: source
@@ -129,3 +128,9 @@ toc:
     position: after
     symbol: '#'
     style: header-anchor
+
+# 自动生成sitemap
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
