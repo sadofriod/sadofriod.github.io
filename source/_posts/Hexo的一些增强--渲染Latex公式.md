@@ -5,19 +5,20 @@ date: 2021-12-09 15:11:37
 tags: interesting
 p: interesting
 categories: interesting
+keywords: hexo render LaTex, hexo渲染数学公式, hexo渲染LaTex
 ---
 
 <!-- toc -->
 
 ## 阅读之前
 
-你需要知道的知识包括
+### 你需要知道的知识包括
 
 + Hexo基本命令
 + Shell的使用
 + laTex的使用
 
-前置的一些环境
+### 前置的一些环境
 
 + Node.js
 + Linux shell/ macOS shell
