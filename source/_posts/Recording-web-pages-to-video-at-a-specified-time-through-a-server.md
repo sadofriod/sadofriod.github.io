@@ -6,7 +6,7 @@ categories: project
 keywords: auto recorder video, html to video, webpage to video, puppeteer recorder
 date: 2021-12-26 14:53:38
 ---
-Recording web pages to video at a specified time through a server
+<!-- toc -->
 ## Why is there such a need?
 
 I recently work in the field of front-end data visualization, and the need for some monitoring of long-running front-end pages comes up. In the past, my solution was to record through some existing platform on my personal PC via browser, or an earlier approach was to record through some screen recording tools.
