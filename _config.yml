@@ -131,6 +131,6 @@ toc:
 
 # 自动生成sitemap
 sitemap:
-  path: sitemap.xml
+  path: google_sitemap.xml
 baidusitemap:
   path: baidusitemap.xml

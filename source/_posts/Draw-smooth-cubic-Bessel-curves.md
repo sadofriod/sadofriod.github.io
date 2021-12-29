@@ -4,6 +4,7 @@ tags: project
 p: project
 categories: project
 keywords: canvas, smooth Bessel Curve, html draw, draw Bessel Curve, draw curve
+mathjax: true
 date: 2021-12-26 14:46:10
 ---
 <!-- toc -->
