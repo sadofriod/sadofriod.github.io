@@ -4,7 +4,10 @@
 version: 0.3.9
 
 # favicon
-favicon: favicon.ico
+favicon:
+  favicon: favicon.ico
+  gmail: https://www.gstatic.com/images/icons/material/system/1x/mark_as_unread_black_20dp.png
+  telegram: https://web.telegram.org/z/favicon.ico
 
 # Theme-color for Android Chrome
 theme_color: "#58b77a"
@@ -58,8 +61,11 @@ social:
      icon: github
      link: https://github.com/sadofriod
    Email:
-     icon: envelope
-     link: justlikeashes@gmail.com
+     icon: gmail
+     link: /mailto:justlikeashes@gmail.com
+   Telegram:
+     icon: telegram
+     link: https://t.me/+2z2oR13xxPE4NDU1
   #  Weibo:
   #    icon: weibo
   #    link: https://weibo.com/yourname
