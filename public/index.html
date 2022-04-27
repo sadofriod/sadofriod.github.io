@@ -138,14 +138,11 @@ NAS的基础使用 + 熟悉shell的mount命令 + 常用的磁盘格式</p>
 经过一番搜索，发现libvirtd这个服务的默认用户，和系统的当前用户是不同的，需要修改<code>/etc/libvirt/qemu.conf</code>中的<code>user =</code>以及<code>group =</code>才会生效。
 但是，始终用ROOT权限运行KVM始终是不够优雅，最终解决方案是，手动设置NAS挂载点，并指定挂载点的uid,具体命令：
 <code>mount -t cifs -o username=&lt;nas user&gt;,vers=3.11,nobrl,uid=libvirt-qemu //&lt;nas domain&gt;/&lt;nas path&gt; /&lt;path&gt;/&lt;your&gt;/&lt;store&gt;</code>
-<img src="https://unix.stackexchange.com/questions/622194/how-to-use-qemu-kvm-virtual-machine-disk-image-on-smb-cifs-network-share-permis" alt="解决方式原文链接"></p>
+<a target="_blank" rel="noopener" href="https://unix.stackexchange.com/questions/622194/how-to-use-qemu-kvm-virtual-machine-disk-image-on-smb-cifs-network-share-permis">解决方式原文链接</a></p>
 <h2><span id="di-er-ge-keng-shou-dong-gua-zai-nas-shi-ci-pan-lei-xing-wen-ti">第二个坑——手动挂载NAS时，磁盘类型问题</span><a href="#di-er-ge-keng-shou-dong-gua-zai-nas-shi-ci-pan-lei-xing-wen-ti" class="header-anchor">#</a></h2>
 <p><img src="/images/mout-nas-error.png"></p>
 <p>手动挂载NAS可能会遇到上图所示的错误，这是因为<code>/sbin/mount.cifs</code>没有被创建（可以运行<code>ls -l /sbin/mount.cifs</code>检测）。运行安装<code>sudo apt install cifs-utils</code>可以解决.</p>
-<figure>
-<img src="https://askubuntu.com/questions/525243/why-do-i-get-wrong-fs-type-bad-option-bad-superblock-error" alt="解决方式原文链接">
-<figcaption aria-hidden="true">解决方式原文链接</figcaption>
-</figure>
+<p><a target="_blank" rel="noopener" href="https://askubuntu.com/questions/525243/why-do-i-get-wrong-fs-type-bad-option-bad-superblock-error">解决方式原文链接</a></p>
 <p>至此，再度使用KVM的GUI去设置虚拟机的安装目录，就不会有权限问题了，需要注意的是，安装目录需要选择的是，挂载命令中
 <code>/&lt;path&gt;/&lt;your&gt;/&lt;store&gt;</code>的部分，不能使用系统自动发现的部分，否则还是会出现权限的问题。</p>
 </p>
