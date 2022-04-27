@@ -1,8 +1,8 @@
 ---
 layout: interestring
-title: KVM create new storage pool on NSA
+title: 将KVM的虚拟机存储到NAS上
 date: 2022-04-27 19:52:50
-keywords: KVM with NAS, KVM storage pool
+keywords: KVM with NAS, KVM storage pool, KVM with NAS
 tags: interestring
 ---
 <img src="/images/kvm-log.png">
