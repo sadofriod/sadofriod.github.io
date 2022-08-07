@@ -98,6 +98,83 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/%20monorepo%E7%BB%93%E6%9E%84%E4%B8%8B%E5%90%AF%E5%8A%A8react%E9%A1%B9%E7%9B%AE%E5%B1%80%E9%83%A8%E7%83%AD%E6%9B%B4%E6%96%B0.html">monorepo结构下启动react项目局部热更新</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2022-08-07 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/project/">project</a></span>
+      <p><p><img src="/images/monorepo-react-banner.jpeg"></p>
+<div class="tocStart">
+
+</div>
+<!-- toc -->
+<ul>
+<li><a href="#ji-chu-zhi-shi">基础知识</a></li>
+<li><a href="#yu-dao-de-wen-ti">遇到的问题</a></li>
+<li><a href="#wen-ti-yuan-yin-fen-xi">问题原因&amp;分析</a></li>
+<li><a href="#ru-he-jie-jue-wen-ti">如何解决问题？</a>
+<ul>
+<li><a href="#duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li">多子项目单独开发时，如何确定react版本，以及如何保证主项目加载子项目作为组件时，二者公用同一个react实例</a></li>
+<li><a href="#kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong">开发时，如何处理互相存在依赖子系统</a></li>
+<li><a href="#wai-zhi-hua-jia-zai-react-react-dom-shi-hot-reload-shi-xiao">外置化加载react&amp;react-dom时，hot-reload失效</a></li>
+</ul></li>
+</ul>
+<!-- tocstop -->
+<div class="tocEnd">
+
+</div>
+<h2><span id="ji-chu-zhi-shi">基础知识</span><a href="#ji-chu-zhi-shi" class="header-anchor">#</a></h2>
+<p>阅读之前你需要知道的知识包括</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Monorepo">什么是monorepo</a></li>
+<li><a target="_blank" rel="noopener" href="https://semaphoreci.com/blog/what-is-monorepo#monorepo-culture">monorepo的一些应用场景</a></li>
+<li>webpack的配置的编写</li>
+<li><a target="_blank" rel="noopener" href="https://pnpm.io/">什么是pnpm</a></li>
+</ul>
+<h2><span id="yu-dao-de-wen-ti">遇到的问题</span><a href="#yu-dao-de-wen-ti" class="header-anchor">#</a></h2>
+<ol type="1">
+<li>多子项目单独开发时，如何确定react版本？</li>
+<li>如何保证主项目加载子项目作为组件时，二者公用同一个react实例？</li>
+<li>开发时，如何处理互相存在依赖子系统？</li>
+<li>外置化加载react&amp;react-dom时，hot-reload失效</li>
+</ol>
+<h2><span id="wen-ti-yuan-yin-amp-fen-xi">问题原因&amp;分析</span><a href="#wen-ti-yuan-yin-amp-fen-xi" class="header-anchor">#</a></h2>
+<ul>
+<li>为什么会引入问题[1]：这是因为使用用monorepo这个结构时，我们希望所有的子系统和主系统(系统的入口)，使用同一个react版本，以便系统整体的核心依赖的控制，并且减少多版本兼容带来的额外的bug。</li>
+<li>为什么会引入问题[2]：
+<ul>
+<li>hooks的使用要求二者必须使用的是一个react实例</li>
+<li>对于context，它的使用也依赖于同一react实例</li>
+</ul></li>
+<li>为什么会引入问题[3]：当我们同时满足问题[1]和[2]时，react和react-dom将不能被打包到一个bandle包中，所以在webpack层面，我们需要使用external，排除react。与此同时，由于主流的用于处理react热更新的插件，<a target="_blank" rel="noopener" href="https://github.com/pmmmwh/react-refresh-webpack-plugin">react-refresh-webpack-plugin</a>对于外置加载的react
+core有严格的顺序要求，所以导致了热更新的失效</li>
+</ul>
+<h2><span id="ru-he-jie-jue-wen-ti">如何解决问题？</span><a href="#ru-he-jie-jue-wen-ti" class="header-anchor">#</a></h2>
+<h4><span id="duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li">多子项目单独开发时，如何确定react版本，以及如何保证主项目加载子项目作为组件时，二者公用同一个react实例</span><a href="#duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li" class="header-anchor">#</a></h4>
+<p>我们期待所有这个系统中，所有项目的react依赖都指向同一个react
+core文件，这样在系统所有项目都构建完成后，react的版本就确定了下来，所以我们可以修改<code>webpack.config.js</code>和项目的HTML模版来达到这个目标：
+对于<code>webpack.config.js</code>增加： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">external</span>: [<span class="string">&#x27;react&#x27;</span>,<span class="string">&#x27;react-dom&#x27;</span>]</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+对于HTML模版（这里的具体语法，需要根据具体使用的模版解析器语法来）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script data-tn=&quot;react-bundle&quot; type=&quot;text/javascript&quot; src=&quot;&#123;&#123;reactBundlePath | safe&#125;&#125;&quot;&gt;&lt;script&gt;</span><br><span class="line">&lt;script data-tn=&quot;react-dom-bundle&quot; type=&quot;text/javascript&quot; src=&quot;&#123;&#123;reactDomBundlePath | safe&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>reactBundlePath</code> 和
+<code>reactDomBundlePath</code>是react单独编译后的结果，对应的是两个js文件。</p>
+<p>至此react
+core就完成外置化，所有的子项目在单独开发时，都可以修改自己的HTML模版，以使用公共的react
+core，并且主系统和子系统的react实例始终一直，在</p>
+<h4><span id="kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong">开发时，如何处理互相存在依赖子系统</span><a href="#kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong" class="header-anchor">#</a></h4>
+<p>在webpack5之前，可以在webpack中增加： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">resolve</span>:&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="attr">alias</span>:&#123;</span><br><span class="line">      <span class="string">&#x27;&lt;module_name&gt;&#x27;</span>: <span class="string">&#x27;project/root/path/provide/modules&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这样就可以轻松的通过
+<code>import * as MouduleName from 'module_name'</code>的方式使用另一个子项目暴露的功能了。</p>
+<h4><span id="wai-zhi-hua-jia-zai-react-amp-react-dom-shi-hot-reload-shi-xiao">外置化加载react&amp;react-dom时，hot-reload失效</span><a href="#wai-zhi-hua-jia-zai-react-amp-react-dom-shi-hot-reload-shi-xiao" class="header-anchor">#</a></h4>
+<p>由于<a target="_blank" rel="noopener" href="https://github.com/pmmmwh/react-refresh-webpack-plugin">react-refresh-webpack-plugin</a>对于外置加载的react
+core有严格的顺序要求，所以我们需要修改项目打包的输出，由原来的单入口，改为多入口。并且在HTML模版中控制它们的加载顺序。</p>
+<p>对于<code>webpack.config.js</code>需要修改： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">   <span class="attr">entry</span>: isDevelopment</span><br><span class="line">  ? &#123;</span><br><span class="line">      <span class="attr">whm</span>: <span class="string">&#x27;webpack-hot-middleware/client?quiet=true&amp;reload=true&amp;path=/&lt;default&gt;/&lt;route&gt;/__webpack_hmr&amp;timeout=2000&#x27;</span>, <span class="comment">//启用webpack-hot-middleware作为热更新服务时需要增加的</span></span><br><span class="line">      <span class="attr">reactRefreshEntry</span>: <span class="string">&#x27;@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js&#x27;</span>, <span class="comment">//让react产生局部更新</span></span><br><span class="line">      <span class="attr">main</span>: clientEntry, <span class="comment">//项目本身的入口文件</span></span><br><span class="line">    &#125;</span><br><span class="line">  : clientEntry,<span class="comment">//项目本身的入口文件</span></span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">   <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">oneOf</span>: [</span><br><span class="line">          &#123;</span><br><span class="line">            <span class="attr">test</span>: <span class="regexp">/\.(js|ts|tsx)$/</span>,</span><br><span class="line">            <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">            <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">            <span class="attr">options</span>: &#123;</span><br><span class="line">              <span class="attr">plugins</span>: [<span class="string">&#x27;lodash&#x27;</span>, isDev &amp;&amp; <span class="built_in">require</span>.<span class="title function_">resolve</span>(<span class="string">&#x27;react-refresh/babel&#x27;</span>)].<span class="title function_">filter</span>(</span><br><span class="line">                <span class="title class_">Boolean</span></span><br><span class="line">              ),</span><br><span class="line">              <span class="attr">presets</span>: [[<span class="string">&#x27;@babel/env&#x27;</span>]],</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">plugins</span>: defultPlugins.<span class="title function_">concat</span>(isDevelopment ? [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">HotModuleReplacementPlugin</span>(),</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">NoEmitOnErrorsPlugin</span>(),</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">ReactRefreshWebpackPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">overlay</span>: &#123;</span><br><span class="line">        <span class="attr">sockIntegration</span>: <span class="string">&#x27;whm&#x27;</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;),</span><br><span class="line">  ]:[])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于HTML模版（这里的具体语法，需要根据具体使用的模版解析器语法来）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if isDev%&#125;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;&#123;&#123; bundlePath | safe &#125;&#125;/client.bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;&#123;&#123; bundlePath | safe &#125;&#125;/vendors.client.bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;&#123;&#123; bundlePath | safe &#125;&#125;/whm.client.bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;&#123;&#123; bundlePath | safe &#125;&#125;/reactRefreshEntry.client.bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&#123;% endif %&#125;</span><br><span class="line">&lt;!-- .....  --&gt;</span><br><span class="line">&#123;% if isDev%&#125;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;&#123;&#123; bundlePath | safe &#125;&#125;/main.client.bundle.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">  &#123;% for url in clientBundle %&#125;</span><br><span class="line">    &lt;script type=&quot;text/javascript&quot; src=&quot;&#123;&#123; bundlePath &#125;&#125;/&#123;&#123; url | safe &#125;&#125;&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &#123;% endfor %&#125;</span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
+<p>至此就完成在monorepo下，react项目的局部热更新。</p>
+</p>
+      <div class="post-button"><a class="btn" href="/%20monorepo%E7%BB%93%E6%9E%84%E4%B8%8B%E5%90%AF%E5%8A%A8react%E9%A1%B9%E7%9B%AE%E5%B1%80%E9%83%A8%E7%83%AD%E6%9B%B4%E6%96%B0.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/%E5%B0%86KVM%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%98%E5%82%A8%E5%88%B0NAS%E4%B8%8A.html">将KVM的虚拟机存储到NAS上</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2022-04-27</span>
       <p><img src="/images/kvm-log.png">
@@ -870,83 +947,6 @@ bullies.</p>
 </details>
 </p>
       <div class="post-button"><a class="btn" href="/%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
-    </div>
-  </div>
-  <div class="lx-entry padding">
-    <div>
-      <h2 class="title"><a href="/%E7%BB%98%E5%88%B6%E5%B9%B3%E6%BB%91%E7%9A%84%E4%B8%89%E6%AC%A1%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF.html">绘制平滑的三次贝塞尔曲线</a></h2>
-      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2021-08-21 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/project/">project</a></span>
-      <p><p><img src="/images/ezgif.com-gif-maker.gif"></p>
-<div class="tocStart">
-
-</div>
-<!-- toc -->
-<ul>
-<li><a href="#ji-chu-zhi-shi">基础知识</a></li>
-<li><a href="#mian-lin-de-wen-ti">面临的问题</a>
-<ul>
-<li><a href="#1-xuan-ze-er-ci-bei-sai-er-qu-xian-or-san-ci-bei-sai-er-qu-xian">1.
-选择二次贝塞尔曲线 or 三次贝塞尔曲线</a></li>
-<li><a href="#2-bei-sai-er-qu-xian-kong-zhi-dian-ji-suan">2.
-贝塞尔曲线控制点计算</a></li>
-</ul></li>
-<li><a href="#wen-ti-fen-xi">问题分析</a>
-<ul>
-<li><a href="#wen-ti-1">问题1：</a></li>
-<li><a href="#wen-ti-2">问题2：</a></li>
-</ul></li>
-<li><a href="#dai-ma-bu-fen">代码部分</a></li>
-</ul>
-<!-- tocstop -->
-<div class="tocEnd">
-
-</div>
-<h2><span id="ji-chu-zhi-shi">基础知识</span><a href="#ji-chu-zhi-shi" class="header-anchor">#</a></h2>
-<p>阅读之前你需要知道的知识包括</p>
-<ul>
-<li>canvas的坐标系</li>
-<li>直角坐标中两点的中点公式</li>
-<li>直角坐标中两点距离公式</li>
-<li>基础的三角函数</li>
-<li>投影基础知识</li>
-<li>canvas绘制贝塞尔曲线</li>
-</ul>
-<h2><span id="mian-lin-de-wen-ti">面临的问题</span><a href="#mian-lin-de-wen-ti" class="header-anchor">#</a></h2>
-<h3><span id="1-xuan-ze-er-ci-bei-sai-er-qu-xian-or-san-ci-bei-sai-er-qu-xian">1. 选择二次贝塞尔曲线 or
-三次贝塞尔曲线</span><a href="#1-xuan-ze-er-ci-bei-sai-er-qu-xian-or-san-ci-bei-sai-er-qu-xian" class="header-anchor">#</a></h3>
-<h3><span id="2-bei-sai-er-qu-xian-kong-zhi-dian-ji-suan">2. 贝塞尔曲线控制点计算</span><a href="#2-bei-sai-er-qu-xian-kong-zhi-dian-ji-suan" class="header-anchor">#</a></h3>
-<h2><span id="wen-ti-fen-xi">问题分析</span><a href="#wen-ti-fen-xi" class="header-anchor">#</a></h2>
-<h3><span id="wen-ti-1">问题1：</span><a href="#wen-ti-1" class="header-anchor">#</a></h3>
-<p>由于二次贝塞尔曲线绘制后，将只有一处弯曲，在多节点连接时，呈现效果很差。并且在45°，135°，225°，315°时，需要做特殊的处理，否侧得到的曲线的弧度过大。</p>
-<h3><span id="wen-ti-2">问题2：</span><a href="#wen-ti-2" class="header-anchor">#</a></h3>
-<p>在确定使用三次贝塞尔曲线后，需要通过计算得出曲线绘制时的两个控制点C1,C2。然后通过<code>CanvasRenderingContext2D.bezierCurveTo</code>进行绘制。</p>
-<p>由于我们需要两个控制点，所以，我们将会把起点<strong>SP(start
-point)</strong>和终点<strong>EP(end
-point)</strong>间的连线<strong>S-E</strong>均分为4份。得到如下点： <span class="math display">\[
-\begin{align*}
-Split_{m} = (\frac{(X_{SP}+X_{EP})}2,\frac{(Y_{SP}+Y_{EP})}2)\\
-\end{align*}
-\]</span> 得到S-E的公式L(x)为 <span class="math display">\[
-L(x) = \frac{X_{Split_{m}}}{Y_{Slit_{m}}}x
-\]</span> 根据L(x)可知S-E的斜率满足 <span class="math display">\[
-\tan \theta = \frac{X_{Split_{m}}}{Y_{Slit_{m}}}
-\]</span> 然后将<span class="math inline">\(Split_{m}\)</span>作为坐标系的原点，建立直角坐标系，得到
-<span class="math display">\[
-\begin{align*}
-len = \sqrt{(X_{Split_{m}}-X_{SP})^{2}+(Y_{Split_{m}}-Y_{SP})^{2}}\\
-\\
-\theta = \arctan \frac{X_{Split_{m}}}{Y_{Slit_{m}}}\\
-\\
-Y_{offset} = len·\cos \theta \\
-\\
-C1=(X_{Split_{m}},Y_{Split_{m}}-len)\\
-C2=(X_{Split_{m}},Y_{Split_{m}}+len)
-\end{align*}
-\]</span></p>
-<h2><span id="dai-ma-bu-fen">代码部分</span><a href="#dai-ma-bu-fen" class="header-anchor">#</a></h2>
-<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> props </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@typeof</span> props &#123;</span></span><br><span class="line"><span class="comment">		start: number[];</span></span><br><span class="line"><span class="comment">		end: number[];</span></span><br><span class="line"><span class="comment">		canvas: CanvasRenderingContext2D;</span></span><br><span class="line"><span class="comment">	&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="title function_">drawLine</span> = (<span class="params">props: Common.LineProps</span>) =&gt; &#123;</span><br><span class="line">	<span class="keyword">const</span> &#123; start, end, <span class="attr">canvas</span>: ctx, color &#125; = props;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> <span class="title function_">getMidCoord</span> = (<span class="params">c1: <span class="built_in">number</span>, c2: <span class="built_in">number</span></span>) =&gt; &#123;</span><br><span class="line">		<span class="keyword">if</span> (c1 === c2) &#123;</span><br><span class="line">			<span class="keyword">return</span> c1;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> (c1 + c2) / <span class="number">2</span>;</span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> [x1, y1] = start;</span><br><span class="line">	<span class="keyword">const</span> [x2, y2] = end;</span><br><span class="line">	<span class="keyword">const</span> [midX, midY] = [<span class="title function_">getMidCoord</span>(x1, x2), <span class="title function_">getMidCoord</span>(y1, y2)];</span><br><span class="line">	<span class="keyword">const</span> <span class="title function_">drawMirror</span> = (<span class="params">y1: <span class="built_in">number</span>, y2: <span class="built_in">number</span></span>) =&gt; &#123;</span><br><span class="line">		<span class="keyword">if</span> (y1 &gt; y2) &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.<span class="title function_">bezierCurveTo</span>(control2[<span class="number">0</span>], control2[<span class="number">1</span>], control1[<span class="number">0</span>], control1[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> ctx.<span class="title function_">bezierCurveTo</span>(control1[<span class="number">0</span>], control1[<span class="number">1</span>], control2[<span class="number">0</span>], control2[<span class="number">1</span>], end[<span class="number">0</span>], end[<span class="number">1</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">const</span> degCos = <span class="title class_">Math</span>.<span class="title function_">cos</span>(<span class="title class_">Math</span>.<span class="title function_">atan</span>((x1 - midX) / (y1 - midY)));</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> lineLen = <span class="title class_">Math</span>.<span class="title function_">sqrt</span>(<span class="title class_">Math</span>.<span class="title function_">pow</span>(y1 - midY, <span class="number">2</span>) + <span class="title class_">Math</span>.<span class="title function_">pow</span>(x1 - midX, <span class="number">2</span>)) * <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> control1 = [midX, midY - degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line">	<span class="keyword">const</span> control2 = [midX, midY + degCos * (lineLen / <span class="number">2</span>)];</span><br><span class="line"></span><br><span class="line">	ctx.<span class="title function_">beginPath</span>();</span><br><span class="line">	ctx.<span class="title function_">moveTo</span>(start[<span class="number">0</span>], start[<span class="number">1</span>]);</span><br><span class="line">	<span class="title function_">drawMirror</span>(y1, y2);</span><br><span class="line">	ctx.<span class="property">lineWidth</span> = <span class="number">2</span>;</span><br><span class="line">	ctx.<span class="property">strokeStyle</span> = color ? color : <span class="string">&quot;#000&quot;</span>;</span><br><span class="line">	ctx.<span class="title function_">stroke</span>();</span><br><span class="line">	ctx.<span class="title function_">closePath</span>();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-</p>
-      <div class="post-button"><a class="btn" href="/%E7%BB%98%E5%88%B6%E5%B9%B3%E6%BB%91%E7%9A%84%E4%B8%89%E6%AC%A1%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
     </div>
   </div>
 
