@@ -98,6 +98,77 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/%E5%A2%9E%E9%87%8F%E8%BF%90%E8%A1%8CE2E%E6%B5%8B%E8%AF%95.html">增量运行E2E测试</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2022-08-08 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/project/">project</a></span>
+      <p><p><img src="/images/e2e-testing-banner.png"></p>
+<div class="tocStart">
+
+</div>
+<!-- toc -->
+<ul>
+<li><a href="#ji-chu-zhi-shi">基础知识</a></li>
+<li><a href="#yao-jie-jue-de-wen-ti">要解决的问题</a></li>
+<li><a href="#wen-ti-chai-fen-fen-xi">问题拆分 &amp; 分析</a>
+<ul>
+<li><a href="#wen-ti-fen-xi">问题分析</a></li>
+</ul></li>
+<li><a href="#jie-jue-fang-an">解决方案</a>
+<ul>
+<li><a href="#huo-qu-yong-yu-dui-bi-de-ji-chu-commitid">获取用于对比的基础commitID</a></li>
+<li><a href="#huo-qu-liang-ge-commit-zhi-jian-de-geng-xin">获取两个Commit之间的更新</a></li>
+<li><a href="#zhi-yun-xing-geng-xin-de-wen-jian-bing-da-yin-yun-xing-guo-cheng-zhong-de-ri-zhi-xiao-xi">只运行更新的文件并打印运行过程中的日志消息</a></li>
+</ul></li>
+</ul>
+<!-- tocstop -->
+<div class="tocEnd">
+
+</div>
+<h2><span id="ji-chu-zhi-shi">基础知识</span><a href="#ji-chu-zhi-shi" class="header-anchor">#</a></h2>
+<p>阅读之前你需要知道的知识包括</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://katalon.com/resources-center/blog/end-to-end-e2e-testing">什么是E2E测试</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.cypress.io/guides/overview/why-cypress">E2E测试框架Cypress</a></li>
+<li><code>Git</code>常用命令</li>
+<li><code>nodejs</code>基础知识</li>
+</ul>
+<h2><span id="yao-jie-jue-de-wen-ti">要解决的问题</span><a href="#yao-jie-jue-de-wen-ti" class="header-anchor">#</a></h2>
+<p>随着项目不断的迭代，新的功能在增加，旧的功能也逐渐被更新。这导致E2E测试的体量在不断的增大。
+但是，我们的每次修改不一定会涉及所有的E2E测试。所以，我们是否可以做到只运行本次commit影响的E2E？</p>
+<h2><span id="wen-ti-chai-fen-amp-fen-xi">问题拆分 &amp; 分析</span><a href="#wen-ti-chai-fen-amp-fen-xi" class="header-anchor">#</a></h2>
+<p>我将问题拆分为下面几个子问题 1. 如何界定作为对比的基础commit 2.
+如何获取这个commit的id 3. 如何获取本次commit和基础commit之间的更新 4.
+如何只运行更新的文件并打印运行过程中的日志消息 ### 问题分析 +
+<strong>对于问题1：</strong> +
+通常情况：一般我们需要对比的是本次<code>commit</code>和当前分支刚被创建出时的<code>commit</code>，这是由于，我们的分支一般会从最新的<code>master</code>分支获取，而<code>master</code>分支中的E2E在大部分情况下，都是已经被验证过的。
++
+和特定commit对比：一些需要和特定<code>commit</code>做对比以排查特定更改，引起的bug时。这里特定的<code>commitID</code>，需要我们在commit
+message中加入特定的内容，进行标记。 +
+运行全部的E2E：项目正式更新至线上时，还是期待完整的E2E测试，能为我们带来高的可用性。这里运行全部的E2E，需要我们在commit
+message中加入特定的内容，进行标记。 + <strong>对于问题2和3：</strong>
+使用<code>nodejs</code>的<code>child_process</code>模块调度<code>Git</code>命令，并使用正则的方式获取需要的内容。
++ <strong>对于问题4：</strong>
+使用<code>nodejs</code>的<code>child_process</code>模块调度<code>Cypress</code>命令，并将输出使用<code>Steam</code>进行实时输出</p>
+<h2><span id="jie-jue-fang-an">解决方案</span><a href="#jie-jue-fang-an" class="header-anchor">#</a></h2>
+<h3><span id="huo-qu-yong-yu-dui-bi-de-ji-chu-commitid">获取用于对比的基础commitID</span><a href="#huo-qu-yong-yu-dui-bi-de-ji-chu-commitid" class="header-anchor">#</a></h3>
+<ul>
+<li><p><strong>对于通常情况使用</strong> <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">getBranchFirstCommitID</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>&lt;<span class="built_in">string</span>&gt;(<span class="function">(<span class="params">res, rej</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// compare with master</span></span><br><span class="line">    <span class="title function_">exec</span>(<span class="string">&#x27;git cherry -v master&#x27;</span>, <span class="function">(<span class="params">err, data</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="title function_">rej</span>(err);</span><br><span class="line">      <span class="keyword">const</span> dataArr = data.<span class="title function_">split</span>(<span class="string">&#x27;\n&#x27;</span>) <span class="keyword">as</span> <span class="built_in">string</span>[];</span><br><span class="line">      <span class="keyword">const</span> commitContent = dataArr[<span class="number">0</span>].<span class="title function_">split</span>(<span class="string">&#x27; &#x27;</span>);</span><br><span class="line"></span><br><span class="line">      <span class="title function_">res</span>(commitContent[<span class="number">1</span>]);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p></li>
+<li><p><strong>对于和特定commit对比的情况使用</strong> <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">getCurrentCommit</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>&lt;<span class="built_in">string</span>&gt;(<span class="function">(<span class="params">res, rej</span>) =&gt;</span></span><br><span class="line">    <span class="title function_">exec</span>(<span class="string">`git log -1`</span>, <span class="function">(<span class="params">err, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="title function_">rej</span>(stderr);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">res</span>(stdout);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getCompareCommitID</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> commitContent = <span class="keyword">await</span> <span class="title function_">getCurrentCommit</span>();</span><br><span class="line">  <span class="keyword">const</span> regx = <span class="regexp">/\[Compare: (.+?)\]/</span>;</span><br><span class="line">  <span class="keyword">if</span> (!regx.<span class="title function_">test</span>(commitContent)) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">await</span> <span class="title function_">getBranchFirstCommitID</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">const</span> resultArray = commitContent.<span class="title function_">match</span>(regx) <span class="keyword">as</span> <span class="title class_">RegExpMatchArray</span>;</span><br><span class="line">  <span class="keyword">return</span> resultArray[<span class="number">1</span>];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+这里如果运行<code>getCompareCommitID</code>后，得到返回值为<code>'ALL'</code>的时候，就会运行所有的E2E测试了</p></li>
+</ul>
+<h3><span id="huo-qu-liang-ge-commit-zhi-jian-de-geng-xin">获取两个Commit之间的更新</span><a href="#huo-qu-liang-ge-commit-zhi-jian-de-geng-xin" class="header-anchor">#</a></h3>
+<p><strong>这里我们约定，所有的E2E文件的路径中都会携带<code>cypress</code>这个字符</strong>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getDiffFlies</span> = (<span class="params">baseCommitID: <span class="built_in">string</span>, commitID: <span class="built_in">string</span></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>&lt;<span class="built_in">string</span>&gt;(<span class="function">(<span class="params">res, rej</span>) =&gt;</span></span><br><span class="line">    <span class="title function_">exec</span>(<span class="string">`git diff --name-only <span class="subst">$&#123;baseCommitID&#125;</span> <span class="subst">$&#123;commitID&#125;</span>`</span>, <span class="function">(<span class="params">err, stdout, stderr</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="title function_">rej</span>(stderr);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">res</span>(stdout);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getCommitID</span> = (<span class="params">index: <span class="built_in">number</span></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>&lt;<span class="built_in">string</span>&gt;(<span class="function">(<span class="params">res, rej</span>) =&gt;</span></span><br><span class="line">    <span class="title function_">exec</span>(<span class="string">`git show HEAD~<span class="subst">$&#123;index&#125;</span> --pretty=format:&quot;%h&quot; --no-patch`</span>, <span class="function">(<span class="params">err, stdout</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="title function_">rej</span>(err);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="title function_">res</span>(stdout);</span><br><span class="line">    &#125;)</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//一些特殊的项目结构下，项目中可能存在多个子系统，所以这里需要匹配特定的路径</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getProjectDiffFiles</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> compareCommitID = <span class="keyword">await</span> <span class="title function_">getCompareCommitID</span>();</span><br><span class="line">    <span class="keyword">const</span> currentCommitID = <span class="keyword">await</span> <span class="title function_">getCommitID</span>(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (compareCommitID === <span class="string">&#x27;ALL&#x27;</span>) &#123;</span><br><span class="line">      <span class="comment">// it will run all tests</span></span><br><span class="line">      <span class="keyword">return</span> [];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> diffFiles = (<span class="keyword">await</span> <span class="title function_">getDiffFlies</span>(currentCommitID, compareCommitID)).<span class="title function_">split</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> currentProjectDiffFile = diffFiles</span><br><span class="line">      .<span class="title function_">filter</span>(<span class="function">(<span class="params">file</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123;dir&#125; = <span class="title function_">parse</span>(file);</span><br><span class="line">        <span class="keyword">const</span> currentDirArr = __dirname.<span class="title function_">split</span>(sep);</span><br><span class="line">        <span class="keyword">const</span> currentDir = currentDirArr[currentDirArr.<span class="property">length</span> - <span class="number">2</span>] <span class="keyword">as</span> <span class="built_in">string</span>;</span><br><span class="line">        <span class="keyword">if</span> (dir.<span class="title function_">includes</span>(currentDir) &amp;&amp; dir.<span class="title function_">includes</span>(<span class="string">&#x27;cypress&#x27;</span>)) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;)</span><br><span class="line">      .<span class="title function_">map</span>(<span class="function">(<span class="params">file</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="title function_">join</span>(...file.<span class="title function_">split</span>(sep).<span class="title function_">slice</span>(<span class="number">2</span>)) <span class="keyword">as</span> <span class="built_in">string</span>;</span><br><span class="line">      &#125;);</span><br><span class="line">    <span class="keyword">return</span> currentProjectDiffFile;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(error); <span class="comment">// eslint-disable-line</span></span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">&#x27;get commit id is fail&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
+<h3><span id="zhi-yun-xing-geng-xin-de-wen-jian-bing-da-yin-yun-xing-guo-cheng-zhong-de-ri-zhi-xiao-xi">只运行更新的文件并打印运行过程中的日志消息</span><a href="#zhi-yun-xing-geng-xin-de-wen-jian-bing-da-yin-yun-xing-guo-cheng-zhong-de-ri-zhi-xiao-xi" class="header-anchor">#</a></h3>
+<p>nodejs的child_process模块提供了多种方式运行命令，一般情况下使用exec，但由于exec的输出将会在命令完全运行后才输出，并且一般的CI中，都会设置每一步的响应时间。如果使用exec，有可能会由于E2E时间过长，导致超时。
+所以，这里我使用spawn，它将会实时的输出命令的运行日志。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">testRunner</span> = (<span class="params">specPath: <span class="built_in">string</span>[]</span>) =&gt; &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;It will run test&#x27;</span>, specPath.<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>)); <span class="comment">// eslint-disable-line</span></span><br><span class="line">  <span class="keyword">const</span> runner = <span class="title function_">spawn</span>(<span class="string">&#x27;cypress&#x27;</span>, [<span class="string">&#x27;run&#x27;</span>, <span class="string">&#x27;--headless&#x27;</span>, <span class="string">&#x27;--spec&#x27;</span>, specPath.<span class="title function_">join</span>(<span class="string">&#x27;,&#x27;</span>)]);</span><br><span class="line">  runner.<span class="property">stderr</span>.<span class="title function_">on</span>(<span class="string">&#x27;data&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (data) <span class="variable language_">console</span>.<span class="title function_">log</span>(data.<span class="title function_">toString</span>()); <span class="comment">// eslint-disable-line</span></span><br><span class="line">  &#125;);</span><br><span class="line">  runner.<span class="property">stdout</span>.<span class="title function_">on</span>(<span class="string">&#x27;data&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(data.<span class="title function_">toString</span>()); <span class="comment">// eslint-disable-line</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">main</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> testPath = <span class="keyword">await</span> <span class="title function_">getProjectDiffFiles</span>();</span><br><span class="line">  <span class="title function_">testRunner</span>(testPath);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>至此就完成了增量的运行E2E测试。</p>
+</p>
+      <div class="post-button"><a class="btn" href="/%E5%A2%9E%E9%87%8F%E8%BF%90%E8%A1%8CE2E%E6%B5%8B%E8%AF%95.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/%20monorepo%E7%BB%93%E6%9E%84%E4%B8%8B%E5%90%AF%E5%8A%A8react%E9%A1%B9%E7%9B%AE%E5%B1%80%E9%83%A8%E7%83%AD%E6%9B%B4%E6%96%B0.html">monorepo结构下启动react项目局部热更新</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2022-08-07 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/project/">project</a></span>
       <p><p><img src="/images/monorepo-react-banner.jpeg"></p>
@@ -147,7 +218,7 @@
 core有严格的顺序要求，所以导致了热更新的失效</li>
 </ul>
 <h2><span id="ru-he-jie-jue-wen-ti">如何解决问题？</span><a href="#ru-he-jie-jue-wen-ti" class="header-anchor">#</a></h2>
-<h4><span id="duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li">多子项目单独开发时，如何确定react版本，以及如何保证主项目加载子项目作为组件时，二者公用同一个react实例</span><a href="#duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li" class="header-anchor">#</a></h4>
+<h3><span id="duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li">多子项目单独开发时，如何确定react版本，以及如何保证主项目加载子项目作为组件时，二者公用同一个react实例</span><a href="#duo-zi-xiang-mu-dan-du-kai-fa-shi-ru-he-que-ding-react-ban-ben-yi-ji-ru-he-bao-zheng-zhu-xiang-mu-jia-zai-zi-xiang-mu-zuo-wei-zu-jian-shi-er-zhe-gong-yong-tong-yi-ge-react-shi-li" class="header-anchor">#</a></h3>
 <p>我们期待所有这个系统中，所有项目的react依赖都指向同一个react
 core文件，这样在系统所有项目都构建完成后，react的版本就确定了下来，所以我们可以修改<code>webpack.config.js</code>和项目的HTML模版来达到这个目标：
 对于<code>webpack.config.js</code>增加： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">external</span>: [<span class="string">&#x27;react&#x27;</span>,<span class="string">&#x27;react-dom&#x27;</span>]</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -158,11 +229,11 @@ core文件，这样在系统所有项目都构建完成后，react的版本就�
 <p>至此react
 core就完成外置化，所有的子项目在单独开发时，都可以修改自己的HTML模版，以使用公共的react
 core，并且主系统和子系统的react实例始终一直，在</p>
-<h4><span id="kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong">开发时，如何处理互相存在依赖子系统</span><a href="#kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong" class="header-anchor">#</a></h4>
+<h3><span id="kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong">开发时，如何处理互相存在依赖子系统</span><a href="#kai-fa-shi-ru-he-chu-li-hu-xiang-cun-zai-yi-lai-zi-xi-tong" class="header-anchor">#</a></h3>
 <p>在webpack5之前，可以在webpack中增加： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">resolve</span>:&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="attr">alias</span>:&#123;</span><br><span class="line">      <span class="string">&#x27;&lt;module_name&gt;&#x27;</span>: <span class="string">&#x27;project/root/path/provide/modules&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 这样就可以轻松的通过
 <code>import * as MouduleName from 'module_name'</code>的方式使用另一个子项目暴露的功能了。</p>
-<h4><span id="wai-zhi-hua-jia-zai-react-amp-react-dom-shi-hot-reload-shi-xiao">外置化加载react&amp;react-dom时，hot-reload失效</span><a href="#wai-zhi-hua-jia-zai-react-amp-react-dom-shi-hot-reload-shi-xiao" class="header-anchor">#</a></h4>
+<h3><span id="wai-zhi-hua-jia-zai-react-amp-react-dom-shi-hot-reload-shi-xiao">外置化加载react&amp;react-dom时，hot-reload失效</span><a href="#wai-zhi-hua-jia-zai-react-amp-react-dom-shi-hot-reload-shi-xiao" class="header-anchor">#</a></h3>
 <p>由于<a target="_blank" rel="noopener" href="https://github.com/pmmmwh/react-refresh-webpack-plugin">react-refresh-webpack-plugin</a>对于外置加载的react
 core有严格的顺序要求，所以我们需要修改项目打包的输出，由原来的单入口，改为多入口。并且在HTML模版中控制它们的加载顺序。</p>
 <p>对于<code>webpack.config.js</code>需要修改： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">   <span class="attr">entry</span>: isDevelopment</span><br><span class="line">  ? &#123;</span><br><span class="line">      <span class="attr">whm</span>: <span class="string">&#x27;webpack-hot-middleware/client?quiet=true&amp;reload=true&amp;path=/&lt;default&gt;/&lt;route&gt;/__webpack_hmr&amp;timeout=2000&#x27;</span>, <span class="comment">//启用webpack-hot-middleware作为热更新服务时需要增加的</span></span><br><span class="line">      <span class="attr">reactRefreshEntry</span>: <span class="string">&#x27;@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js&#x27;</span>, <span class="comment">//让react产生局部更新</span></span><br><span class="line">      <span class="attr">main</span>: clientEntry, <span class="comment">//项目本身的入口文件</span></span><br><span class="line">    &#125;</span><br><span class="line">  : clientEntry,<span class="comment">//项目本身的入口文件</span></span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">   <span class="attr">module</span>: &#123;</span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">oneOf</span>: [</span><br><span class="line">          &#123;</span><br><span class="line">            <span class="attr">test</span>: <span class="regexp">/\.(js|ts|tsx)$/</span>,</span><br><span class="line">            <span class="attr">exclude</span>: <span class="regexp">/node_modules/</span>,</span><br><span class="line">            <span class="attr">loader</span>: <span class="string">&#x27;babel-loader&#x27;</span>,</span><br><span class="line">            <span class="attr">options</span>: &#123;</span><br><span class="line">              <span class="attr">plugins</span>: [<span class="string">&#x27;lodash&#x27;</span>, isDev &amp;&amp; <span class="built_in">require</span>.<span class="title function_">resolve</span>(<span class="string">&#x27;react-refresh/babel&#x27;</span>)].<span class="title function_">filter</span>(</span><br><span class="line">                <span class="title class_">Boolean</span></span><br><span class="line">              ),</span><br><span class="line">              <span class="attr">presets</span>: [[<span class="string">&#x27;@babel/env&#x27;</span>]],</span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">plugins</span>: defultPlugins.<span class="title function_">concat</span>(isDevelopment ? [</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">HotModuleReplacementPlugin</span>(),</span><br><span class="line">    <span class="keyword">new</span> webpack.<span class="title class_">NoEmitOnErrorsPlugin</span>(),</span><br><span class="line"></span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">ReactRefreshWebpackPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">overlay</span>: &#123;</span><br><span class="line">        <span class="attr">sockIntegration</span>: <span class="string">&#x27;whm&#x27;</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;),</span><br><span class="line">  ]:[])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -811,142 +882,6 @@ $$
 </div>
 </p>
       <div class="post-button"><a class="btn" href="/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA--%E6%B8%B2%E6%9F%93Latex%E5%85%AC%E5%BC%8F.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
-    </div>
-  </div>
-  <div class="lx-entry padding">
-    <div>
-      <h2 class="title"><a href="/%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98.html">工程师遇到的一些问题</a></h2>
-      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2021-09-02 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/interesting/">interesting</a></span>
-      <p><p>The lesson I have learned in decades of dealing with software related
-companies of all sizes is that you have a personality and financial
-problem.</p>
-<p>That is, few companies are run by actual engineers. They are run by
-bean counters, lawyers, CFOs, marketing, etc. These people don't "get"
-programmers, engineers, etc. They don't like them, understand them, get
-along with them, or even have many overlapping interests. The reverse is
-also largely true.</p>
-<p>For example if you go to a large financial institution you will find
-the C-Suite on the 28th floor with a view over the water while the IT
-people who build the algos that run the company are in a windowless part
-of some dungeon. Or if you go to a engineering company the engineers
-will be open plan with crap lights, chairs, desks, and dividers while
-the executives all have their own individual offices.</p>
-<p>Thus, the executives start hiring people kind of like themselves to
-"interface" with the "weirdo" engineers. Thus was born things like the
-PM with a PMP, the product managers, etc.</p>
-<p>These people are under pressure from the executive to do things one
-way, while the creators really should do things a different way. But
-this is a hierarchy. This isn't a negotiation, this isn't a system that
-is keen on feedback. The executives decide and the engineers are
-supposed to execute. They really don't like the engineers when they say
-things like, "That deadline is impossible. You can pick quick or you can
-good, but you don't get both." That is the sort of thing that drives an
-executive to a rage. They put in their quarterly plan that they were
-going to deliver good and cheap, how dare the engineer be so defeatist.
-The worst executives whine endlessly about how engineers will never give
-a proper answer to when something that involves lots of R&amp;D done.
-They start droning on about boring things like all the unknowns. Again,
-that executive made a presentation to the board about how the next
-version of the product would have twice the battery life at half the
-cost. Is the entire engineering department conspiring to make him a
-liar?</p>
-<p>Then you have internal politics. This sort of thing happens even at
-the level of a lemonade stand, but once you have a company with 100 or
-100,000 people politics is going to rule the executive level. A critical
-part of office politics is to control information. Thus you get an
-absolute rule that the engineering types are to be kept as far away from
-the customer as possible. Information such as the project is going to be
-late is not something that almost anyone at any management or higher
-level wants anyone anyone at any other management or higher level to
-know.</p>
-<p>This sort of secrecy then allows grasping managers and executives to
-whip, threaten, make empty promises, etc to the engineers to get them to
-work evenings, weekends, etc all to meet some BS targets, except those
-targets will get various executives bonuses that are multiples of an
-engineer's salary, where they then magnanimously take the engineers out
-for a big pile of pizza or an all you can eat buffet. "on the company's
-dime" that might work out to $20 engineer while that manager gets a 50k
-bonus that quarter alone largely because of the foolish engineers who
-were preached at about company loyalty and dedication.</p>
-<p>But where this all breaks down is that you have a number of typically
-very very smart engineers, developers, researchers, etc, who find
-themselves micromanaged by people who are given a higher level of
-authority but who drop the responsibility to the engineers. Yet the
-engineers aren't allowed to communicate with the customers so they don't
-really know the problem, they get arbitrary deadlines handed to them.
-They don't get to prioritize. And worst of all the people who are
-typically higher up from managers tend to be morons as this is often a
-BS job that most people with two brain cells to rub together would
-reject. Sometimes the managers are former engineers but this is where
-the whole peter principle/fail up thing exists.</p>
-<p>Even in huge "respected" organizations like NASA and Boeing you hear
-stories where engineers are saying. If you do X then Y will blow up and
-kill lots of people. Then some manager overrides them as they are afraid
-to say no to their higher ups and so on to meet some arbitrary deadline
-for building something that the engineers who will build it had no input
-on the top down design which is basically crap.</p>
-<p>The pattern that I see and suspect even exists at places like NASA is
-that what happens is that very very smart engineers succeed despite all
-the terrible obstacles put in their way. Instead of good solid planning
-(not paperwork, but actual planning) they probably are fighting one fire
-after another while slipping some good engineering into the projects
-when the managers aren't looking.</p>
-<p>Then just as any engineers are achieving something resembling success
-they get a copy of the payroll and realize the project manager who has
-less business experience or education than your average dishwasher but
-did get their PMP is paid twice what they are paid. Moral just went to
-zero and now your engineers come in at 9am and leave exactly at 5pm and
-don't answer calls on weekends anymore. Don't tell them that the CEO of
-the 50 person engineering firm's has a travel and entertainment budget
-that is 3 to 6 times their annual salary, the COO has one that is 3
-times, and that the CFO just got his 50k MBA paid for by the company
-while they can no longer expense a weekend course in town attended on
-their own time to get certified on a key technology the company is using
-in their next project.</p>
-<p>Why this last set of disparities? The executives are where the money
-decisions are made and the engineering department is not.</p>
-<p>One of the interesting bits is that what I see on a very regular
-basis is where those extraordinary developers engineers etc go is into
-business for themselves. They usually develop some product on their own
-that would have made the company millions but they do it on their own
-and usually without hiring any managers at all. Their old companies
-don't even realize what they lost as the lying and cheating of the
-managers and executives will never acknowledge their mistake but will
-just blame the defenseless and work the remaining engineers even
-harder.</p>
-<p>If I had to boil it down to a pair of lines:</p>
-<p>Management usually hates engineering because they are significantly
-smarter and less disposable than the management themselves; thus in
-their insecurity they use their control of the finances to be right
-bullies.</p>
-<details>
-<summary>
-中文
-</summary>
-<p>在几十年与各种规模的软件相关公司打交道的过程中，我学到的经验是，你们有一个人格和财务问题。</p>
-<p>也就是说，很少有公司是由真正的工程师管理的。他们都是由数学家、律师、首席财务官、营销人员等管理。这些人并不
-"了解
-"程序员、工程师等。他们不喜欢他们，不理解他们，不与他们相处，甚至没有许多重叠的利益。反过来说也是大体如此。</p>
-<p>例如，如果你去一家大型金融机构，你会发现C-Suite在28楼，可以看到水面上的风景，而构建运行公司的算法的IT人员则在某个地牢的无窗部分。或者，如果你去一家工程公司，工程师们将是开放式的，有垃圾灯、椅子、桌子和隔板，而高管们都有自己的独立办公室。</p>
-<p>因此，高管们开始雇用与自己相似的人与 "怪异 "的工程师们
-"沟通"。因此，像拥有PMP的PM、产品经理等就诞生了。</p>
-<p>这些人在高管的压力下，以一种方式做事，而创造者确实应该以另一种方式做事。但这是一个等级制度。这不是一个谈判，这不是一个热衷于反馈的系统。高管们决定，工程师们应该执行。他们真的不喜欢工程师说这样的话："这个期限是不可能的。你可以选择快，也可以选择好，但你不可能两者兼得。"
-这就是那种会让高管发怒的事情。他们在季度计划中说他们要提供好的和便宜的，工程师怎么敢这么失败。最糟糕的高管们没完没了地抱怨，工程师们永远不会对涉及大量研发工作的事情给出一个合适的答案。他们开始喋喋不休地谈论无聊的事情，比如所有的未知数。同样，这位高管向董事会做了一个关于下一版本的产品如何以一半的成本拥有两倍的电池寿命的报告。难道整个工程部门都在密谋让他成为一个骗子？</p>
-<p>然后你有内部政治。这种事情甚至发生在一个柠檬水摊的层面上，但是一旦你有一个拥有100或100,000人的公司，政治就会统治行政层面。办公室政治的一个关键部分是控制信息。因此，你会得到一个绝对的规则，即工程类人员要尽可能远离客户。诸如项目要迟到这样的信息，几乎是任何管理层或更高层次的人都不愿意让任何其他管理层或更高层次的人知道的。</p>
-<p>这种保密性使得那些抓狂的经理和高管们可以对工程师进行鞭打、威胁、做出空洞的承诺等，让他们在晚上、周末等时间工作，以达到一些虚假的目标，只是这些目标会让不同的高管获得数倍于工程师工资的奖金，然后他们会宽宏大量地带工程师去吃一大堆比萨饼或所有你能吃的自助餐。"用公司的钱"，这可能是20美元的工程师，而该经理在那个季度获得了5万奖金，主要是因为那些被宣扬为对公司忠诚和奉献的愚蠢的工程师。</p>
-<p>但是，这一切的破绽在于，你有一些通常非常聪明的工程师、开发人员、研究人员等，他们发现自己被那些被赋予更高权力的人微观管理，但他们把责任丢给工程师。然而，工程师们不被允许与客户沟通，所以他们并不真正了解问题，他们得到了任意的最后期限。他们不能确定优先次序。最糟糕的是，那些通常是经理以上级别的人往往是白痴，因为这往往是一个BS工作，大多数有两个脑细胞的人都会拒绝。有时经理是前工程师，但这是整个彼得原则/失败的事情存在的地方。</p>
-<p>即使在像NASA和波音这样巨大的 "受人尊敬的
-"组织中，你也会听到工程师说的故事。如果你做了X，那么Y将被炸毁，并杀死很多人。然后一些经理推翻了他们，因为他们害怕对他们的上级说
-"不"，等等，以满足一些任意的最后期限来建造一些东西，而建造这些东西的工程师对自上而下的设计没有任何意见，这些设计基本上是垃圾。</p>
-<p>我所看到的，甚至怀疑存在于像美国国家航空航天局这样的地方的模式是，尽管有所有可怕的障碍，非常聪明的工程师还是成功了。他们没有良好的坚实的规划（不是纸上谈兵，而是实际的规划），他们可能是在一个又一个的火灾中战斗，同时在经理们不注意的时候把一些好的工程塞进项目中。</p>
-<p>然后，就在任何工程师取得类似成功的时候，他们得到了一份工资单，并意识到项目经理的商业经验或教育程度比你的普通洗碗工要低，但确实得到了PMP，他的工资是他们的两倍。士气降到了零，现在你的工程师早上9点上班，下午5点下班，周末也不接电话了。不要告诉他们，50人的工程公司的首席执行官的旅行和娱乐预算是他们年薪的3到6倍，首席运营官的预算是3倍，首席财务官刚刚拿到公司支付的5万块钱的MBA，而他们却不能再花钱在城里用自己的时间参加周末课程，以获得公司在下一个项目中使用的关键技术的认证。</p>
-<p>为什么会出现这样的差异？高管们是做出金钱决定的地方，而工程部门则不是。</p>
-<p>有趣的一点是，我经常看到的是，那些非凡的开发人员、工程师等人的去处是为自己做生意。他们通常自己开发一些产品，而这些产品本来可以为公司带来数百万的收入，但他们自己做，而且通常根本没有雇用任何经理。他们的老公司甚至没有意识到他们失去了什么，因为那些撒谎和欺骗的经理和高管永远不会承认他们的错误，而只是责怪那些毫无防备的人，让剩下的工程师更加努力工作。</p>
-<p>如果我不得不把它归结为一对线。</p>
-<p>管理层通常讨厌工程人员，因为他们明显比管理层自己更聪明，更不容易支配；因此在他们的不安全感中，他们利用对财务的控制权来做正确的欺凌者。</p>
-</details>
-</p>
-      <div class="post-button"><a class="btn" href="/%E5%B7%A5%E7%A8%8B%E5%B8%88%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
     </div>
   </div>
 

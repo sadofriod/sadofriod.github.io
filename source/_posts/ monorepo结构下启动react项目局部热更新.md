@@ -3,7 +3,7 @@ title: monorepo结构下启动react项目局部热更新
 tags: project
 p: project
 categories: project
-keywords: ''
+keywords: 'monorepo react, react hot reload, fast refresh, external react'
 date: 2022-08-07 23:00:31
 ---
 
@@ -35,7 +35,7 @@ date: 2022-08-07 23:00:31
 
 ## 如何解决问题？
 
-#### 多子项目单独开发时，如何确定react版本，以及如何保证主项目加载子项目作为组件时，二者公用同一个react实例
+### 多子项目单独开发时，如何确定react版本，以及如何保证主项目加载子项目作为组件时，二者公用同一个react实例
 我们期待所有这个系统中，所有项目的react依赖都指向同一个react core文件，这样在系统所有项目都构建完成后，react的版本就确定了下来，所以我们可以修改`webpack.config.js`和项目的HTML模版来达到这个目标：
 对于`webpack.config.js`增加： 
 ``` javascript
@@ -56,7 +56,7 @@ date: 2022-08-07 23:00:31
 
 至此react core就完成外置化，所有的子项目在单独开发时，都可以修改自己的HTML模版，以使用公共的react core，并且主系统和子系统的react实例始终一直，在
 
-#### 开发时，如何处理互相存在依赖子系统
+### 开发时，如何处理互相存在依赖子系统
 在webpack5之前，可以在webpack中增加：
 ``` javascript
   {
@@ -72,7 +72,7 @@ date: 2022-08-07 23:00:31
 ```
 这样就可以轻松的通过 `import * as MouduleName from 'module_name'`的方式使用另一个子项目暴露的功能了。
 
-#### 外置化加载react&react-dom时，hot-reload失效
+### 外置化加载react&react-dom时，hot-reload失效
 由于[react-refresh-webpack-plugin](https://github.com/pmmmwh/react-refresh-webpack-plugin)对于外置加载的react core有严格的顺序要求，所以我们需要修改项目打包的输出，由原来的单入口，改为多入口。并且在HTML模版中控制它们的加载顺序。
 
 对于`webpack.config.js`需要修改： 
