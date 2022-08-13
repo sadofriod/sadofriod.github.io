@@ -135,19 +135,28 @@
 <p>随着项目不断的迭代，新的功能在增加，旧的功能也逐渐被更新。这导致E2E测试的体量在不断的增大。
 但是，我们的每次修改不一定会涉及所有的E2E测试。所以，我们是否可以做到只运行本次commit影响的E2E？</p>
 <h2><span id="wen-ti-chai-fen-amp-fen-xi">问题拆分 &amp; 分析</span><a href="#wen-ti-chai-fen-amp-fen-xi" class="header-anchor">#</a></h2>
-<p>我将问题拆分为下面几个子问题 1. 如何界定作为对比的基础commit 2.
-如何获取这个commit的id 3. 如何获取本次commit和基础commit之间的更新 4.
-如何只运行更新的文件并打印运行过程中的日志消息 ### 问题分析 +
-<strong>对于问题1：</strong> +
-通常情况：一般我们需要对比的是本次<code>commit</code>和当前分支刚被创建出时的<code>commit</code>，这是由于，我们的分支一般会从最新的<code>master</code>分支获取，而<code>master</code>分支中的E2E在大部分情况下，都是已经被验证过的。
-+
-和特定commit对比：一些需要和特定<code>commit</code>做对比以排查特定更改，引起的bug时。这里特定的<code>commitID</code>，需要我们在commit
-message中加入特定的内容，进行标记。 +
-运行全部的E2E：项目正式更新至线上时，还是期待完整的E2E测试，能为我们带来高的可用性。这里运行全部的E2E，需要我们在commit
-message中加入特定的内容，进行标记。 + <strong>对于问题2和3：</strong>
-使用<code>nodejs</code>的<code>child_process</code>模块调度<code>Git</code>命令，并使用正则的方式获取需要的内容。
-+ <strong>对于问题4：</strong>
-使用<code>nodejs</code>的<code>child_process</code>模块调度<code>Cypress</code>命令，并将输出使用<code>Steam</code>进行实时输出</p>
+<p>我将问题拆分为下面几个子问题:</p>
+<ol type="1">
+<li>如何界定作为对比的基础commit</li>
+<li>如何获取这个commit的id</li>
+<li>如何获取本次commit和基础commit之间的更新</li>
+<li>如何只运行更新的文件并打印运行过程中的日志消息</li>
+</ol>
+<h3><span id="wen-ti-fen-xi">问题分析</span><a href="#wen-ti-fen-xi" class="header-anchor">#</a></h3>
+<ul>
+<li><strong>对于问题1：</strong>
+<ul>
+<li>通常情况：一般我们需要对比的是本次<code>commit</code>和当前分支刚被创建出时的<code>commit</code>，这是由于，我们的分支一般会从最新的<code>master</code>分支获取，而<code>master</code>分支中的E2E在大部分情况下，都是已经被验证过的。</li>
+<li>和特定commit对比：一些需要和特定<code>commit</code>做对比以排查特定更改，引起的bug时。这里特定的<code>commitID</code>，需要我们在commit
+message中加入特定的内容，进行标记。</li>
+<li>运行全部的E2E：项目正式更新至线上时，还是期待完整的E2E测试，能为我们带来高的可用性。这里运行全部的E2E，需要我们在commit
+message中加入特定的内容，进行标记。</li>
+</ul></li>
+<li><strong>对于问题2和3：</strong>
+使用<code>nodejs</code>的<code>child_process</code>模块调度<code>Git</code>命令，并使用正则的方式获取需要的内容。</li>
+<li><strong>对于问题4：</strong>
+使用<code>nodejs</code>的<code>child_process</code>模块调度<code>Cypress</code>命令，并将输出使用<code>Steam</code>进行实时输出</li>
+</ul>
 <h2><span id="jie-jue-fang-an">解决方案</span><a href="#jie-jue-fang-an" class="header-anchor">#</a></h2>
 <h3><span id="huo-qu-yong-yu-dui-bi-de-ji-chu-commitid">获取用于对比的基础commitID</span><a href="#huo-qu-yong-yu-dui-bi-de-ji-chu-commitid" class="header-anchor">#</a></h3>
 <ul>
