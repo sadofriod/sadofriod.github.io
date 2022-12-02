@@ -98,6 +98,71 @@
 
   <div class="lx-entry padding">
     <div>
+      <h2 class="title"><a href="/JS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%8F%E9%AA%8C.html">JS开发中函数式编程的一些经验</a></h2>
+      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2022-11-30 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/project/">project</a></span>
+      <p><div class="tocStart">
+
+</div>
+<!-- toc -->
+<ul>
+<li><a href="#ji-chu-zhi-shi">基础知识</a></li>
+<li><a href="#jian-shao-fu-zuo-yong">减少副作用</a>
+<ul>
+<li><a href="#wei-shi-me-yao-jian-shao-fu-zuo-yong">为什么要减少副作用</a></li>
+<li><a href="#shi-yong-han-shu-ti-dai-yi-xie-jian-dan-de-fu-zhi">使用函数替代一些简单的赋值</a></li>
+<li><a href="#dui-yu-yin-yong-lei-xing-de-xiu-gai">对于引用类型的修改</a></li>
+</ul></li>
+<li><a href="#gao-jie-guo-cheng-zi-shang-er-xia-de-she-ji">高阶过程，自上而下的设计</a></li>
+</ul>
+<!-- tocstop -->
+<div class="tocEnd">
+
+</div>
+<h2><span id="ji-chu-zhi-shi">基础知识</span><a href="#ji-chu-zhi-shi" class="header-anchor">#</a></h2>
+<p>阅读之前你需要知道的知识包括</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-hans/%E5%89%AF%E4%BD%9C%E7%94%A8_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6)#:~:text=%E5%9C%A8%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E4%B8%AD%EF%BC%8C%E5%87%BD%E6%95%B0,%E6%80%A7%E4%B8%8E%E5%8F%AF%E7%A7%BB%E6%A4%8D%E6%80%A7%E3%80%82">什么是副作用</a></p></li>
+<li><p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh/%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0">什么是高阶过程</a>
+## 减少副作用 以下是wiki对于副作用的定义。 &gt;
+在计算机科学中，函数副作用指当调用函数时，除了返回可能的函数值之外，还对主调用函数产生附加的影响。例如修改全局变量（函数外的变量），修改参数，向主调方的终端、管道输出字符或改变外部存储信息等。<br>
+&gt;在某些情况下函数副作用会给程序设计带来不必要的麻烦，给程序带来十分难以查找的错误，并降低程序的可读性与可移植性。严格的函数式语言要求函数必须无任何副作用，但功能性静态函数本身的目的正是产生某些副作用。在生命科学中，副作用往往带有贬义，但在计算机科学中，副作用有时正是“主要作用”。
+### 为什么要减少副作用
+在数学中我们会遇到这样的函数<code>y=x+1</code>，一旦我们确定了<strong>x</strong>的值，那么无论我们在什么时候使用这个函数，得到的<strong>y</strong>的值始终不会发生变化。<br>
+即使，更为复杂的数学公式，比如 <span class="math display">\[
+\begin{align*}
+\frac{n(n-1)}{2n}
+\end{align*}
+\]</span> 也符合上述规律。
+在程序开发中，我们也会定义一些函数，但这里面的一些函数会随着不同时间和上下文调用出现变化。一个简单的例子：
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> variable = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> printVariable () =&gt; &#123;</span><br><span class="line">  variable++;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(variable)</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">printVariable</span>() <span class="comment">//输出: 2</span></span><br><span class="line"><span class="title function_">printVariable</span>() <span class="comment">//输出: 3</span></span><br></pre></td></tr></table></figure>
+一旦这样的函数被大量使用，尤其是作为公共函数在多人开发使用的时候时，会存在一些隐患。用下面的代码来说明这个问题：
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// util.ts</span></span><br><span class="line"><span class="keyword">type</span> <span class="title class_">User</span> = &#123;</span><br><span class="line">  <span class="attr">root</span>: <span class="string">&#x27;normal&#x27;</span> | <span class="string">&#x27;admin&#x27;</span> | <span class="string">&#x27;guest&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="attr">users</span>:<span class="title class_">User</span>[] = [&#123;</span><br><span class="line">  <span class="attr">root</span>: <span class="string">&#x27;guest&#x27;</span></span><br><span class="line">&#125;,&#123;</span><br><span class="line">  <span class="attr">root</span>: <span class="string">&#x27;admin&#x27;</span></span><br><span class="line">&#125;,&#123;</span><br><span class="line">  <span class="attr">root</span>: <span class="string">&#x27;normal&#x27;</span></span><br><span class="line">&#125;,];</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="title function_">converAllUsersTonNormal</span> = (<span class="params"></span>) =&gt;&#123;</span><br><span class="line">  users.<span class="title function_">forEach</span>(<span class="function">(<span class="params">item</span>)=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(item.<span class="property">root</span> !== cacheUser.<span class="property">root</span>)&#123;</span><br><span class="line">      item.<span class="property">root</span> === <span class="string">&#x27;normal&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// developerA.ts</span></span><br><span class="line"><span class="keyword">import</span> &#123;users&#125; <span class="keyword">from</span> <span class="string">&#x27;@path/util&#x27;</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">isAllUsersNormal</span> = (<span class="params"></span>) =&gt;&#123;</span><br><span class="line">  <span class="keyword">return</span> users.<span class="title function_">every</span>(<span class="function"><span class="params">item</span>=&gt;</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(user.<span class="property">root</span> !== <span class="string">&#x27;normal&#x27;</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// developerA.ts</span></span><br><span class="line"><span class="title function_">isAllUsersNormal</span>() <span class="comment">// converAllUsersTonNormal没有在任何地方调用,输出 false</span></span><br><span class="line"><span class="title function_">isAllUsersNormal</span>() <span class="comment">// converAllUsersTonNormal被调用过,输出 true</span></span><br></pre></td></tr></table></figure>
+显而易见的是，在上面的例子中，如果无法确定两个开发者提供的函数调用次数，那么最终我们得到的结果将是无法确定的。<br>
+所以，减少<strong>副作用</strong>就可以减少上述的情况出现，尽可能的降低bug的出现。以下我列举了两个减少副作用的方式。</p></li>
+</ul>
+<h3><span id="shi-yong-han-shu-ti-dai-yi-xie-jian-dan-de-fu-zhi">使用函数替代一些简单的赋值</span><a href="#shi-yong-han-shu-ti-dai-yi-xie-jian-dan-de-fu-zhi" class="header-anchor">#</a></h3>
+<p>比如下面的代码 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> response = &#123;</span><br><span class="line">  <span class="attr">code</span>: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getResponseMsg</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">let</span> result = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">  <span class="keyword">if</span>(respose.<span class="property">code</span> === <span class="number">200</span>)&#123;</span><br><span class="line">    result = <span class="string">&#x27;success&#x27;</span></span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    result = <span class="string">&#x27;error: &#x27;</span></span><br><span class="line">    <span class="keyword">if</span>(respose.<span class="property">code</span> === <span class="number">404</span>)&#123;</span><br><span class="line">      result += <span class="string">&#x27;url not found&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(respose.<span class="property">code</span> === <span class="number">500</span>)&#123;</span><br><span class="line">      result += <span class="string">&#x27;server has error&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    result += <span class="string">&#x27;unknown error&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 用函数替代后</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getResponseMsgFunctional</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span>(respose.<span class="property">code</span> === <span class="number">200</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;success&#x27;</span></span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">getErrorMsg</span> =(<span class="params">msg:<span class="built_in">string</span></span>)=&gt; <span class="string">&#x27;error: &#x27;</span>+ msg;</span><br><span class="line">    <span class="keyword">if</span>(respose.<span class="property">code</span> === <span class="number">404</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">getErrorMsg</span>(<span class="string">&#x27;url not found&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(respose.<span class="property">code</span> === <span class="number">500</span>)&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">getErrorMsg</span>(<span class="string">&#x27;server has error&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_">getErrorMsg</span>(<span class="string">&#x27;unknown error&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 这里可以看到
+<code>getResponseMsgFunctional</code>在
+<code>code !== 200</code>时的处理，用<code>getErrorMsg</code>替换了原本，对<code>result</code>重新赋值的操作。再消除了副作用的同时，也增强了代码的可拓展性和内聚程度，因为一旦之后的有新的需求，可能对<code>errorMsg</code>的前缀产生影响，
+那么后续的更改，可以完全在<code>getErrorMsg</code>中进行。</p>
+<h3><span id="dui-yu-yin-yong-lei-xing-de-xiu-gai">对于引用类型的修改</span><a href="#dui-yu-yin-yong-lei-xing-de-xiu-gai" class="header-anchor">#</a></h3>
+<p>在JS中，引用类型的修改从来都是非常容易出现BUG的操作之一。比如，一个引用类型的变量暴露给多个开发者使用。
+这里推荐用函数替代对于引用的直接修改。比较成熟的方案如<a target="_blank" rel="noopener" href="https://redux.js.org/">redux</a>。<br>
+虽然我们用诸如redux的方案解决了直接修改引用类型，带来的不确定性问题。但同时，这样的设计也存在一些性能问题。<br>
+主流的前端框架中，如果一个组件的props是一个引用类型，那么确定该组件是否需要更新，一般都是进行引用的直接对比。这时，如果一个深层redux对象被共享给了多个组件，那么某一层的更新，可能会引起其他组件的不必要更新。为了解决这个问题，我们可能需要做很多额外的
+工作，来确定该组件是否真的需要更新。</p>
+<h2><span id="gao-jie-guo-cheng-zi-shang-er-xia-de-she-ji">高阶过程，自上而下的设计</span><a href="#gao-jie-guo-cheng-zi-shang-er-xia-de-she-ji" class="header-anchor">#</a></h2>
+<p>在开发过程中，我们不可避免的会遇到一些非常复杂的需求。可能是需要重构一个关联了很多其他模块的函数，可能是深度遍历一个复杂对象并根据每层对象的一些属性调用一些其他的函数。
+遇到这些复杂的情况，我们可以用高阶过程去解决这类问题。
+一个简单的例子，用递归便利数组。 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title function_">arrayIterator</span> = (<span class="params"></span></span><br><span class="line"><span class="params">  arr: <span class="built_in">any</span>[],</span></span><br><span class="line"><span class="params">  condition: (...arg?: <span class="built_in">any</span>[])=&gt; <span class="built_in">boolean</span>, </span></span><br><span class="line"><span class="params">  action: (...arg?: <span class="built_in">any</span>[])=&gt;<span class="built_in">void</span>,</span></span><br><span class="line"><span class="params"></span>) =&gt;&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_">condition</span>())&#123;</span><br><span class="line">      <span class="title function_">action</span>()</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">arrayIterator</span>(arr.<span class="title function_">slice</span>(<span class="number">1</span>),condition,action)</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+事实上我们可以这样看待上面的代码 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">dataOperation</span> = (<span class="params">data: <span class="built_in">any</span></span>) =&gt;&#123;</span><br><span class="line">  <span class="comment">// do something for generate `newData`</span></span><br><span class="line">  <span class="keyword">return</span> newData</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">arrayIterator</span> = (<span class="params"></span></span><br><span class="line"><span class="params">  data: <span class="built_in">any</span>,</span></span><br><span class="line"><span class="params">  condition: (...arg?: <span class="built_in">any</span>[])=&gt; <span class="built_in">boolean</span>, </span></span><br><span class="line"><span class="params">  recursionAction?: (...arg?: <span class="built_in">any</span>[])=&gt;<span class="built_in">any</span>,</span></span><br><span class="line"><span class="params">  recursionEndAction?: (...arg?: <span class="built_in">any</span>[])=&gt;<span class="built_in">any</span>,</span></span><br><span class="line"><span class="params"></span>) =&gt;&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_">condition</span>())&#123;</span><br><span class="line">      <span class="title function_">recursionAction</span>()</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">arrayIterator</span>(<span class="title function_">dataOperation</span>(data),condition,action)</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="title function_">recursionEndAction</span>()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+这意味着，大部分递归都可以用这样的方式进行拆分。拆分后的递归将拥有很强的拓展性。而且维护每个部分的心智负担将降低，修改某个部分只需要关注函数内部逻辑，而不用整体的考虑。</p>
+</p>
+      <div class="post-button"><a class="btn" href="/JS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%8F%E9%AA%8C.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
+    </div>
+  </div>
+  <div class="lx-entry padding">
+    <div>
       <h2 class="title"><a href="/%E5%A2%9E%E9%87%8F%E8%BF%90%E8%A1%8CE2E%E6%B5%8B%E8%AF%95.html">增量运行E2E测试</a></h2>
       <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2022-08-08 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/project/">project</a></span>
       <p><p><img src="/images/e2e-testing-banner.png"></p>
@@ -815,82 +880,6 @@ JQ煮意country。</p>
 <p>然后进行正常的hexo的生成和测试 ``` shell hexo g &amp; hexo s</p>
 </p>
       <div class="post-button"><a class="btn" href="/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA-%E7%9B%AE%E5%BD%95%E4%BB%A5%E5%8F%8ARSS%E8%AE%A2%E9%98%85.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
-    </div>
-  </div>
-  <div class="lx-entry padding">
-    <div>
-      <h2 class="title"><a href="/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA--%E6%B8%B2%E6%9F%93Latex%E5%85%AC%E5%BC%8F.html">Hexo的一些增强--渲染Latex公式</a></h2>
-      <span class="lx-post-detail"><i class="fa fa-calendar-o"></i> 2021-12-09 | <i class="fa fa-folder-o"></i> <a class="category-link" href="/categories/interesting/">interesting</a></span>
-      <p><div class="tocStart">
-
-</div>
-<!-- toc -->
-<ul>
-<li><a href="#yue-du-zhi-qian">阅读之前</a>
-<ul>
-<li><a href="#ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua">你需要知道的知识包括</a></li>
-<li><a href="#qian-zhi-de-yi-xie-huan-jing">前置的一些环境</a></li>
-</ul></li>
-<li><a href="#dui-hexo-xiang-mu-jin-xing-xiu-gai">对Hexo项目进行修改</a>
-<ul>
-<li><a href="#yi-lai-an-zhuang">依赖安装</a></li>
-<li><a href="#pei-zhi-wen-jian-de-xiu-gai">配置文件的修改</a></li>
-</ul></li>
-<li><a href="#xi-tong-ming-ling-an-zhuang">系统命令安装</a></li>
-<li><a href="#chang-shi-gou-jian">尝试构建</a></li>
-</ul>
-<!-- tocstop -->
-<div class="tocEnd">
-
-</div>
-<h2><span id="yue-du-zhi-qian">阅读之前</span><a href="#yue-du-zhi-qian" class="header-anchor">#</a></h2>
-<h3><span id="ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua">你需要知道的知识包括</span><a href="#ni-xu-yao-zhi-dao-de-zhi-shi-bao-gua" class="header-anchor">#</a></h3>
-<ul>
-<li>Hexo基本命令</li>
-<li>Shell的使用</li>
-<li>laTex的使用</li>
-</ul>
-<h3><span id="qian-zhi-de-yi-xie-huan-jing">前置的一些环境</span><a href="#qian-zhi-de-yi-xie-huan-jing" class="header-anchor">#</a></h3>
-<ul>
-<li>Node.js</li>
-<li>Linux shell/ macOS shell</li>
-</ul>
-<h2><span id="dui-hexo-xiang-mu-jin-xing-xiu-gai">对Hexo项目进行修改</span><a href="#dui-hexo-xiang-mu-jin-xing-xiu-gai" class="header-anchor">#</a></h2>
-<h3><span id="yi-lai-an-zhuang">依赖安装</span><a href="#yi-lai-an-zhuang" class="header-anchor">#</a></h3>
-<p>首先进入到Hexo项目的根目录中，运行 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-math hexo-renderer-pandoc #当你使用npm时</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">or</span></span><br><span class="line">yarn add hexo-math hexo-renderer-pandoc #当你使用yarn时</span><br></pre></td></tr></table></figure></p>
-<h3><span id="pei-zhi-wen-jian-de-xiu-gai">配置文件的修改</span><a href="#pei-zhi-wen-jian-de-xiu-gai" class="header-anchor">#</a></h3>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#插件</span></span><br><span class="line"><span class="attr">markdown:</span></span><br><span class="line">  <span class="attr">plugins:</span></span><br><span class="line">    <span class="string">....</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">hexo-math</span> <span class="comment">#增加</span></span><br><span class="line"><span class="string">.....</span></span><br><span class="line"><span class="comment"># 增加这一配置MathJax</span></span><br><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="attr">engine:</span> <span class="string">&#x27;mathjax&#x27;</span></span><br><span class="line">  <span class="attr">mathjax:</span></span><br><span class="line">    <span class="attr">src:</span> <span class="string">https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML</span></span><br></pre></td></tr></table></figure>
-<h2><span id="xi-tong-ming-ling-an-zhuang">系统命令安装</span><a href="#xi-tong-ming-ling-an-zhuang" class="header-anchor">#</a></h2>
-<p>需要安装<code>pandoc</code>命令，用以支持LaTex的解析
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">brew install pandoc #当你使用macOS时</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">or</span></span><br><span class="line">sudo apt-get install pandoc #当你使用ubuntu时</span><br></pre></td></tr></table></figure></p>
-<h2><span id="chang-shi-gou-jian">尝试构建</span><a href="#chang-shi-gou-jian" class="header-anchor">#</a></h2>
-<p>如果已经构建过项目，请先进入项目根目录下运行，清除缓存
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean</span><br></pre></td></tr></table></figure></p>
-<p>然后进行正常的hexo的生成和测试 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g &amp; hexo s</span><br></pre></td></tr></table></figure></p>
-测试LaTex，应能得到图1.1 <code>
-<pre>
-$$
-\begin&#123;align*&#125;
-len = \sqrt&#123;(X_&#123;Split_&#123;m&#125;&#125;-X_&#123;SP&#125;)^&#123;2&#125;+(Y_&#123;Split_&#123;m&#125;&#125;-Y_&#123;SP&#125;)^&#123;2&#125;&#125;\\
-\\
-\theta = \arctan \frac&#123;X_&#123;Split_&#123;m&#125;&#125;&#125;&#123;Y_&#123;Slit_&#123;m&#125;&#125;&#125;\\
-\\
-Y_&#123;offset&#125; = len·\cos \theta \\
-\\
-C1=(X_&#123;Split_&#123;m&#125;&#125;,Y_&#123;Split_&#123;m&#125;&#125;-len)\\
-C2=(X_&#123;Split_&#123;m&#125;&#125;,Y_&#123;Split_&#123;m&#125;&#125;+len)
-\end&#123;align*&#125;
-$$
-  </pre>
-</code>
-<div style="display:flex;justify-contnet:center;align-items:center;flex-direction: column;">
-<img width="300px" src="/images/equations.png">
-<p>
-图1.1
-</p>
-</div>
-</p>
-      <div class="post-button"><a class="btn" href="/Hexo%E7%9A%84%E4%B8%80%E4%BA%9B%E5%A2%9E%E5%BC%BA--%E6%B8%B2%E6%9F%93Latex%E5%85%AC%E5%BC%8F.html" rel="noopener"><i class="fa fa-angle-double-right fa-fw"></i>Read More</a></div>
     </div>
   </div>
 
