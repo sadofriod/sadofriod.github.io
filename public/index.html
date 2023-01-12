@@ -229,13 +229,14 @@ hook</a> + <a target="_blank" rel="noopener" href="https://pnpm.io/workspaces">p
 <li>配置化的组件</li>
 </ul>
 <h2><span id="ji-yu-monorepo-chong-jian-mu-lu-jie-gou">基于monorepo重建目录结构</span><a href="#ji-yu-monorepo-chong-jian-mu-lu-jie-gou" class="header-anchor">#</a></h2>
-<p>### 为什么选择monorepo？ 从以下角度出发： +
-为拆分后的功能提供独立的版本控制和依赖管理。 +
+<h3><span id="wei-shi-me-xuan-ze-monorepo">为什么选择monorepo？</span><a href="#wei-shi-me-xuan-ze-monorepo" class="header-anchor">#</a></h3>
+<p>从以下角度出发： + 为拆分后的功能提供独立的版本控制和依赖管理。 +
 使得CI可以按照目录维度进行独立的构建，减少构建的时间。 +
 独立构建后产生功能维度的预发版本，可以更加充分的进行测试。 +
 可以简单为抽离后的项目提供统一版本的公共依赖 + 可以结合 pnpm workspace
 减少的坏境创建的link，对本地全局环境的污染</p>
-<p>### 抽离的原则 这里以系统中Notice组件为例。</p>
+<h3><span id="chou-chi-de-yuan-ze">抽离的原则</span><a href="#chou-chi-de-yuan-ze" class="header-anchor">#</a></h3>
+<p>这里以系统中Notice组件为例。</p>
 <p>Notice组件，顾名思义，这是用来处理系统中所有弹出式通知的组件。只要用户的操作行为，在业务上被定义为需要告知给用户的，都会使用它对消息内容进行展示。它被系统大部分功能依赖，例如现有目录中的：
 + 表单组件生成器 + 数据模型及处理 + 前端状态管理 + 部分工具函数</p>
 <p>如果对该组件进行抽离，可以预见的是会产生大量的文件修改和测试部分重写。即使花费如此高昂的代价，也要对这类组件进行抽离，对这种行为，我一般遵循这几个原则：
@@ -250,11 +251,12 @@ hook</a> + <a target="_blank" rel="noopener" href="https://pnpm.io/workspaces">p
 <strong>3</strong>之后，我们对此类功能，抛弃传统的webpack将所有依赖打包成同一个bundle(这里先不讨论
 async
 import)，无论是使用<code>script + ESM</code>还是<code>cjs + new Function</code>的模式，我们都能在不进行大规模系统构建的前提下，完成对某个功能更新</p>
-<p>### 为每个子项目添加自己的 package.json 和 tsconfig.json
-这是为了让抽离后的项目获得下面的特性： + 独立的配置管理，如 alias path +
-独立的依赖，如A组件依赖了a包，但是系统中其他组件没有依赖 +
+<h3><span id="wei-mei-ge-zi-xiang-mu-tian-jia-zi-ji-de-package-json-he-tsconfig-json">为每个子项目添加自己的
+package.json 和 tsconfig.json</span><a href="#wei-mei-ge-zi-xiang-mu-tian-jia-zi-ji-de-package-json-he-tsconfig-json" class="header-anchor">#</a></h3>
+<p>这是为了让抽离后的项目获得下面的特性： + 独立的配置管理，如 alias
+path + 独立的依赖，如A组件依赖了a包，但是系统中其他组件没有依赖 +
 独立的版本控制，这里是指 package.json中的version字段</p>
-### 重建后的目录结构
+<h3><span id="chong-jian-hou-de-mu-lu-jie-gou">重建后的目录结构</span><a href="#chong-jian-hou-de-mu-lu-jie-gou" class="header-anchor">#</a></h3>
 <details>
 <summary>
 整体项目目录结构
@@ -319,16 +321,19 @@ dataComp下项目的一般结构
 更容易控制依赖的版本</p>
 <p>同时，我将
 <code>/core</code>目录称之为<strong>主项目</strong>，它将提供所有项目的构建配置。</p>
-<p>### 在主项目中引用抽离的项目 +
-dev环境的package(重建后目录中<code>common</code>部分)：使用<code>pnpm link</code>创建抽离项目的软连接并引入
-+
-dev环境的component(重建后目录中<code>dataComp</code>部分)：调用主项目的webpack进行构建后，通过本地的dev服务发送静态资源文件(bundle.js)，在主项目中使用
-<code>new Function</code> 的方式引入 + prod环境的package：在主项目中运行
-<code>pnpm install</code>, 以module的方式引入。 + prod环境的component:
+<h3><span id="zai-zhu-xiang-mu-zhong-yin-yong-chou-chi-de-xiang-mu">在主项目中引用抽离的项目</span><a href="#zai-zhu-xiang-mu-zhong-yin-yong-chou-chi-de-xiang-mu" class="header-anchor">#</a></h3>
+<ul>
+<li>dev环境的package(重建后目录中<code>common</code>部分)：使用<code>pnpm link</code>创建抽离项目的软连接并引入</li>
+<li>dev环境的component(重建后目录中<code>dataComp</code>部分)：调用主项目的webpack进行构建后，通过本地的dev服务发送静态资源文件(bundle.js)，在主项目中使用
+<code>new Function</code> 的方式引入</li>
+<li>prod环境的package：在主项目中运行 <code>pnpm install</code>,
+以module的方式引入。</li>
+<li>prod环境的component:
 CI中在每个项目目录中运行构建命令，通过nginx的location，以目录名称为路由地址，提供静态资源文件(bundle.js)，在主项目中使用
-<code>new Function</code> 的方式引入</p>
-<p>### 如何在dev环境维持抽离后的module局部热更新
-确定构建模式后，为了提供良好的开发体验。我们仍然期望，抽离后的代码在开发环境出现更新时，项目仍能提供局部热更新的能力。</p>
+<code>new Function</code> 的方式引入</li>
+</ul>
+<h3><span id="ru-he-zai-dev-huan-jing-wei-chi-chou-chi-hou-de-module-ju-bu-re-geng-xin">如何在dev环境维持抽离后的module局部热更新</span><a href="#ru-he-zai-dev-huan-jing-wei-chi-chou-chi-hou-de-module-ju-bu-re-geng-xin" class="header-anchor">#</a></h3>
+<p>确定构建模式后，为了提供良好的开发体验。我们仍然期望，抽离后的代码在开发环境出现更新时，项目仍能提供局部热更新的能力。</p>
 <p>为了实现这个需求，我们需要： 1. 扩展主项目webpack的构建范围。 2.
 使用<code>link</code>命令，创建一个基于软连接的本地依赖。</p>
 <p>实现<strong>1</strong>，需要完成向webpack添加： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@returns</span> &#123;<span class="type">string[]</span>&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">resolveAppsRoot</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> commonPath = path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> deps = fs.<span class="title function_">readdirSync</span>(path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>));</span><br><span class="line">  <span class="keyword">return</span> deps.<span class="title function_">map</span>(<span class="function">(<span class="params">pathVal</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> path.<span class="title function_">join</span>(commonPath, pathVal);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> &#123;<span class="type">string[]</span>&#125; <span class="variable">mainModulesPath</span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@returns</span> &#123;<span class="type">string[]</span>&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getValidCompilerModulesPath</span> = (<span class="params">mainModulesPath</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> appsRoot = <span class="title function_">resolveAppsRoot</span>();</span><br><span class="line">  <span class="keyword">return</span> mainModulesPath.<span class="title function_">concat</span>(</span><br><span class="line">    appsRoot.<span class="title function_">reduce</span>(<span class="function">(<span class="params">curr, rootPath</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> [...curr, path.<span class="title function_">join</span>(rootPath, <span class="string">&#x27;src&#x27;</span>), path.<span class="title function_">join</span>(rootPath, <span class="string">&#x27;node_modules&#x27;</span>)];</span><br><span class="line">    &#125;, [])</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> &#123;<span class="type">string</span>&#125; <span class="variable">appSrc</span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@returns</span> &#123;<span class="type">string[]</span>&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">resolveAppsSrc</span> = (<span class="params">appSrc</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> commonPath = path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> deps = fs.<span class="title function_">readdirSync</span>(path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>));</span><br><span class="line">  <span class="keyword">return</span> [</span><br><span class="line">    appSrc,</span><br><span class="line">    ...deps.<span class="title function_">map</span>(<span class="function">(<span class="params">pathVal</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> path.<span class="title function_">join</span>(commonPath, pathVal, <span class="string">&#x27;src&#x27;</span>);</span><br><span class="line">    &#125;),</span><br><span class="line">  ];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// webpack config modify</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      <span class="attr">modules</span>: <span class="title function_">getValidCompilerModulesPath</span>(</span><br><span class="line">        [<span class="string">&#x27;node_modules&#x27;</span>, paths.<span class="property">appNodeModules</span>].<span class="title function_">concat</span>(modules.<span class="property">additionalModulePaths</span> || [])</span><br><span class="line">      ),</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">module</span>:&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.(js|mjs|jsx|ts|tsx)$/</span>,</span><br><span class="line">        <span class="attr">include</span>: isEnvDevelopment ? <span class="title function_">resolveAppsSrc</span>(pathsappSrc) : paths.<span class="property">appSrc</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="built_in">require</span>.<span class="title function_">resolve</span>(<span class="string">&#x27;babel-loader&#x27;</span>),</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -339,8 +344,8 @@ CI中在每个项目目录中运行构建命令，通过nginx的location，以�
 <code>resolveAppsSrc</code> 函数处理抽离后项目的需要编译的路径 +
 <code>getValidCompilerModulesPath</code>
 数处理抽离后项目的依赖需要编译的路径</p>
-<p>#### <strong>控制所有项目中react的版本&amp;单一实例控制</strong>
-<strong>step1:</strong>
+<h4><span id="kong-zhi-suo-you-xiang-mu-zhong-react-de-ban-ben-amp-dan-yi-shi-li-kong-zhi"><strong>控制所有项目中react的版本&amp;单一实例控制</strong></span><a href="#kong-zhi-suo-you-xiang-mu-zhong-react-de-ban-ben-amp-dan-yi-shi-li-kong-zhi" class="header-anchor">#</a></h4>
+<p><strong>step1:</strong>
 在项目的根目录下创建<code>pnpm-workspace.yaml</code> 和
 <code>package.json</code>。</p>
 <p><strong>step2:</strong> 然后在根目录运行如下命令： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pnpm add -w react react-dom</span><br></pre></td></tr></table></figure>
@@ -357,11 +362,11 @@ workspace。使得抽离后的项目中的依赖可以从工作区共享。减�
 <li>step4:为抽离后的项目提供了单一实例的react和react-dom，这在固定了react版本的同时，解决了react
 hook要求项目只能包含一个react实例的问题。但这里没有完全解决，context共享问题，在多个项目共享一个带有<code>useContext</code>的依赖时，会出现<code>undefined</code>的问题</li>
 </ul>
-<p>#### <strong>多项目context共享</strong>
-以formik为例，需要修改主项目的webpack <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="attr">alias</span>: &#123;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      <span class="attr">formik</span>: path.<span class="title function_">resolve</span>(<span class="string">&#x27;../node_modules/formik&#x27;</span>),</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 一些使用新版 CRA
+<h4><span id="duo-xiang-mu-context-gong-xiang"><strong>多项目context共享</strong></span><a href="#duo-xiang-mu-context-gong-xiang" class="header-anchor">#</a></h4>
+<p>以formik为例，需要修改主项目的webpack <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="attr">alias</span>: &#123;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      <span class="attr">formik</span>: path.<span class="title function_">resolve</span>(<span class="string">&#x27;../node_modules/formik&#x27;</span>),</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 一些使用新版 CRA
 的项目还需要修改<code>ModuleScopePlugin</code>，来放开对于依赖范围的检测</p>
-<p>### 提供alias功能
-我们在开发中，经常会遇到引用一些公共函数的需求，但是，如果引用的层级太深，难免会出现形如
+<h3><span id="ti-gong-alias-gong-neng">提供alias功能</span><a href="#ti-gong-alias-gong-neng" class="header-anchor">#</a></h3>
+<p>我们在开发中，经常会遇到引用一些公共函数的需求，但是，如果引用的层级太深，难免会出现形如
 <code>import moduleFunc from '../../../../../utils/getData'</code>的路径。这样的路径，可读性差，并且如果出现整体目录迁移并且引用该功能的文件非常，会使得这些文件都出现修改。</p>
 <p>所以一般我们都会使用形如<code>import moduleFunc from @utils/getData;</code>的方式进行优化。</p>
 <p>但如果在抽离后的项目使用这样的特性，需要对主项目的webpack再做一些更改，这是因为由于构建命令的执行目录在主项目下，它们的相对路径，并没有对应到抽离后的项目目录。需要对webpack做出如下修改：
