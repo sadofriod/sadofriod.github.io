@@ -143,9 +143,17 @@ package.json 和 tsconfig.json</a></li>
 
 </div>
 <h2><span id="ji-chu-zhi-shi">基础知识</span><a href="#ji-chu-zhi-shi" class="header-anchor">#</a></h2>
-<p>阅读之前你需要知道的知识包括 + <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Monorepo">什么是monorepo</a> + <a target="_blank" rel="noopener" href="https://pnpm.io/">什么是pnpm</a> + <a target="_blank" rel="noopener" href="https://webpack.js.org/">什么是webpack</a> + <a target="_blank" rel="noopener" href="https://create-react-app.dev/">什么是create-react-app</a> + <a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/babel-with-typescript.html">使用babel编译TS项目</a>
-+ <a target="_blank" rel="noopener" href="https://reactjs.org/warnings/invalid-hook-call-warning.html">错误的调用react
-hook</a> + <a target="_blank" rel="noopener" href="https://pnpm.io/workspaces">pnpm workspace</a></p>
+<p>阅读之前你需要知道的知识包括</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Monorepo">什么是monorepo</a></li>
+<li><a target="_blank" rel="noopener" href="https://pnpm.io/">什么是pnpm</a></li>
+<li><a target="_blank" rel="noopener" href="https://webpack.js.org/">什么是webpack</a></li>
+<li><a target="_blank" rel="noopener" href="https://create-react-app.dev/">什么是create-react-app</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.typescriptlang.org/docs/handbook/babel-with-typescript.html">使用babel编译TS项目</a></li>
+<li><a target="_blank" rel="noopener" href="https://reactjs.org/warnings/invalid-hook-call-warning.html">错误的调用react
+hook</a></li>
+<li><a target="_blank" rel="noopener" href="https://pnpm.io/workspaces">pnpm workspace</a></li>
+</ul>
 <h2><span id="wei-shi-me-xu-yao-qian-yi-zhi-wei-qian-duan">为什么需要迁移至微前端？</span><a href="#wei-shi-me-xu-yao-qian-yi-zhi-wei-qian-duan" class="header-anchor">#</a></h2>
 <p>随着项目不断迭代，原有的项目体积在不断增大。伴随而来的是功能和依赖数量的快速增长。这使得整体项目将越来越难以维护。
 并且如果在一个基础旧的功能上进行更新，我们又希望能做到最小代价的开发、测试和构建的话，那么将原有的单体架构拆分成更小的单元，这将是势在必行的。
@@ -230,18 +238,30 @@ hook</a> + <a target="_blank" rel="noopener" href="https://pnpm.io/workspaces">p
 </ul>
 <h2><span id="ji-yu-monorepo-chong-jian-mu-lu-jie-gou">基于monorepo重建目录结构</span><a href="#ji-yu-monorepo-chong-jian-mu-lu-jie-gou" class="header-anchor">#</a></h2>
 <h3><span id="wei-shi-me-xuan-ze-monorepo">为什么选择monorepo？</span><a href="#wei-shi-me-xuan-ze-monorepo" class="header-anchor">#</a></h3>
-<p>从以下角度出发： + 为拆分后的功能提供独立的版本控制和依赖管理。 +
-使得CI可以按照目录维度进行独立的构建，减少构建的时间。 +
-独立构建后产生功能维度的预发版本，可以更加充分的进行测试。 +
-可以简单为抽离后的项目提供统一版本的公共依赖 + 可以结合 pnpm workspace
-减少的坏境创建的link，对本地全局环境的污染</p>
+<p>从以下角度出发：</p>
+<ul>
+<li>为拆分后的功能提供独立的版本控制和依赖管理。</li>
+<li>使得CI可以按照目录维度进行独立的构建，减少构建的时间。</li>
+<li>独立构建后产生功能维度的预发版本，可以更加充分的进行测试。</li>
+<li>可以简单为抽离后的项目提供统一版本的公共依赖</li>
+<li>可以结合 pnpm workspace
+减少的坏境创建的link，对本地全局环境的污染</li>
+</ul>
 <h3><span id="chou-chi-de-yuan-ze">抽离的原则</span><a href="#chou-chi-de-yuan-ze" class="header-anchor">#</a></h3>
 <p>这里以系统中Notice组件为例。</p>
-<p>Notice组件，顾名思义，这是用来处理系统中所有弹出式通知的组件。只要用户的操作行为，在业务上被定义为需要告知给用户的，都会使用它对消息内容进行展示。它被系统大部分功能依赖，例如现有目录中的：
-+ 表单组件生成器 + 数据模型及处理 + 前端状态管理 + 部分工具函数</p>
-<p>如果对该组件进行抽离，可以预见的是会产生大量的文件修改和测试部分重写。即使花费如此高昂的代价，也要对这类组件进行抽离，对这种行为，我一般遵循这几个原则：
-1. 该功能需要被其他抽离的组件调用。 2.
-该功能未来可能会产生可预见较为频繁的修改。 3. 需要提供在线的热更新。</p>
+<p>Notice组件，顾名思义，这是用来处理系统中所有弹出式通知的组件。只要用户的操作行为，在业务上被定义为需要告知给用户的，都会使用它对消息内容进行展示。它被系统大部分功能依赖，例如现有目录中的：</p>
+<ul>
+<li><p>表单组件生成器</p></li>
+<li><p>数据模型及处理</p></li>
+<li><p>前端状态管理</p></li>
+<li><p>部分工具函数</p>
+<p>如果对该组件进行抽离，可以预见的是会产生大量的文件修改和测试部分重写。即使花费如此高昂的代价，也要对这类组件进行抽离，对这种行为，我一般遵循这几个原则：</p></li>
+</ul>
+<ol type="1">
+<li>该功能需要被其他抽离的组件调用。</li>
+<li>该功能未来可能会产生可预见较为频繁的修改。</li>
+<li>需要提供在线的热更新。</li>
+</ol>
 <p>这里着重说一2和3。</p>
 <p><strong>2</strong>中提到的 <em>功能可预见较为频繁的修改</em>
 我们可以从notice组件的迭代得到答案。</p>
@@ -253,9 +273,12 @@ async
 import)，无论是使用<code>script + ESM</code>还是<code>cjs + new Function</code>的模式，我们都能在不进行大规模系统构建的前提下，完成对某个功能更新</p>
 <h3><span id="wei-mei-ge-zi-xiang-mu-tian-jia-zi-ji-de-package-json-he-tsconfig-json">为每个子项目添加自己的
 package.json 和 tsconfig.json</span><a href="#wei-mei-ge-zi-xiang-mu-tian-jia-zi-ji-de-package-json-he-tsconfig-json" class="header-anchor">#</a></h3>
-<p>这是为了让抽离后的项目获得下面的特性： + 独立的配置管理，如 alias
-path + 独立的依赖，如A组件依赖了a包，但是系统中其他组件没有依赖 +
-独立的版本控制，这里是指 package.json中的version字段</p>
+<p>这是为了让抽离后的项目获得下面的特性：</p>
+<ul>
+<li>独立的配置管理，如 alias path</li>
+<li>独立的依赖，如A组件依赖了a包，但是系统中其他组件没有依赖</li>
+<li>独立的版本控制，这里是指 package.json中的version字段</li>
+</ul>
 <h3><span id="chong-jian-hou-de-mu-lu-jie-gou">重建后的目录结构</span><a href="#chong-jian-hou-de-mu-lu-jie-gou" class="header-anchor">#</a></h3>
 <details>
 <summary>
@@ -315,12 +338,14 @@ dataComp下项目的一般结构
 <code>eject</code>命令，使得我们可以续改项目的构建配置。 ###
 构建模式的选择 —— 单独打包 or 统一打包
 运行eject后，我们需要确定对于抽离后的项目，是选择每个项目都配置单独的构建流程，还是使用一个通用的构建方式。</p>
-<p>这里出于下面点考虑，我选择了使用通用构建方式： +
-开发成本低，不必为每个抽离后的项目，开发单独的webpack配置 +
-原本是从单体项目中抽离的，所以构建流程大体一致 +
-更容易控制依赖的版本</p>
+<p>这里出于下面点考虑，我选择了使用通用构建方式：</p>
+<ul>
+<li><p>开发成本低，不必为每个抽离后的项目，开发单独的webpack配置</p></li>
+<li><p>原本是从单体项目中抽离的，所以构建流程大体一致</p></li>
+<li><p>更容易控制依赖的版本</p>
 <p>同时，我将
-<code>/core</code>目录称之为<strong>主项目</strong>，它将提供所有项目的构建配置。</p>
+<code>/core</code>目录称之为<strong>主项目</strong>，它将提供所有项目的构建配置。</p></li>
+</ul>
 <h3><span id="zai-zhu-xiang-mu-zhong-yin-yong-chou-chi-de-xiang-mu">在主项目中引用抽离的项目</span><a href="#zai-zhu-xiang-mu-zhong-yin-yong-chou-chi-de-xiang-mu" class="header-anchor">#</a></h3>
 <ul>
 <li>dev环境的package(重建后目录中<code>common</code>部分)：使用<code>pnpm link</code>创建抽离项目的软连接并引入</li>
@@ -334,16 +359,22 @@ CI中在每个项目目录中运行构建命令，通过nginx的location，以�
 </ul>
 <h3><span id="ru-he-zai-dev-huan-jing-wei-chi-chou-chi-hou-de-module-ju-bu-re-geng-xin">如何在dev环境维持抽离后的module局部热更新</span><a href="#ru-he-zai-dev-huan-jing-wei-chi-chou-chi-hou-de-module-ju-bu-re-geng-xin" class="header-anchor">#</a></h3>
 <p>确定构建模式后，为了提供良好的开发体验。我们仍然期望，抽离后的代码在开发环境出现更新时，项目仍能提供局部热更新的能力。</p>
-<p>为了实现这个需求，我们需要： 1. 扩展主项目webpack的构建范围。 2.
-使用<code>link</code>命令，创建一个基于软连接的本地依赖。</p>
+<p>为了实现这个需求，我们需要：</p>
+<ol type="1">
+<li>扩展主项目webpack的构建范围。</li>
+<li>使用<code>link</code>命令，创建一个基于软连接的本地依赖。</li>
+</ol>
 <p>实现<strong>1</strong>，需要完成向webpack添加： <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@returns</span> &#123;<span class="type">string[]</span>&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">resolveAppsRoot</span> = (<span class="params"></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> commonPath = path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> deps = fs.<span class="title function_">readdirSync</span>(path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>));</span><br><span class="line">  <span class="keyword">return</span> deps.<span class="title function_">map</span>(<span class="function">(<span class="params">pathVal</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> path.<span class="title function_">join</span>(commonPath, pathVal);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> &#123;<span class="type">string[]</span>&#125; <span class="variable">mainModulesPath</span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@returns</span> &#123;<span class="type">string[]</span>&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">getValidCompilerModulesPath</span> = (<span class="params">mainModulesPath</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> appsRoot = <span class="title function_">resolveAppsRoot</span>();</span><br><span class="line">  <span class="keyword">return</span> mainModulesPath.<span class="title function_">concat</span>(</span><br><span class="line">    appsRoot.<span class="title function_">reduce</span>(<span class="function">(<span class="params">curr, rootPath</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> [...curr, path.<span class="title function_">join</span>(rootPath, <span class="string">&#x27;src&#x27;</span>), path.<span class="title function_">join</span>(rootPath, <span class="string">&#x27;node_modules&#x27;</span>)];</span><br><span class="line">    &#125;, [])</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> &#123;<span class="type">string</span>&#125; <span class="variable">appSrc</span></span></span><br><span class="line"><span class="comment">* <span class="doctag">@returns</span> &#123;<span class="type">string[]</span>&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">resolveAppsSrc</span> = (<span class="params">appSrc</span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> commonPath = path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>);</span><br><span class="line">  <span class="keyword">const</span> deps = fs.<span class="title function_">readdirSync</span>(path.<span class="title function_">resolve</span>(<span class="string">&#x27;../common&#x27;</span>));</span><br><span class="line">  <span class="keyword">return</span> [</span><br><span class="line">    appSrc,</span><br><span class="line">    ...deps.<span class="title function_">map</span>(<span class="function">(<span class="params">pathVal</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> path.<span class="title function_">join</span>(commonPath, pathVal, <span class="string">&#x27;src&#x27;</span>);</span><br><span class="line">    &#125;),</span><br><span class="line">  ];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// webpack config modify</span></span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      <span class="attr">modules</span>: <span class="title function_">getValidCompilerModulesPath</span>(</span><br><span class="line">        [<span class="string">&#x27;node_modules&#x27;</span>, paths.<span class="property">appNodeModules</span>].<span class="title function_">concat</span>(modules.<span class="property">additionalModulePaths</span> || [])</span><br><span class="line">      ),</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">  <span class="attr">module</span>:&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="attr">rules</span>: [</span><br><span class="line">      <span class="comment">//...</span></span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">test</span>: <span class="regexp">/\.(js|mjs|jsx|ts|tsx)$/</span>,</span><br><span class="line">        <span class="attr">include</span>: isEnvDevelopment ? <span class="title function_">resolveAppsSrc</span>(pathsappSrc) : paths.<span class="property">appSrc</span>,</span><br><span class="line">        <span class="attr">loader</span>: <span class="built_in">require</span>.<span class="title function_">resolve</span>(<span class="string">&#x27;babel-loader&#x27;</span>),</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">      &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-这里解释一下这些改动的意义： + <code>module.rules</code> 的修改,
-扩展了webpack的构建范围，可以使用主项目中的babel（支持typescript），编译抽离后的项目。
-+ <code>resolve.modules</code>
-的修改，是让主项目webpack可以解析抽离后项目的独立依赖。 +
-<code>resolveAppsSrc</code> 函数处理抽离后项目的需要编译的路径 +
-<code>getValidCompilerModulesPath</code>
-数处理抽离后项目的依赖需要编译的路径</p>
+这里解释一下这些改动的意义：</p>
+<ul>
+<li><code>module.rules</code> 的修改,
+扩展了webpack的构建范围，可以使用主项目中的babel（支持typescript），编译抽离后的项目。</li>
+<li><code>resolve.modules</code>
+的修改，是让主项目webpack可以解析抽离后项目的独立依赖。</li>
+<li><code>resolveAppsSrc</code> 函数处理抽离后项目的需要编译的路径</li>
+<li><code>getValidCompilerModulesPath</code>
+数处理抽离后项目的依赖需要编译的路径</li>
+</ul>
 <h4><span id="kong-zhi-suo-you-xiang-mu-zhong-react-de-ban-ben-amp-dan-yi-shi-li-kong-zhi"><strong>控制所有项目中react的版本&amp;单一实例控制</strong></span><a href="#kong-zhi-suo-you-xiang-mu-zhong-react-de-ban-ben-amp-dan-yi-shi-li-kong-zhi" class="header-anchor">#</a></h4>
 <p><strong>step1:</strong>
 在项目的根目录下创建<code>pnpm-workspace.yaml</code> 和
