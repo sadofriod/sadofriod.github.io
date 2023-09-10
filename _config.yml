@@ -1,39 +1,25 @@
-# Hexo Configuration
-## Docs: https://hexo.io/docs/configuration.html
-## Source: https://github.com/hexojs/hexo/
-
-# Site
 title: Ashes Born's Blog
 subtitle: 心中有座观澜阁，土木付炬皆尘生
 description: Work & Life & learn
-keywords: fornt-end,react,node,raspberry,Linux,docker,java,javascript,algorithm
+keywords: 'fornt-end,react,node,raspberry,Linux,docker,java,javascript,algorithm'
 author: Ashes Born
-language: 
-  zh
-  en
+language: zh en
 timezone: Asia/ShangHai
-
-# URL
-## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://sadofriod.github.io
+url: 'http://sadofriod.github.io'
 root: /
-permalink: :title.html
-
-# Directory
+permalink: ':title.html'
 source_dir: source
 public_dir: public
 tag_dir: tags
 archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
-i18n_dir: :lang
-skip_render:
-
-# Writing
-new_post_name: :title.md # File name of new posts
+i18n_dir: ':lang'
+skip_render: null
+new_post_name: ':title.md'
 default_layout: post
-titlecase: false # Transform title into titlecase
-external_link: true # Open external links in new tab
+titlecase: false
+external_link: true
 filename_case: 0
 render_drafts: true
 post_asset_folder: true
@@ -43,73 +29,41 @@ highlight:
   enable: true
   line_number: true
   auto_detect: false
-  tab_replace:
-
-# Home page setting
-# path: Root path for your blogs index page. (default = '')
-# per_page: Posts displayed per page. (0 = disable pagination)
-# order_by: Posts order. (Order by date descending by default)
+  tab_replace: null
 index_generator:
-  path: ""
+  path: ''
   per_page: 10
-  order_by: -date
-
-# Category & Tag
+  order_by: '-date'
 default_category: uncategorized
-category_map:
-tag_map:
-
-# Date / Time format
-## Hexo uses Moment.js to parse and display date
-## You can customize the date format as defined in
-## http://momentjs.com/docs/#/displaying/format/
+category_map: null
+tag_map: null
 date_format: YYYY-MM-DD
-time_format: HH:mm:ss
-
-# Pagination
-## Set per_page to 0 to disable pagination
+time_format: 'HH:mm:ss'
 per_page: 10
 pagination_dir: page
-
-# Extensions
-## Plugins: https://hexo.io/plugins/
-## Themes: https://hexo.io/themes/
-theme: lx
-
-# Deployment
-## Docs: https://hexo.io/docs/deployment.html
+theme: icarus
 deploy:
   type: git
-  repo: https://github.com/sadofriod/sadofriod.github.io.git
+  repo: 'https://github.com/sadofriod/sadofriod.github.io.git'
   branch: master
-
-# RSS support
 feed:
   enable: true
-  type:
-    rss2
-  path:
-    rss2.xml
+  type: rss2
+  path: rss2.xml
   limit: 140
-  hub:
+  hub: null
   content: true
   content_limit: 140
   content_limit_delim: ' '
-  order_by: -date
-  icon: https://avatars.githubusercontent.com/u/23006024?v=4
+  order_by: '-date'
+  icon: 'https://avatars.githubusercontent.com/u/23006024?v=4'
   autodiscovery: true
-
-#Comment
-
 disqus_shortname: ashess-blog
-
-# MathJax
 math:
-  engine: 'mathjax'
+  engine: mathjax
   mathjax:
-    src: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML  
-
-#插件
+    src: >-
+      https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML
 markdown:
   plugins:
     - markdown-it-footnote
@@ -118,7 +72,6 @@ markdown:
     - markdown-it-abbr
     - markdown-it-emoji
     - hexo-math
-#目录
 toc:
   maxDepth: 3
   class: toc
@@ -128,8 +81,6 @@ toc:
     position: after
     symbol: '#'
     style: header-anchor
-
-# 自动生成sitemap
 sitemap:
   path: google_sitemap.xml
 baidusitemap:
