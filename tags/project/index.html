@@ -36,7 +36,7 @@
       window.addEventListener('hashchange', switchTab, false);
   })();
   </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/rss2.xml" title="Ashes Born's Blog" type="application/rss+xml">
-</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp" alt="Ashes Born&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">project</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2024-03-23T13:12:31.000Z" title="3/23/2024, 9:12:31 PM">2024-03-23</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2024-03-23T13:13:32.905Z" title="3/23/2024, 9:13:32 PM">2024-03-23</time></span><span class="level-item"><a class="link-muted" href="/categories/project/">project</a></span><span class="level-item">11 minutes lesen (Über 1719 Wörter)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/%E5%8A%A8%E6%80%81%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1.html">React “动态”表单设计（一）</a></p><div class="content"><div class="tocStart">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp" alt="Ashes Born&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">Tags</a></li><li class="is-active"><a href="#" aria-current="page">project</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2024-03-23T13:12:31.000Z" title="3/23/2024, 9:12:31 PM">2024-03-23</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2024-03-23T13:23:23.099Z" title="3/23/2024, 9:23:23 PM">2024-03-23</time></span><span class="level-item"><a class="link-muted" href="/categories/project/">project</a></span><span class="level-item">11 minutes lesen (Über 1714 Wörter)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/%E5%8A%A8%E6%80%81%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1.html">React “动态”表单设计（一）</a></p><div class="content"><div class="tocStart">
 
 </div>
 <!-- toc -->
@@ -94,12 +94,66 @@ React的常见hooks，如useContext useReducer useState
 <p>对于UI渲染引擎，我们一般有两种数据结构可以选择。
 一是一维的数据结构，如： <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="title class_">ComponentTypeEnum</span> &#123;</span><br><span class="line">  text = <span class="number">0</span>,</span><br><span class="line">  select = <span class="number">1</span>,</span><br><span class="line">  checkbox = <span class="number">2</span>,</span><br><span class="line">  container = <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">FormFieldUIProps</span> &#123;</span><br><span class="line">	<span class="attr">value</span>: <span class="built_in">string</span> | <span class="built_in">number</span> | <span class="built_in">boolean</span>;</span><br><span class="line">	<span class="attr">label</span>: <span class="built_in">string</span> | <span class="title class_">ReactNode</span>;</span><br><span class="line">  <span class="attr">componentType</span>: <span class="title class_">ComponentTypeEnum</span>;</span><br><span class="line">	<span class="attr">name</span>: <span class="built_in">string</span>; <span class="comment">// unique </span></span><br><span class="line">	<span class="attr">parentField</span>: <span class="built_in">string</span>; <span class="comment">// it will save other field name</span></span><br><span class="line">  <span class="comment">// The componentsProps should from field component. e.x the select component should has options;</span></span><br><span class="line">  required?: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="attr">componentsProps</span>: <span class="title class_">Props</span> </span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">type</span> <span class="title class_">FormUIStruct</span> = <span class="title class_">FormFieldUIProps</span>[];</span><br></pre></td></tr></table></figure> 另一个是嵌套的数据结构，如：
 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">FormFieldUIProps</span> &#123;</span><br><span class="line">	<span class="attr">value</span>: <span class="built_in">string</span> | <span class="built_in">number</span> | <span class="built_in">boolean</span>;</span><br><span class="line">	<span class="attr">label</span>: <span class="built_in">string</span> | <span class="title class_">ReactNode</span>;</span><br><span class="line">  <span class="attr">componentType</span>: <span class="title class_">ComponentTypeEnum</span>;</span><br><span class="line">	<span class="attr">name</span>: <span class="built_in">string</span>;</span><br><span class="line">  required?: <span class="built_in">boolean</span>;</span><br><span class="line">  <span class="attr">components</span>: <span class="title class_">Props</span>;</span><br><span class="line">	<span class="attr">children</span>: <span class="title class_">FormFieldUIProps</span>[];</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">type</span> <span class="title class_">FormUIStruct</span> = <span class="title class_">FormFieldUIProps</span>[];</span><br></pre></td></tr></table></figure> 这里我们先对比下这两种数据结构特性：</p>
-<div class="line-block">:--- | 一维数据结构 | 嵌套数据结构 |<br>
-:--- | :----------: |———:|</div>
-<p>|渲染时|需要转换为嵌套结构渲染|可以直接渲染|
-|查找表单项时|直接通过name进行查找|需要使用DFS进行查找| |可读性|和DOM
-Tree完全不同，很难看出从属关系|和DOM Tree中的从属关系高度近似|
-|复用性|需要考虑name的唯一性|多层嵌套存在天然的隔离，name不需要唯一|</p>
+<table>
+<thead>
+<tr>
+<td>
+</td>
+<td>
+一维数据结构
+</td>
+<td>
+嵌套数据结构
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+渲染时
+</td>
+<td>
+需要转换为嵌套结构渲染
+</td>
+<td>
+可以直接渲染
+</td>
+</tr>
+<tr>
+<td>
+查找表单项时
+</td>
+<td>
+直接通过name进行查找
+</td>
+<td>
+需要使用DFS进行查找
+</td>
+</tr>
+<tr>
+<td>
+可读性
+</td>
+<td>
+和DOMTree完全不同，很难看出从属关系
+</td>
+<td>
+和DOMTree中的从属关系高度近似
+</td>
+</tr>
+<tr>
+<td>
+复用性
+</td>
+<td>
+需要考虑name的唯一性
+</td>
+<td>
+多层嵌套存在天然的隔离，name不需要唯一
+</td>
+</tr>
+</tbody>
+</table>
 <p>这两种数据结构没有明显的优劣，它们在不同的场景有各自的用处。
 比如，根据一维数据结构的特点，如果我们的表单经常出现对于表单项的CRDU操作，那么它的检索速度快这个特点就很适合这个场景。
 如果我们的表单配置需要出现大量的作为children复用，那么嵌套结构很适合这个场景。
