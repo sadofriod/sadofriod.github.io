@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Recording web pages to video at a specified time through a server - Ashes Born&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Ashes Born&#039;s Blog"><meta name="msapplication-TileImage" content="https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Ashes Born&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="Why is there such a need? My goal Choice of technology stack The specific implementation  I. Current solution  The main problems that this solution circumvents to solve are. Core Processes Key po"><meta property="og:type" content="blog"><meta property="og:title" content="Recording web pages to video at a specified time through a server"><meta property="og:url" content="http://sadofriod.github.io/Recording-web-pages-to-video-at-a-specified-time-through-a-server.html"><meta property="og:site_name" content="Ashes Born&#039;s Blog"><meta property="og:description" content="Why is there such a need? My goal Choice of technology stack The specific implementation  I. Current solution  The main problems that this solution circumvents to solve are. Core Processes Key po"><meta property="og:locale" content="zh EN"><meta property="og:image" content="http://sadofriod.github.io/images/recorder_base_procedure.png"><meta property="article:published_time" content="2021-12-26T06:53:38.000Z"><meta property="article:modified_time" content="2024-03-23T13:10:24.594Z"><meta property="article:author" content="Ashes Born"><meta property="article:tag" content="project"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://sadofriod.github.io/images/recorder_base_procedure.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://sadofriod.github.io/Recording-web-pages-to-video-at-a-specified-time-through-a-server.html"},"headline":"Recording web pages to video at a specified time through a server","image":["http://sadofriod.github.io/images/recorder_base_procedure.png"],"datePublished":"2021-12-26T06:53:38.000Z","dateModified":"2024-03-23T13:10:24.594Z","author":{"@type":"Person","name":"Ashes Born"},"publisher":{"@type":"Organization","name":"Ashes Born's Blog","logo":{"@type":"ImageObject","url":"https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp"}},"description":"Why is there such a need? My goal Choice of technology stack The specific implementation  I. Current solution  The main problems that this solution circumvents to solve are. Core Processes Key po"}</script><link rel="canonical" href="http://sadofriod.github.io/Recording-web-pages-to-video-at-a-specified-time-through-a-server.html"><link rel="icon" href="https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=UA-167566818-3" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'UA-167566818-3');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/rss2.xml" title="Ashes Born's Blog" type="application/rss+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp" alt="Ashes Born&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Suche" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Gepostet vor&nbsp;<time dateTime="2021-12-26T06:53:38.000Z" title="12/26/2021, 2:53:38 PM">2021-12-26</time></span><span class="level-item">Aktualisiert vor&nbsp;<time dateTime="2024-03-23T13:10:24.594Z" title="3/23/2024, 9:10:24 PM">2024-03-23</time></span><span class="level-item"><a class="link-muted" href="/categories/project/">project</a></span><span class="level-item">8 minutes lesen (Über 1217 Wörter)</span></div></div><h1 class="title is-3 is-size-4-mobile">Recording web pages to video at a specified time through a server</h1><div class="content"><div class="tocStart">
+
+</div>
+<!-- toc -->
+<ul>
+<li><a href="#why-is-there-such-a-need">Why is there such a
+need?</a></li>
+<li><a href="#my-goal">My goal</a></li>
+<li><a href="#choice-of-technology-stack">Choice of technology
+stack</a></li>
+<li><a href="#the-specific-implementation">The specific
+implementation</a>
+<ul>
+<li><a href="#i-current-solution">I. Current solution</a>
+<ul>
+<li><a href="#the-main-problems-that-this-solution-circumvents-to-solve-are">The
+main problems that this solution circumvents to solve are.</a></li>
+<li><a href="#core-processes">Core Processes</a></li>
+<li><a href="#key-points">Key points.</a></li>
+<li><a href="#solution-performance-in-docker">solution performance (in
+docker)</a></li>
+</ul></li>
+<li><a href="#ii-tried-and-tested-solutions">II. Tried and tested
+solutions</a>
+<ul>
+<li><a href="#getdisplaymedia-mode">getDisplayMedia mode</a>
+<ul>
+<li><a href="#key-points">Key points</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><a href="#q-a">Q &amp; A</a></li>
+<li><a href="#project-address">Project address</a></li>
+</ul>
+<!-- tocstop -->
+<div class="tocEnd">
+
+</div>
+<h2><span id="why-is-there-such-a-need">Why is there such a need?</span><a href="#why-is-there-such-a-need" class="header-anchor">#</a></h2>
+<p>I recently work in the field of front-end data visualization, and the
+need for some monitoring of long-running front-end pages comes up. In
+the past, my solution was to record through some existing platform on my
+personal PC via browser, or an earlier approach was to record through
+some screen recording tools.</p>
+<p>In such an approach, the following problems were often
+encountered.</p>
+<ul>
+<li><strong>Insufficient resolution to restore</strong></li>
+<li><strong>The recorded log format is difficult to parse</strong></li>
+<li><strong>Need to open the personal computer for a long
+time</strong></li>
+<li>** What is recorded through the platform is often not a video, but a
+DOM-Mirror recording. Such logs are difficult to share with others for
+troubleshooting**</li>
+<li><strong>DOM-Mirror recordings for playback lack value for rendering
+real-time data returned by the backend (because the point in time has
+been missed, and playback cannot play back the service state of the
+backend at that time)</strong></li>
+<li><strong>The number of concurrent recordings is limited by the
+performance of personal computers</strong></li>
+<li><strong>Recorded files are not well managed</strong></li>
+</ul>
+<h2><span id="my-goal">My goal</span><a href="#my-goal" class="header-anchor">#</a></h2>
+<p>So, based on the above needs, we need to achieve the following
+requirements.</p>
+<ul>
+<li><strong>Record at the native resolution required by the web
+page</strong></li>
+<li><strong>Be able to record on the server side and not on the
+PC</strong></li>
+<li><strong>The ability to record generic video and log files that can
+be easily shared with others</strong></li>
+<li><strong>Ability to make concurrent recordings</strong></li>
+<li><strong>Video frame rate should be smooth enough (at least at
+4K)</strong></li>
+<li><strong>Provide access to static resources for recorded
+files</strong></li>
+</ul>
+<h2><span id="choice-of-technology-stack">Choice of technology stack</span><a href="#choice-of-technology-stack" class="header-anchor">#</a></h2>
+<ul>
+<li>Base language and framework - js &amp; nodejs</li>
+<li>For running tasks at specified times -- cron job</li>
+<li>For opening web pages -- puppeteer</li>
+<li>For video recording the following options are available
+<ul>
+<li>Use the browser api <code>getDisplayMedia</code> for recording</li>
+<li>Use puppeteer to take a screenshot by frame, then compress the image
+with ffmpeg</li>
+<li>Use xvfb to record the video stream from the virtual desktop
+directly by encoding it with ffmpeg</li>
+</ul></li>
+<li>For recording logs -- puppeteer provides devtools related
+events</li>
+<li>For concurrent processing -- introduce weighted calculations</li>
+<li>For video processing -- ffmpeg</li>
+</ul>
+<h2><span id="the-specific-implementation">The specific implementation</span><a href="#the-specific-implementation" class="header-anchor">#</a></h2>
+<h3><span id="i-current-solution">I. Current solution</span><a href="#i-current-solution" class="header-anchor">#</a></h3>
+<h4><span id="the-main-problems-that-this-solution-circumvents-to-solve-are">The
+main problems that this solution circumvents to solve are.</span><a href="#the-main-problems-that-this-solution-circumvents-to-solve-are" class="header-anchor">#</a></h4>
+<ul>
+<li>The use of <code>getDisplayMedia</code> is limited by the browser's
+protocol. This api is only available when the access protocol is https,
+and the recording of audio depends on other api.</li>
+<li>The performance of <code>getDisplayMedia</code> has little room for
+optimization when recording multiple pages concurrently, and the most
+fatal problem is that the performance overhead of the recording process
+is borne by the browser. This means that if the page itself is more
+performance sensitive, it is basically impossible to record the page
+running properly using this api.</li>
+<li>puppeteer's frame-by-frame screenshots are limited by
+chrome-devtools itself, resulting in only 10+ images being cut out a
+second. In a data visualization scenario, a large amount of real-time
+data rendering is obviously unacceptable as well.</li>
+</ul>
+<h4><span id="core-processes">Core Processes</span><a href="#core-processes" class="header-anchor">#</a></h4>
+<!-- ![record]](/images/recorder_base_procedure.png) -->
+<p><img src="/images/recorder_base_procedure.png"></p>
+<h4><span id="key-points">Key points.</span><a href="#key-points" class="header-anchor">#</a></h4>
+<ol type="1">
+<li>use node call xvfb, create virtual desktops: open source library
+<code>node-xvfb</code> has some problems, the virtual desktops created,
+seem to share the same stream buffer, in the case of concurrent
+recording, there will be a situation of preemption, resulting in
+accelerated video content, so the need to encapsulate a new node call
+xvfb</li>
+</ol>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> * <span class="keyword">as</span> process <span class="keyword">from</span> <span class="string">&#x27;child_process&#x27;</span>;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">XvfbMap</span> &#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="attr">xvfb</span>: &#123;</span><br><span class="line">     [<span class="attr">key</span>: <span class="built_in">string</span>]: &#123;</span><br><span class="line">       <span class="attr">process</span>: process.<span class="property">ChildProcessWithoutNullStreams</span>;</span><br><span class="line">       <span class="attr">display</span>: <span class="built_in">number</span>;</span><br><span class="line">       execPath?: <span class="built_in">string</span>;</span><br><span class="line">     &#125;;</span><br><span class="line">   &#125; = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">   setXvfb = <span class="function">(<span class="params">key: <span class="built_in">string</span>, display: <span class="built_in">number</span>, process: process.ChildProcessWithoutNullStreams, execPath?: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">     <span class="variable language_">this</span>.<span class="property">xvfb</span>[key] = &#123;</span><br><span class="line">       display,</span><br><span class="line">       process,</span><br><span class="line">       execPath,</span><br><span class="line">     &#125;;</span><br><span class="line">   &#125;;</span><br><span class="line"></span><br><span class="line">   getSpecXvfb = <span class="function">(<span class="params">key: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">xvfb</span>[key];</span><br><span class="line">   &#125;;</span><br><span class="line"></span><br><span class="line">   getXvfb = <span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="property">xvfb</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> xvfbIns = <span class="keyword">new</span> <span class="title class_">XvfbMap</span>();</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 检测虚拟桌面是否运行</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> num 虚拟桌面窗口编号</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@param</span> execPath 内存缓冲文件映射路径</span></span><br><span class="line"><span class="comment">  * <span class="doctag">@returns</span> Promise&lt;boolean&gt;</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">   <span class="keyword">const</span> <span class="title function_">checkoutDisplay</span> = (<span class="params">num: <span class="built_in">number</span>, execPath?: <span class="built_in">string</span></span>) =&gt; &#123;</span><br><span class="line">     <span class="keyword">const</span> path = execPath || <span class="string">&#x27;/dev/null&#x27;</span>;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>&lt;<span class="built_in">boolean</span>&gt;(<span class="function">(<span class="params">res, rej</span>) =&gt;</span> &#123;</span><br><span class="line">     <span class="keyword">const</span> xdpyinfo = process.<span class="title function_">spawn</span>(<span class="string">&#x27;xdpyinfo&#x27;</span>, [</span><br><span class="line">       <span class="string">&#x27;-display&#x27;</span>,</span><br><span class="line">       <span class="string">`:<span class="subst">$&#123;num&#125;</span>&gt;<span class="subst">$&#123;path&#125;</span>`</span>,</span><br><span class="line">       <span class="string">&#x27;2&gt;&amp;1&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;&amp;&amp;&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;echo&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;inUse&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;||&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;echo&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;free&#x27;</span>,</span><br><span class="line">     ]);</span><br><span class="line">     xdpyinfo.<span class="property">stdout</span>.<span class="title function_">on</span>(<span class="string">&#x27;data&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> <span class="title function_">res</span>(data.<span class="title function_">toString</span>() === <span class="string">&#x27;inUse&#x27;</span>));</span><br><span class="line">     xdpyinfo.<span class="property">stderr</span>.<span class="title function_">on</span>(<span class="string">&#x27;data&#x27;</span>, <span class="function">(<span class="params">data</span>) =&gt;</span> <span class="title function_">rej</span>(data.<span class="title function_">toString</span>()));</span><br><span class="line">     &#125;);</span><br><span class="line">   &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> getRunnableNumber = <span class="keyword">async</span> (execPath?: <span class="built_in">string</span>): <span class="title class_">Promise</span>&lt;<span class="built_in">number</span>&gt; =&gt; &#123;</span><br><span class="line">   <span class="keyword">const</span> num = <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="number">62396</span> * <span class="title class_">Math</span>.<span class="title function_">random</span>());</span><br><span class="line">   <span class="keyword">const</span> isValid = <span class="keyword">await</span> <span class="title function_">checkoutDisplay</span>(num, execPath);</span><br><span class="line">   <span class="keyword">if</span> (isValid) &#123;</span><br><span class="line">     <span class="keyword">return</span> num;</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="title function_">getRunnableNumber</span>(execPath);</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">export</span> <span class="keyword">const</span> <span class="title function_">xvfbStart</span> = <span class="keyword">async</span> (<span class="params"></span></span><br><span class="line"><span class="params">   key: <span class="built_in">string</span>,</span></span><br><span class="line"><span class="params">   option: &#123; width: <span class="built_in">number</span>; height: <span class="built_in">number</span>; depth: <span class="number">15</span> | <span class="number">16</span> | <span class="number">24</span> &#125;,</span></span><br><span class="line"><span class="params">   execPath?: <span class="built_in">string</span></span></span><br><span class="line"><span class="params">  </span>) =&gt; &#123;</span><br><span class="line">   <span class="keyword">const</span> randomNum = <span class="title class_">Math</span>.<span class="title function_">floor</span>(<span class="number">62396</span> * <span class="title class_">Math</span>.<span class="title function_">random</span>());</span><br><span class="line">   <span class="keyword">const</span> &#123; width, height, depth &#125; = option;</span><br><span class="line">   <span class="keyword">try</span> &#123;</span><br><span class="line">     <span class="keyword">const</span> xvfb = process.<span class="title function_">spawn</span>(<span class="string">&#x27;Xvfb&#x27;</span>, [</span><br><span class="line">       <span class="string">`:<span class="subst">$&#123;randomNum&#125;</span>`</span>,</span><br><span class="line">       <span class="string">&#x27;-screen&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">       <span class="string">`<span class="subst">$&#123;width&#125;</span>x<span class="subst">$&#123;height&#125;</span>x<span class="subst">$&#123;depth&#125;</span>`</span>,</span><br><span class="line">       <span class="string">&#x27;-ac&#x27;</span>,</span><br><span class="line">       <span class="string">&#x27;-noreset&#x27;</span>,</span><br><span class="line">     ]);</span><br><span class="line"></span><br><span class="line">     xvfbIns.<span class="title function_">setXvfb</span>(key, randomNum, xvfb, execPath);</span><br><span class="line">     <span class="keyword">return</span> randomNum;</span><br><span class="line">   &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">     <span class="variable language_">console</span>.<span class="title function_">log</span>(error);</span><br><span class="line">     <span class="keyword">return</span> <span class="number">99</span>;</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> <span class="title function_">xvfbStop</span> = (<span class="params">key: <span class="built_in">string</span></span>) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> xvfb = xvfbIns.<span class="title function_">getSpecXvfb</span>(key);</span><br><span class="line">  <span class="keyword">return</span> xvfb.<span class="property">process</span>.<span class="title function_">kill</span>();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> xvfbIns;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li><p>Load balancing during concurrent server recording. This feature
+is to solve the problem of high server CPU load when recording video
+encoding concurrently. So to maximize the number of concurrent
+recordings, I record the number of tasks being and will be performed by
+each server, mark this number as the weight of the service, and when a
+new recording task is created, first check the weight of the current
+server, then create the recording task on the server with the lowest
+weight, and lower the weight when the recording is completed and the
+task is manually terminated. <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">CronJob</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;cron&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">CacheType</span> &#123;</span><br><span class="line">  [<span class="attr">key</span>: <span class="built_in">string</span>]: <span class="title class_">CronJob</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CronCache</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="attr">cache</span>: <span class="title class_">CacheType</span> = &#123;&#125;;</span><br><span class="line">  <span class="keyword">private</span> cacheCount = <span class="number">0</span>;</span><br><span class="line">  setCache = <span class="function">(<span class="params">key: <span class="built_in">string</span>, value: CronJob</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">cache</span>[key] = value;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">cacheCount</span>++;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  getCache = <span class="function">(<span class="params">key: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">cache</span>[key];</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  deleteCache = <span class="function">(<span class="params">key: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">cache</span>[key]) &#123;</span><br><span class="line">      <span class="keyword">delete</span> <span class="variable language_">this</span>.<span class="property">cache</span>[key];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">cacheCount</span> = <span class="variable language_">this</span>.<span class="property">cacheCount</span> &gt; <span class="number">0</span> ? <span class="variable language_">this</span>.<span class="property">cacheCount</span> - <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  getCacheCount = <span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="property">cacheCount</span>;</span><br><span class="line">  getCacheMap = <span class="function">() =&gt;</span> <span class="variable language_">this</span>.<span class="property">cache</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">new</span> <span class="title class_">CronCache</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure></p></li>
+<li><p>When starting puppeteer, you need to provide parameters</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> browser = <span class="keyword">await</span> puppeteer.<span class="title function_">launch</span>(&#123;</span><br><span class="line">      <span class="attr">headless</span>: <span class="literal">false</span>,</span><br><span class="line">      <span class="attr">executablePath</span>: <span class="string">&#x27;/usr/bin/google-chrome&#x27;</span>,</span><br><span class="line">      <span class="attr">defaultViewport</span>: <span class="literal">null</span>,</span><br><span class="line">      <span class="attr">args</span>: [</span><br><span class="line">        <span class="string">&#x27;--enable-usermedia-screen-capturing&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--allow-http-screen-capture&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--ignore-certificate-errors&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--enable-experimental-web-platform-features&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--allow-http-screen-capture&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--disable-infobars&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--no-sandbox&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--disable-setuid-sandbox&#x27;</span>,<span class="comment">//关闭沙箱</span></span><br><span class="line">        <span class="string">&#x27;--start-fullscreen&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;--display=:&#x27;</span> + display,</span><br><span class="line">        <span class="string">&#x27;-–disable-dev-shm-usage&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;-–no-first-run&#x27;</span>, <span class="comment">//没有设置首页。</span></span><br><span class="line">        <span class="string">&#x27;–-single-process&#x27;</span>, <span class="comment">//单进程运行</span></span><br><span class="line">        <span class="string">&#x27;--disable-gpu&#x27;</span>, <span class="comment">//GPU硬件加速</span></span><br><span class="line">        <span class="string">`--window-size=<span class="subst">$&#123;width&#125;</span>,<span class="subst">$&#123;height&#125;</span>`</span>,<span class="comment">//窗口尺寸</span></span><br><span class="line">      ],</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4><span id="solution-performance-in-docker">solution performance (in
+docker)</span><a href="#solution-performance-in-docker" class="header-anchor">#</a></h4>
+<ul>
+<li>Standard 1k resolution: dual-core CPU 2.3Ghz; 10 concurrent at 4G
+ram</li>
+<li>Standard 2k resolution: dual-core CPU 2.3Ghz; 4 concurrent under 4G
+ram</li>
+</ul>
+<h3><span id="ii-tried-and-tested-solutions">II. Tried and tested
+solutions</span><a href="#ii-tried-and-tested-solutions" class="header-anchor">#</a></h3>
+<h4><span id="getdisplaymedia-mode">getDisplayMedia mode</span><a href="#getdisplaymedia-mode" class="header-anchor">#</a></h4>
+<h5><span id="key-points">Key points</span><a href="#key-points" class="header-anchor">#</a></h5>
+<ol type="1">
+<li><p>The api call causes chrome to pop up an interactive window to
+choose which specific web page to record. Closing this window requires
+the following parameters to be enabled when starting puppeteer</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;--enable-usermedia-screen-capturing&#x27;</span>,</span><br><span class="line"><span class="string">`-auto-select-desktop-capture-source=recorder-page`</span>,</span><br><span class="line"><span class="string">&#x27;--allow-http-screen-capture&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;--ignore-certificate-errors&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;--enable-experimental-web-platform-features&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;--allow-http-screen-capture&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;--disable-infobars&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;--no-sandbox&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;--disable-setuid-sandbox&#x27;</span>,</span><br></pre></td></tr></table></figure></li>
+<li><p>To execute the recording, you need to inject the function via
+puppeteer <code>page.exposeFunction</code>.</p></li>
+</ol>
+<h2><span id="q-amp-a">Q &amp; A</span><a href="#q-amp-a" class="header-anchor">#</a></h2>
+<p>Q: Why do I need to introduce xvfb?</p>
+<p>A: In the tried and tested solution, getDisplayMedia requires the
+runtime environment to provide a desktop environment. In the current
+solution, it is necessary to push the video stream from xvfb directly
+into ffmpeg</p>
+<p>Q: Why are there certain memory requirements?</p>
+<p>A: To provide the minimum running memory for chrome</p>
+<h2><span id="project-address">Project address</span><a href="#project-address" class="header-anchor">#</a></h2>
+<p>https://github.com/sadofriod/time-recorder</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Recording web pages to video at a specified time through a server</p><p><a href="http://sadofriod.github.io/Recording-web-pages-to-video-at-a-specified-time-through-a-server.html">http://sadofriod.github.io/Recording-web-pages-to-video-at-a-specified-time-through-a-server.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>Ashes Born</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-12-26</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2024-03-23</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/project/">project</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/High-performance-grouped-list-design.html"><i class="level-item fas fa-chevron-left"></i><span class="level-item">High performance grouped list design</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/Draw-smooth-cubic-Bessel-curves.html"><span class="level-item">Draw smooth cubic Bessel curves</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Kommentare</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://sadofriod.github.io/Recording-web-pages-to-video-at-a-specified-time-through-a-server.html';
+            this.page.identifier = 'Recording-web-pages-to-video-at-a-specified-time-through-a-server.html';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'ashess-blog' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://img1.imgtp.com/2023/09/10/ZBplTO4E.jpg" alt="Ashes Born"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Ashes Born</p><p class="is-size-6 is-block">心中有座观澜阁，土木付炬皆尘生</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>CN</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Seiten</p><a href="/archives"><p class="title">21</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Kategorien</p><a href="/categories"><p class="title">5</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">6</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/sadofriod" target="_blank" rel="noopener">Folgen</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/sadofriod"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="RSS" href="/rss2.xml"><i class="fas fa-rss"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li><li><a class="level is-mobile" href="https://bulma.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Bulma</span></span><span class="level-right"><span class="level-item tag">bulma.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Kategorien</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/algorithm/"><span class="level-start"><span class="level-item">algorithm</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/error/"><span class="level-start"><span class="level-item">error</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/interesting/"><span class="level-start"><span class="level-item">interesting</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/project/"><span class="level-start"><span class="level-item">project</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/categories/typescript/"><span class="level-start"><span class="level-item">typescript</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Letzte Einträge</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-03-23T13:12:31.000Z">2024-03-23</time></p><p class="title"><a href="/%E5%8A%A8%E6%80%81%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1.html">React “动态”表单设计（一）</a></p><p class="categories"><a href="/categories/project/">project</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-01-11T13:53:18.000Z">2023-01-11</time></p><p class="title"><a href="/%E4%BB%8ECRA%E5%B0%86react%E9%A1%B9%E7%9B%AE%E8%BF%81%E7%A7%BB%E6%88%90%E5%BE%AE%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE-1.html">从CRA将react项目迁移成微前端项目-1</a></p><p class="categories"><a href="/categories/project/">project</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-11-30T14:33:43.000Z">2022-11-30</time></p><p class="title"><a href="/JS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%8F%E9%AA%8C.html">JS开发中函数式编程的一些经验</a></p><p class="categories"><a href="/categories/project/">project</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-08-08T11:51:42.000Z">2022-08-08</time></p><p class="title"><a href="/%E5%A2%9E%E9%87%8F%E8%BF%90%E8%A1%8CE2E%E6%B5%8B%E8%AF%95.html">增量运行E2E测试</a></p><p class="categories"><a href="/categories/project/">project</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-08-07T15:00:31.000Z">2022-08-07</time></p><p class="title"><a href="/%20monorepo%E7%BB%93%E6%9E%84%E4%B8%8B%E5%90%AF%E5%8A%A8react%E9%A1%B9%E7%9B%AE%E5%B1%80%E9%83%A8%E7%83%AD%E6%9B%B4%E6%96%B0.html">monorepo结构下启动react项目局部热更新</a></p><p class="categories"><a href="/categories/project/">project</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archive</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2024/"><span class="level-start"><span class="level-item">2024</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/"><span class="level-start"><span class="level-item">2022</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/"><span class="level-start"><span class="level-item">2021</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/"><span class="level-start"><span class="level-item">2020</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2019/"><span class="level-start"><span class="level-item">2019</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/algorithm/"><span class="tag">algorithm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/error/"><span class="tag">error</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interesting/"><span class="tag">interesting</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/interestring/"><span class="tag">interestring</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/project/"><span class="tag">project</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/typescript/"><span class="tag">typescript</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="https://cdn.midjourney.com/ffa4484a-2f5a-4c71-96b8-7749aef5dfd3/0_0_384_N.webp" alt="Ashes Born&#039;s Blog" height="28"></a><p class="is-size-7"><span>&copy; 2024 Ashes Born</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Zurück nach oben" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "Diese Website verwendet Cookies, um Ihre Erfahrung zu verbessern.",
+          dismiss: "Verstanden!",
+          allow: "Cookies zulassen",
+          deny: "Ablehnen",
+          link: "Mehr erfahren",
+          policy: "Cookie-Richtlinie",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Tippen Sie etwas..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Tippen Sie etwas...","untitled":"(Ohne Titel)","posts":"Seiten","pages":"Pages","categories":"Kategorien","tags":"Tags"});
+        });</script></body></html>
