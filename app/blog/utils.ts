@@ -3,7 +3,7 @@ import path from 'path'
 
 type Metadata = {
   title: string
-  publishedAt: string
+  date: string
   summary: string
   image?: string
 }
@@ -27,7 +27,7 @@ function parseFrontmatter(fileContent: string) {
 }
 
 function getMDXFiles(dir) {
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx')
+  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx' || path.extname(file) === '.md')
 }
 
 function readMDXFile(filePath) {
@@ -55,9 +55,6 @@ export function getBlogPosts() {
 
 export function formatDate(date: string, includeRelative = false) {
   let currentDate = new Date()
-  if (!date.includes('T')) {
-    date = `${date}T00:00:00`
-  }
   let targetDate = new Date(date)
 
   let yearsAgo = currentDate.getFullYear() - targetDate.getFullYear()
