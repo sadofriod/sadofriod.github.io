@@ -1,5 +1,5 @@
 import { Container, Typography, Box, Chip, Stack, Divider } from '@mui/material';
-import { getAllPostSlugs, getPostData } from '../../../lib/posts';
+import { getAllPostIds, getPostBySlug, getPostData } from '../../../lib/posts';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
 
@@ -20,14 +20,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const posts = getAllPostSlugs();
+  const posts = getAllPostIds();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
 export default function BlogPost({ params }: PageProps) {
-  const { content, metadata } = getPostData(params.slug);
+  const { content, slug, ...metadata } = getPostData(params.slug);
   
   return (
     <Container maxWidth="md">

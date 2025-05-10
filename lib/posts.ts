@@ -38,6 +38,20 @@ export function getPostData(slug: string) {
   // Try to find the file with .md extension
   let fullPath = path.join(postsDirectory, `${decodedName}.md`);
 
+  if(fullPath.includes('favicon.ico')) {
+    return {
+      content: '',
+      title: 'Favicon',
+      date: '',
+      excerpt: '',
+      tags: [],
+      categories: [],
+      p: '',
+      keywords: '',
+      slug: 'favicon.ico',
+    }
+  }
+
   // If the file doesn't exist, try with .mdx extension
   if (!fs.existsSync(fullPath)) {
     fullPath = path.join(postsDirectory, `${decodedName}.mdx`);
@@ -49,9 +63,8 @@ export function getPostData(slug: string) {
   const matterResult = matter(fileContents);
 
   return {
-    slug,
     content: matterResult.content,
-    ...(matterResult.data as { title: string; date: string; excerpt: string })
+    ...(matterResult.data as PostMetadata)
   };
 }
 
@@ -64,6 +77,8 @@ export function getSortedPostsData() {
 
     // Read markdown file as string
     const fullPath = path.join(postsDirectory, fileName);
+    console.log('fullPath',fullPath);
+    
     const fileContents = fs.readFileSync(fullPath, 'utf8');
 
     // Use gray-matter to parse the post metadata section
@@ -83,4 +98,23 @@ export function getSortedPostsData() {
     }
     return -1;
   });
+}
+
+export function getPostBySlug(slug: string): { content: string; metadata: PostMetadata } {
+  const fullPath = path.join(postsDirectory, `${slugToFilename(slug)}.md`);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const { data, content } = matter(fileContents);
+  
+  const metadata: PostMetadata = {
+    slug,
+    title: data.title || '',
+    date: data.date?.toString() || '',
+    excerpt: data.excerpt || '',
+    tags: data.tags || [],
+    categories: data.categories || [],
+    p: data.p || '',
+    keywords: data.keywords || '',
+  };
+  
+  return { content, metadata };
 }
