@@ -38,7 +38,6 @@ export async function generateRssFeed() {
       id: url,
       link: url,
       description: post.excerpt || '',
-      content: post.content || '',
       author: [author],
       date: new Date(post.date),
     });

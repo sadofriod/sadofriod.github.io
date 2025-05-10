@@ -1,9 +1,9 @@
 import { Container, Typography, Box } from '@mui/material';
 import PostList from '../components/PostList';
-import { getAllPosts } from '../lib/posts';
+import { getAllPostIds } from '../lib/posts';
 
 export default function Home() {
-  const posts = getAllPosts();
+  const posts = getAllPostIds();
   
   return (
     <Container maxWidth="lg">
