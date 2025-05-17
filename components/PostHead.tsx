@@ -16,6 +16,7 @@ export default function PostHead({ title, description, date, author, url }: Post
     <Head>
       <title>{title}</title>
       <meta name="description" content={description} />
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       
       {/* Open Graph / Facebook */}
       <meta property="og:type" content="article" />

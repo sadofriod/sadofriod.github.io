@@ -15,7 +15,7 @@ dependencies:
     specifier: ^11.11.0
     version: 11.14.0(@emotion/react@11.14.0)(@types/react@18.3.21)(react@18.3.1)
   '@mui/icons-material':
-    specifier: ^5.15.10
+    specifier: ^5.17.1
     version: 5.17.1(@mui/material@5.17.1)(@types/react@18.3.21)(react@18.3.1)
   '@mui/material':
     specifier: ^5.15.10
@@ -29,6 +29,9 @@ dependencies:
   biome:
     specifier: ^0.3.3
     version: 0.3.3
+  cookies-next:
+    specifier: ^5.1.0
+    version: 5.1.0(next@14.2.28)(react@18.3.1)
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
@@ -1054,6 +1057,22 @@ packages:
 
   /convert-source-map@1.9.0:
     resolution: {integrity: sha512-ASFBup0Mz1uyiIjANan1jzLQami9z1PoYSZCiiYW2FczPbenXc45FZdBZLzOT+r6+iciuEModtmCti+hjaAk0A==}
+    dev: false
+
+  /cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
+    dev: false
+
+  /cookies-next@5.1.0(next@14.2.28)(react@18.3.1):
+    resolution: {integrity: sha512-9Ekne+q8hfziJtnT9c1yDUBqT0eDMGgPrfPl4bpR3xwQHLTd/8gbSf6+IEkP/pjGsDZt1TGbC6emYmFYRbIXwQ==}
+    peerDependencies:
+      next: '>=15.0.0'
+      react: '>= 16.8.0'
+    dependencies:
+      cookie: 1.0.2
+      next: 14.2.28(react-dom@18.3.1)(react@18.3.1)
+      react: 18.3.1
     dev: false
 
   /core-js@2.6.12:

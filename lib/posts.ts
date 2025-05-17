@@ -12,11 +12,12 @@ export type PostMetadata = {
   date: string;
   excerpt?: string;
   tags?: string[];
-  categories?: string[];
+  category?: string;
   p?: string;
   keywords?: string;
   slug: string;
   content?: string;
+  description?: string;
 };
 
 export function getAllPostIds() {
@@ -38,7 +39,7 @@ export function getPostData(slug: string) {
   // Try to find the file with .md extension
   let fullPath = path.join(postsDirectory, `${decodedName}.md`);
 
-  if(fullPath.includes('favicon.ico')) {
+  if(fullPath.includes('firebase-messaging-sw')) {
     return {
       content: '',
       title: 'Favicon',
@@ -64,7 +65,23 @@ export function getPostData(slug: string) {
 
   return {
     content: matterResult.content,
-    ...(matterResult.data as PostMetadata)
+    ...convertMatterToPostMetadata(matterResult)
+  };
+}
+
+function convertMatterToPostMetadata(matterResult: matter.GrayMatterFile<string>): Omit<PostMetadata, 'slug'> {
+  const sourceTags = matterResult.data.tags || [];
+  const tags = Array.isArray(sourceTags) ? sourceTags : [sourceTags];
+  return {
+    title: matterResult.data.title || '',
+    date: matterResult.data.date?.toString() || '',
+    excerpt: matterResult.data.excerpt || '',
+    tags,
+    category: matterResult.data.categories || '',
+    p: matterResult.data.p || '',
+    keywords: matterResult.data.keywords || '',
+    content: matterResult.content,
+    description: matterResult.data.description || `${matterResult.content.slice(0, 100)}...` || '',
   };
 }
 
@@ -87,7 +104,7 @@ export function getSortedPostsData() {
     // Combine the data with the slug
     return {
       slug,
-      ...(matterResult.data as { date: string; title: string; excerpt: string })
+      ...convertMatterToPostMetadata(matterResult),
     };
   });
 
@@ -103,17 +120,12 @@ export function getSortedPostsData() {
 export function getPostBySlug(slug: string): { content: string; metadata: PostMetadata } {
   const fullPath = path.join(postsDirectory, `${slugToFilename(slug)}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(fileContents);
-  
+  const matterResult = matter(fileContents);
+  const { data, content } = matterResult;
+
   const metadata: PostMetadata = {
     slug,
-    title: data.title || '',
-    date: data.date?.toString() || '',
-    excerpt: data.excerpt || '',
-    tags: data.tags || [],
-    categories: data.categories || [],
-    p: data.p || '',
-    keywords: data.keywords || '',
+    ...convertMatterToPostMetadata(matterResult),
   };
   
   return { content, metadata };

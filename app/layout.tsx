@@ -4,6 +4,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
 import themeOptions from '../lib/theme';
 import { Roboto } from 'next/font/google';
+import { LanguageProvider } from '../lib/i18n/LanguageContext';
+import MainNavbar from '../components/MainNavbar';
+import detectLanguage from '../components/ServerLanguageDetection';
 
 export const metadata: Metadata = {
   title: 'My Next.js Blog',
@@ -17,20 +20,27 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Detect language on the server side
+  const initialLocale = await detectLanguage();
+  
   return (
-    <html lang="en" className={roboto.variable}>
+    <html className={roboto.variable} lang={initialLocale}>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       <body>
-        <AppRouterCacheProvider options={{ key: 'css' }}>
-          <ThemeProvider theme={themeOptions}>
-            <CssBaseline />
-            {children}
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <LanguageProvider initialLocale={initialLocale}>
+          <AppRouterCacheProvider options={{ key: 'css' }}>
+            <ThemeProvider theme={themeOptions}>
+              <CssBaseline />
+              <MainNavbar />
+              {children}
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
