@@ -7,6 +7,7 @@ import { Roboto } from 'next/font/google';
 import { LanguageProvider } from '../lib/i18n/LanguageContext';
 import MainNavbar from '../components/MainNavbar';
 import detectLanguage from '../components/ServerLanguageDetection';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'My Next.js Blog',
@@ -27,10 +28,22 @@ export default async function RootLayout({
 }) {
   // Detect language on the server side
   const initialLocale = await detectLanguage();
-  
+
   return (
     <html className={roboto.variable} lang={initialLocale}>
-      <link rel="icon" href="/favicon.ico" sizes="any" />
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
+      <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-5JRRE2PZ65" />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-5JRRE2PZ65');
+        `}
+      </Script>
       <body>
         <LanguageProvider initialLocale={initialLocale}>
           <AppRouterCacheProvider options={{ key: 'css' }}>
