@@ -5,7 +5,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { filenameToSlug, slugToFilename } from './utils';
 
-const postsDirectory = path.join(process.cwd(), '_posts');
+const postsDirectory = path.join(process.cwd(), 'app', 'blog', 'posts');
 
 export type PostMetadata = {
   title: string;

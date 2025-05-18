@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>My Blog</title>
+        <link>https://blog.ashesborn.cloud/</link>
+        <description>This is my blog</description>
+        <lastBuildDate>Sun, 18 May 2025 07:03:07 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <image>
+            <title>My Blog</title>
+            <url>https://blog.ashesborn.cloud/logo.png</url>
+            <link>https://blog.ashesborn.cloud/</link>
+        </image>
+        <copyright>All rights reserved 2025</copyright>
+        <item>
+            <title><![CDATA[在React Native中函数式的控制Loading Component]]></title>
+            <link>https://blog.ashesborn.cloud/blog/在React Native中函数式的控制Loading Component</link>
+            <guid>https://blog.ashesborn.cloud/blog/在React Native中函数式的控制Loading Component</guid>
+            <pubDate>Fri, 06 Sep 2024 06:21:00 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[React “动态”表单设计（一）]]></title>
+            <link>https://blog.ashesborn.cloud/blog/动态表单设计</link>
+            <guid>https://blog.ashesborn.cloud/blog/动态表单设计</guid>
+            <pubDate>Sat, 23 Mar 2024 21:12:31 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[从CRA将react项目迁移成微前端项目-1]]></title>
+            <link>https://blog.ashesborn.cloud/blog/从CRA将react项目迁移成微前端项目-1</link>
+            <guid>https://blog.ashesborn.cloud/blog/从CRA将react项目迁移成微前端项目-1</guid>
+            <pubDate>Wed, 11 Jan 2023 21:53:18 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[增量运行E2E测试]]></title>
+            <link>https://blog.ashesborn.cloud/blog/增量运行E2E测试</link>
+            <guid>https://blog.ashesborn.cloud/blog/增量运行E2E测试</guid>
+            <pubDate>Mon, 08 Aug 2022 19:51:42 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Hello, World!]]></title>
+            <link>https://blog.ashesborn.cloud/blog/hello-world</link>
+            <guid>https://blog.ashesborn.cloud/blog/hello-world</guid>
+            <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[This is my first blog post using Next.js]]></content:encoded>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[JS开发中函数式编程的一些经验]]></title>
+            <link>https://blog.ashesborn.cloud/blog/JS开发中函数式编程的一些经验</link>
+            <guid>https://blog.ashesborn.cloud/blog/JS开发中函数式编程的一些经验</guid>
+            <pubDate>Wed, 30 Nov 2022 22:33:43 GMT</pubDate>
+            <description><![CDATA[函数式编程, JS函数式编程]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[monorepo结构下启动react项目局部热更新]]></title>
+            <link>https://blog.ashesborn.cloud/blog/monorepo结构下启动react项目局部热更新</link>
+            <guid>https://blog.ashesborn.cloud/blog/monorepo结构下启动react项目局部热更新</guid>
+            <pubDate>Sun, 07 Aug 2022 23:00:31 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[将KVM的虚拟机存储到NAS上]]></title>
+            <link>https://blog.ashesborn.cloud/blog/将KVM的虚拟机存储到NAS上</link>
+            <guid>https://blog.ashesborn.cloud/blog/将KVM的虚拟机存储到NAS上</guid>
+            <pubDate>Wed, 27 Apr 2022 19:52:50 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[High performance grouped list design]]></title>
+            <link>https://blog.ashesborn.cloud/blog/High-performance-grouped-list-design</link>
+            <guid>https://blog.ashesborn.cloud/blog/High-performance-grouped-list-design</guid>
+            <pubDate>Tue, 28 Dec 2021 07:26:36 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Recording web pages to video at a specified time through a server]]></title>
+            <link>https://blog.ashesborn.cloud/blog/Recording-web-pages-to-video-at-a-specified-time-through-a-server</link>
+            <guid>https://blog.ashesborn.cloud/blog/Recording-web-pages-to-video-at-a-specified-time-through-a-server</guid>
+            <pubDate>Sun, 26 Dec 2021 14:53:38 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[hexo seo 优化]]></title>
+            <link>https://blog.ashesborn.cloud/blog/hexo-seo-优化</link>
+            <guid>https://blog.ashesborn.cloud/blog/hexo-seo-优化</guid>
+            <pubDate>Thu, 23 Dec 2021 13:34:53 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[# 商汤科技声明对美国将公司加入所谓「中国军工复合体企业」清单表示强烈反对，还有哪些信息值得关注？]]></title>
+            <link>https://blog.ashesborn.cloud/blog/商汤科技声明对美国将公司加入所谓「中国军工复合体企业」清单表示强烈反对，还有哪些信息值得关注？</link>
+            <guid>https://blog.ashesborn.cloud/blog/商汤科技声明对美国将公司加入所谓「中国军工复合体企业」清单表示强烈反对，还有哪些信息值得关注？</guid>
+            <pubDate>Mon, 13 Dec 2021 17:18:05 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Hexo的一些增强--目录以及RSS订阅]]></title>
+            <link>https://blog.ashesborn.cloud/blog/Hexo的一些增强-目录以及RSS订阅</link>
+            <guid>https://blog.ashesborn.cloud/blog/Hexo的一些增强-目录以及RSS订阅</guid>
+            <pubDate>Mon, 13 Dec 2021 15:07:14 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Hexo的一些增强--渲染Latex公式]]></title>
+            <link>https://blog.ashesborn.cloud/blog/Hexo的一些增强--渲染Latex公式</link>
+            <guid>https://blog.ashesborn.cloud/blog/Hexo的一些增强--渲染Latex公式</guid>
+            <pubDate>Thu, 09 Dec 2021 15:11:37 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[工程师遇到的一些问题]]></title>
+            <link>https://blog.ashesborn.cloud/blog/工程师遇到的一些问题</link>
+            <guid>https://blog.ashesborn.cloud/blog/工程师遇到的一些问题</guid>
+            <pubDate>Thu, 02 Sep 2021 18:18:57 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[绘制平滑的三次贝塞尔曲线]]></title>
+            <link>https://blog.ashesborn.cloud/blog/绘制平滑的三次贝塞尔曲线</link>
+            <guid>https://blog.ashesborn.cloud/blog/绘制平滑的三次贝塞尔曲线</guid>
+            <pubDate>Sat, 21 Aug 2021 19:11:33 GMT</pubDate>
+            <description><![CDATA[How to draw a smooth Bessel Curve,如何绘制贝塞尔曲线,贝塞尔曲线,三次贝塞尔曲线]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[高性能分组列表设计-2]]></title>
+            <link>https://blog.ashesborn.cloud/blog/高性能分组列表设计-2</link>
+            <guid>https://blog.ashesborn.cloud/blog/高性能分组列表设计-2</guid>
+            <pubDate>Fri, 30 Jul 2021 14:14:19 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[高性能分组列表设计(1)]]></title>
+            <link>https://blog.ashesborn.cloud/blog/高性能分组列表设计-1</link>
+            <guid>https://blog.ashesborn.cloud/blog/高性能分组列表设计-1</guid>
+            <pubDate>Wed, 28 Jul 2021 18:27:27 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[通过服务器在指定时间将网页录制成视频]]></title>
+            <link>https://blog.ashesborn.cloud/blog/通过服务器在指定时间将网页录制成视频</link>
+            <guid>https://blog.ashesborn.cloud/blog/通过服务器在指定时间将网页录制成视频</guid>
+            <pubDate>Fri, 16 Jul 2021 13:51:36 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+    </channel>
+</rss>

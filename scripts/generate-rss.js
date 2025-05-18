@@ -5,26 +5,26 @@ const path = require('path');
 const matter = require('gray-matter');
 const { Feed } = require('feed');
 
-const postsDirectory = path.join(process.cwd(), 'posts');
+const postsDirectory = path.join(process.cwd(), 'app', 'blog', 'posts');
 
 async function generateRssFeed() {
   const feed = new Feed({
     title: 'My Blog',
     description: 'This is my blog',
-    id: 'https://yourdomain.com/',
-    link: 'https://yourdomain.com/',
+    id: 'https://blog.ashesborn.cloud/',
+    link: 'https://blog.ashesborn.cloud/',
     language: 'en',
-    image: 'https://yourdomain.com/logo.png',
-    favicon: 'https://yourdomain.com/favicon.ico',
+    image: 'https://blog.ashesborn.cloud/logo.png',
+    favicon: 'https://blog.ashesborn.cloud/favicon.ico',
     copyright: `All rights reserved ${new Date().getFullYear()}`,
     updated: new Date(),
     feedLinks: {
-      rss2: 'https://yourdomain.com/rss.xml',
+      rss2: 'https://blog.ashesborn.cloud/rss.xml',
     },
     author: {
       name: 'Your Name',
       email: 'your.email@example.com',
-      link: 'https://yourdomain.com',
+      link: 'https://blog.ashesborn.cloud',
     },
   });
 
@@ -58,7 +58,7 @@ async function generateRssFeed() {
 
   // Add each post to the feed
   for (const post of sortedPosts) {
-    const url = `https://yourdomain.com/posts/${post.id}`;
+    const url = `https://blog.ashesborn.cloud/blog/${post.id}`;
     feed.addItem({
       title: post.title,
       id: url,
@@ -69,7 +69,7 @@ async function generateRssFeed() {
         {
           name: 'Your Name',
           email: 'your.email@example.com',
-          link: 'https://yourdomain.com',
+          link: 'https://blog.ashesborn.cloud',
         },
       ],
       date: new Date(post.date),

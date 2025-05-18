@@ -1,10 +1,10 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://yourdomain.com',
+  siteUrl: process.env.SITE_URL || 'https://blog.ashesborn.cloud',
   generateRobotsTxt: true,
   robotsTxtOptions: {
     additionalSitemaps: [
-      'https://yourdomain.com/sitemap.xml',
+      'https://blog.ashesborn.cloud/sitemap.xml',
     ],
     policies: [
       {

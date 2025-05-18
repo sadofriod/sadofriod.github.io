@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://blog.ashesborn.cloud
+
+# Sitemaps
+Sitemap: https://blog.ashesborn.cloud/sitemap.xml

@@ -32,7 +32,7 @@ export async function generateRssFeed() {
     author,
   });
   for (const post of posts) {
-    const url = `${site_url}/posts/${post.slug}`;
+    const url = `${site_url}/blog/${post.slug}`;
     feed.addItem({
       title: post.title,
       id: url,

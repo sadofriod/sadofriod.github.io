@@ -2,9 +2,7 @@ import { Container, Typography, Box, Chip, Stack, Divider } from '@mui/material'
 import { getAllPostIds, getPostBySlug, getPostData } from '../../../lib/posts';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import type { PluggableList } from 'react-markdown/lib/react-markdown';
+import 'katex/dist/katex.min.css';
 
 interface PageProps {
   params: {
@@ -13,7 +11,7 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { metadata } = getPostBySlug(params.slug);
+  const { metadata } = getPostBySlug(decodeURI(params.slug));
 
   return {
     title: metadata.title,
@@ -30,7 +28,7 @@ export async function generateStaticParams() {
 }
 
 export default function BlogPost({ params }: PageProps) {
-  const { content, slug, ...metadata } = getPostData(params.slug);
+  const { content, slug, ...metadata } = getPostData(decodeURI(params.slug));
 
   return (
     <Container maxWidth="md">
@@ -62,8 +60,6 @@ export default function BlogPost({ params }: PageProps) {
 
         <Box className="markdown-content" sx={{ mt: 4 }}>
           <ReactMarkdown
-            rehypePlugins={[rehypeKatex] as PluggableList}
-            remarkPlugins={[remarkMath]}
           >{content}</ReactMarkdown>
         </Box>
       </Box>
