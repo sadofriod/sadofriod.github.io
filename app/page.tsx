@@ -12,8 +12,8 @@ export default function Home() {
       <Grid container sx={{ my: 4 }} gap={2}>
         <Grid item flex={1}>
           <UserProfile
-            name="John Doe"
-            avatar="/path/to/avatar.jpg"
+            name="Ashes Born"
+            avatar="/avatar.jpg"
             bio="Software engineer with a passion for open-source."
             title="Senior Developer"
             company="Tech Corp"

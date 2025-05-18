@@ -121,10 +121,10 @@ export function getPostBySlug(slug: string): { content: string; metadata: PostMe
   const fullPath = path.join(postsDirectory, `${slugToFilename(slug)}.md`);
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const matterResult = matter(fileContents);
-  const { data, content } = matterResult;
+  const { content } = matterResult;
 
   const metadata: PostMetadata = {
-    slug,
+    slug: slugToFilename(slug),
     ...convertMatterToPostMetadata(matterResult),
   };
   

@@ -1,18 +1,30 @@
-import { baseUrl } from 'app/sitemap'
-import { getBlogPosts } from 'app/blog/utils'
+import { baseUrl } from '../sitemap'
+import { getBlogPosts } from '../blog/utils'
+
+// Define the BlogPost type inline
+type BlogPost = {
+  metadata: {
+    title: string;
+    date: string;
+    summary: string;
+    image?: string;
+  };
+  slug: string;
+  content: string;
+};
 
 export async function GET() {
-  let allBlogs = await getBlogPosts()
+  const allBlogs = await getBlogPosts()
 
   const itemsXml = allBlogs
-    .sort((a, b) => {
+    .sort((a: BlogPost, b: BlogPost) => {
       if (new Date(a.metadata.date) > new Date(b.metadata.date)) {
         return -1
       }
       return 1
     })
     .map(
-      (post) =>
+      (post: BlogPost) =>
         `<item>
           <title>${post.metadata.title}</title>
           <link>${baseUrl}/blog/${post.slug}</link>

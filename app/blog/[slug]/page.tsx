@@ -2,6 +2,9 @@ import { Container, Typography, Box, Chip, Stack, Divider } from '@mui/material'
 import { getAllPostIds, getPostBySlug, getPostData } from '../../../lib/posts';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
+import type { PluggableList } from 'react-markdown/lib/react-markdown';
 
 interface PageProps {
   params: {
@@ -11,7 +14,7 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { metadata } = getPostBySlug(params.slug);
-  
+
   return {
     title: metadata.title,
     description: metadata.excerpt || metadata.title,
@@ -28,14 +31,14 @@ export async function generateStaticParams() {
 
 export default function BlogPost({ params }: PageProps) {
   const { content, slug, ...metadata } = getPostData(params.slug);
-  
+
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
           {metadata.title}
         </Typography>
-        
+
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           {new Date(metadata.date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -43,10 +46,10 @@ export default function BlogPost({ params }: PageProps) {
             day: 'numeric',
           })}
         </Typography>
-        
+
         {metadata.tags && metadata.tags.length > 0 && (
           <Stack direction="row" spacing={1} sx={{ my: 2, flexWrap: 'wrap', gap: 1 }}>
-            {Array.isArray(metadata.tags) ? 
+            {Array.isArray(metadata.tags) ?
               metadata.tags.map((tag) => (
                 <Chip key={tag} label={tag} size="small" />
               )) :
@@ -54,11 +57,14 @@ export default function BlogPost({ params }: PageProps) {
             }
           </Stack>
         )}
-        
+
         <Divider sx={{ my: 3 }} />
-        
+
         <Box className="markdown-content" sx={{ mt: 4 }}>
-          <ReactMarkdown>{content}</ReactMarkdown>
+          <ReactMarkdown
+            rehypePlugins={[rehypeKatex] as PluggableList}
+            remarkPlugins={[remarkMath]}
+          >{content}</ReactMarkdown>
         </Box>
       </Box>
     </Container>

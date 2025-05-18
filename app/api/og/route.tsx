@@ -11,11 +11,7 @@ export async function GET(req: NextRequest) {
     const title = searchParams.get('title') || 'My Blog';
     const date = searchParams.get('date') || new Date().toISOString().split('T')[0];
     const author = searchParams.get('author') || 'Author';
-    
-    // Font loading
-    const fontData = await fetch(
-      new URL('../../../public/fonts/Inter-Bold.ttf', import.meta.url)
-    ).then((res) => res.arrayBuffer());
+
     
     return new ImageResponse(
       (
@@ -67,14 +63,6 @@ export async function GET(req: NextRequest) {
       {
         width: 1200,
         height: 630,
-        fonts: [
-          {
-            name: 'Inter',
-            data: fontData,
-            style: 'normal',
-            weight: 700,
-          },
-        ],
       }
     );
   } catch (e) {
