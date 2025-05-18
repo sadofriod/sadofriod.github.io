@@ -31,9 +31,7 @@ export default async function RootLayout({
 
   return (
     <html className={roboto.variable} lang={initialLocale}>
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-      </head>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-5JRRE2PZ65" />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
