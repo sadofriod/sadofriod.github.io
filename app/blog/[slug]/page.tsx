@@ -2,6 +2,7 @@ import { Container, Typography, Box, Chip, Stack, Divider } from '@mui/material'
 import { getAllPostIds, getPostBySlug, getPostData } from '../../../lib/posts';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
+import ShareButton from '../../../components/ShareButton';
 import 'katex/dist/katex.min.css';
 
 interface PageProps {
@@ -29,13 +30,21 @@ export async function generateStaticParams() {
 
 export default function BlogPost({ params }: PageProps) {
   const { content, slug, ...metadata } = getPostData(decodeURI(params.slug));
+  const postUrl = `${process.env.SITE_URL || 'http://localhost:3000'}/blog/${params.slug}`;
 
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          {metadata.title}
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+          <Typography variant="h3" component="h1" sx={{ flex: 1, pr: 2 }}>
+            {metadata.title}
+          </Typography>
+          <ShareButton 
+            title={metadata.title}
+            url={postUrl}
+            text={`Check out this blog post: ${metadata.title}`}
+          />
+        </Box>
 
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           {new Date(metadata.date).toLocaleDateString('en-US', {
