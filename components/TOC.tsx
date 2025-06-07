@@ -3,7 +3,6 @@ import { Box, Typography, List, ListItem, ListItemButton, ListItemText } from '@
 import { useEffect, useState } from 'react';
 
 interface TOCItem {
-  id: string;
   text: string;
   level: number;
 }
@@ -25,9 +24,8 @@ export default function TOC({ content }: TOCProps) {
     while ((match = headingRegex.exec(content)) !== null) {
       const level = match[1].length;
       const text = match[2].trim();
-      const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
-      
-      items.push({ id, text, level });
+
+      items.push({ text, level });
     }
 
     setTocItems(items);
@@ -56,15 +54,25 @@ export default function TOC({ content }: TOCProps) {
     return () => observer.disconnect();
   }, [tocItems]);
 
-  const handleClick = (id: string) => {
-    const element = document.getElementById(id);
+  const handleClick = (text: string) => {
+    // First try to find by generated slug ID
+
+    // If not found by ID, search for heading by text content
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const element = Array.from(headings).find(heading =>
+      heading.textContent?.includes(text)
+    ) as HTMLElement;
+
+    console.log(`Scrolling to element with text: ${text}`, element);
+
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Update active ID for highlighting
+      setActiveId(element.id);
     }
   };
 
   if (tocItems.length === 0) return null;
-
   return (
     <Box
       sx={{
@@ -86,28 +94,28 @@ export default function TOC({ content }: TOCProps) {
       </Typography>
       <List dense sx={{ py: 0 }}>
         {tocItems.map((item) => (
-          <ListItem key={item.id} sx={{ py: 0, pl: (item.level - 1) * 2 }}>
+          <ListItem key={item.text} sx={{ py: 0, pl: (item.level - 1) * 2 }}>
             <ListItemButton
-              onClick={() => handleClick(item.id)}
+              onClick={() => handleClick(item.text)}
               sx={{
                 borderRadius: 1,
                 py: 0.5,
                 px: 1,
                 minHeight: 'auto',
-                backgroundColor: activeId === item.id ? 'action.selected' : 'transparent',
+                backgroundColor: activeId === item.text ? 'action.selected' : 'transparent',
                 '&:hover': {
                   backgroundColor: 'action.hover',
                 },
               }}
             >
-              <ListItemText 
+              <ListItemText
                 primary={item.text}
                 primaryTypographyProps={{
                   variant: 'body2',
                   sx: {
                     fontSize: item.level === 1 ? '0.875rem' : '0.8125rem',
                     fontWeight: item.level <= 2 ? 500 : 400,
-                    color: activeId === item.id ? 'primary.main' : 'text.primary',
+                    color: activeId === item.text ? 'primary.main' : 'text.primary',
                   }
                 }}
               />

@@ -46,21 +46,35 @@ export default function BlogPost({ params }: PageProps) {
   return (
     <Box sx={{
       display: 'flex',
-      gap: { xs: 0, lg: 4 },
+      gap: { xs: 0, md: 3, lg: 4 },
       alignItems: 'flex-start',
+      maxWidth: '100vw',
+      overflow: 'hidden',
     }}>
-      <Container sx={{ px: { xs: 2, sm: 3 } }} maxWidth="lg">
-
-        {/* Main content */}
-        <Box sx={{ flex: 1, minWidth: 0 }}>
+      {/* Main Content Container */}
+      <Container 
+        sx={{ 
+          px: { xs: 2, sm: 3, md: 2 },
+          flex: 1,
+          minWidth: 0,
+          maxWidth: { xs: '100%', lg: 'calc(100% - 280px)' }
+        }} 
+        maxWidth={false}
+      >
+        <Box sx={{ 
+          maxWidth: '800px',
+          mx: { xs: 0, lg: 'auto' },
+          width: '100%'
+        }}>
           <Box sx={{ my: { xs: 2, sm: 4 } }}>
+            {/* Header Section */}
             <Box sx={{
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
               justifyContent: 'space-between',
               alignItems: { xs: 'flex-start', sm: 'flex-start' },
-              mb: { xs: 1, sm: 2 },
-              gap: { xs: 1, sm: 0 }
+              mb: { xs: 2, sm: 3 },
+              gap: { xs: 2, sm: 0 }
             }}>
               <Typography
                 variant="h3"
@@ -68,16 +82,17 @@ export default function BlogPost({ params }: PageProps) {
                 sx={{
                   flex: 1,
                   pr: { xs: 0, sm: 2 },
-                  fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                  fontSize: { xs: '1.75rem', sm: '2.25rem', md: '2.75rem' },
                   lineHeight: { xs: 1.2, sm: 1.167 },
-                  fontWeight: { xs: 600, sm: 400 }
+                  fontWeight: { xs: 600, sm: 500 },
+                  mb: { xs: 1, sm: 0 }
                 }}
               >
                 {metadata.title}
               </Typography>
               <Box sx={{
-                alignSelf: { xs: 'flex-end', sm: 'flex-start' },
-                mt: { xs: -0.5, sm: 0 }
+                alignSelf: { xs: 'flex-start', sm: 'flex-start' },
+                mt: { xs: 0, sm: 0.5 }
               }}>
                 <ShareButton
                   title={metadata.title}
@@ -87,71 +102,101 @@ export default function BlogPost({ params }: PageProps) {
               </Box>
             </Box>
 
-            <Typography
-              variant="subtitle1"
-              color="text.secondary"
-              gutterBottom
-              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-            >
-              {new Date(metadata.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </Typography>
-
-            {metadata.tags && metadata.tags.length > 0 && (
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{
-                  my: { xs: 1.5, sm: 2 },
-                  flexWrap: 'wrap',
-                  gap: { xs: 0.5, sm: 1 }
+            {/* Meta Information */}
+            <Box sx={{ mb: { xs: 2, sm: 3 } }}>
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                sx={{ 
+                  fontSize: { xs: '0.875rem', sm: '1rem' },
+                  mb: { xs: 1, sm: 1.5 }
                 }}
               >
-                {Array.isArray(metadata.tags) ?
-                  metadata.tags.map((tag) => (
+                {new Date(metadata.date).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </Typography>
+
+              {metadata.tags && metadata.tags.length > 0 && (
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  sx={{
+                    flexWrap: 'wrap',
+                    gap: { xs: 0.5, sm: 1 }
+                  }}
+                >
+                  {Array.isArray(metadata.tags) ?
+                    metadata.tags.map((tag) => (
+                      <Chip
+                        key={tag}
+                        label={tag}
+                        size="small"
+                        variant="outlined"
+                        sx={{ 
+                          fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                          height: { xs: '24px', sm: '28px' }
+                        }}
+                      />
+                    )) :
                     <Chip
-                      key={tag}
-                      label={tag}
+                      label={metadata.tags}
                       size="small"
-                      sx={{ fontSize: { xs: '0.75rem', sm: '0.8125rem' } }}
+                      variant="outlined"
+                      sx={{ 
+                        fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                        height: { xs: '24px', sm: '28px' }
+                      }}
                     />
-                  )) :
-                  <Chip
-                    label={metadata.tags}
-                    size="small"
-                    sx={{ fontSize: { xs: '0.75rem', sm: '0.8125rem' } }}
-                  />
-                }
-              </Stack>
-            )}
+                  }
+                </Stack>
+              )}
+            </Box>
 
             <Divider sx={{ my: { xs: 2, sm: 3 } }} />
 
+            {/* Article Content */}
             <Box
               className="markdown-content"
               sx={{
-                mt: { xs: 2, sm: 4 },
+                mt: { xs: 2, sm: 3 },
                 '& p': {
                   fontSize: { xs: '1rem', sm: '1.125rem' },
                   lineHeight: { xs: 1.6, sm: 1.7 },
                   mb: { xs: 1.5, sm: 2 },
+                  color: 'text.primary',
                 },
                 '& h1, & h2, & h3, & h4, & h5, & h6': {
-                  mt: { xs: 2, sm: 3 },
-                  mb: { xs: 1, sm: 1.5 },
-                  fontSize: {
-                    xs: '1.25rem',
-                    sm: '1.5rem'
-                  },
+                  mt: { xs: 2.5, sm: 3.5 },
+                  mb: { xs: 1.5, sm: 2 },
+                  color: 'text.primary',
+                  fontWeight: 600,
                 },
                 '& h1': {
                   fontSize: { xs: '1.75rem', sm: '2.125rem' },
+                  borderBottom: '2px solid',
+                  borderColor: 'divider',
+                  pb: 1,
                 },
                 '& h2': {
                   fontSize: { xs: '1.5rem', sm: '1.875rem' },
+                  borderBottom: '1px solid',
+                  borderColor: 'divider',
+                  pb: 0.5,
+                },
+                '& h3': {
+                  fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                },
+                '& h4': {
+                  fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                },
+                '& h5': {
+                  fontSize: { xs: '1rem', sm: '1.125rem' },
+                },
+                '& h6': {
+                  fontSize: { xs: '0.875rem', sm: '1rem' },
                 },
                 '& ul, & ol': {
                   pl: { xs: 2, sm: 3 },
@@ -266,7 +311,25 @@ export default function BlogPost({ params }: PageProps) {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
-                      <Typography variant="h1" component="h1" id={id} sx={{ scrollMarginTop: '100px' }} {...props}>
+                      <Typography 
+                        variant="h1" 
+                        component="h1" 
+                        id={id} 
+                        sx={{ 
+                          scrollMarginTop: { xs: '80px', md: '100px' },
+                          '&:hover': {
+                            '&::before': {
+                              content: '"#"',
+                              position: 'absolute',
+                              left: '-20px',
+                              color: 'primary.main',
+                              opacity: 0.7,
+                            }
+                          },
+                          position: 'relative'
+                        }} 
+                        {...props}
+                      >
                         {children}
                       </Typography>
                     );
@@ -275,7 +338,25 @@ export default function BlogPost({ params }: PageProps) {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
-                      <Typography variant="h2" component="h2" id={id} sx={{ scrollMarginTop: '100px' }} {...props}>
+                      <Typography 
+                        variant="h2" 
+                        component="h2" 
+                        id={id} 
+                        sx={{ 
+                          scrollMarginTop: { xs: '80px', md: '100px' },
+                          '&:hover': {
+                            '&::before': {
+                              content: '"#"',
+                              position: 'absolute',
+                              left: '-20px',
+                              color: 'primary.main',
+                              opacity: 0.7,
+                            }
+                          },
+                          position: 'relative'
+                        }} 
+                        {...props}
+                      >
                         {children}
                       </Typography>
                     );
@@ -284,7 +365,25 @@ export default function BlogPost({ params }: PageProps) {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
-                      <Typography variant="h3" component="h3" id={id} sx={{ scrollMarginTop: '100px' }} {...props}>
+                      <Typography 
+                        variant="h3" 
+                        component="h3" 
+                        id={id} 
+                        sx={{ 
+                          scrollMarginTop: { xs: '80px', md: '100px' },
+                          '&:hover': {
+                            '&::before': {
+                              content: '"#"',
+                              position: 'absolute',
+                              left: '-20px',
+                              color: 'primary.main',
+                              opacity: 0.7,
+                            }
+                          },
+                          position: 'relative'
+                        }} 
+                        {...props}
+                      >
                         {children}
                       </Typography>
                     );
@@ -293,7 +392,16 @@ export default function BlogPost({ params }: PageProps) {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
-                      <Typography variant="h4" component="h4" id={id} sx={{ scrollMarginTop: '100px' }} {...props}>
+                      <Typography 
+                        variant="h4" 
+                        component="h4" 
+                        id={id} 
+                        sx={{ 
+                          scrollMarginTop: { xs: '80px', md: '100px' },
+                          position: 'relative'
+                        }} 
+                        {...props}
+                      >
                         {children}
                       </Typography>
                     );
@@ -302,7 +410,16 @@ export default function BlogPost({ params }: PageProps) {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
-                      <Typography variant="h5" component="h5" id={id} sx={{ scrollMarginTop: '100px' }} {...props}>
+                      <Typography 
+                        variant="h5" 
+                        component="h5" 
+                        id={id} 
+                        sx={{ 
+                          scrollMarginTop: { xs: '80px', md: '100px' },
+                          position: 'relative'
+                        }} 
+                        {...props}
+                      >
                         {children}
                       </Typography>
                     );
@@ -311,12 +428,20 @@ export default function BlogPost({ params }: PageProps) {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
-                      <Typography variant="h6" component="h6" id={id} sx={{ scrollMarginTop: '100px' }} {...props}>
+                      <Typography 
+                        variant="h6" 
+                        component="h6" 
+                        id={id} 
+                        sx={{ 
+                          scrollMarginTop: { xs: '80px', md: '100px' },
+                          position: 'relative'
+                        }} 
+                        {...props}
+                      >
                         {children}
                       </Typography>
                     );
                   },
-                  // ...existing component mappings...
                 }}
               >
                 {content}
@@ -324,10 +449,25 @@ export default function BlogPost({ params }: PageProps) {
             </Box>
           </Box>
         </Box>
-
-        {/* TOC Sidebar */}
       </Container>
-      <TOC content={content} />
+
+      {/* TOC Sidebar - Enhanced positioning */}
+      <Box sx={{ 
+        display: { xs: 'none', lg: 'block' },
+        flexShrink: 0,
+        width: '280px',
+        position: 'sticky',
+        top: '100px',
+        alignSelf: 'flex-start',
+        // maxHeight: 'calc(100vh - 120px)',
+        overflow: 'auto',
+        pl: 2,
+        borderLeft: '1px solid',
+        borderColor: 'divider',
+        height: '100%',
+      }}>
+        <TOC content={content} />
+      </Box>
     </Box>
   );
 }
