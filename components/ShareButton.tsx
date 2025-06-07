@@ -99,13 +99,14 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
           size="small"
           sx={{
             color: 'text.secondary',
+            p: { xs: 1, sm: 1 },
             '&:hover': {
               color: 'primary.main',
               transform: 'translateY(-1px)'
             }
           }}
         >
-          <ShareIcon />
+          <ShareIcon sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' } }} />
         </IconButton>
       </Tooltip>
 
@@ -116,6 +117,12 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
         onClick={handleClose}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        PaperProps={{
+          sx: {
+            minWidth: { xs: 200, sm: 220 },
+            maxWidth: { xs: 280, sm: 320 },
+          }
+        }}
       >
         <MenuItem onClick={() => window.open(shareUrls.twitter, '_blank')}>
           <ListItemIcon>
@@ -159,30 +166,64 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
         onClose={() => setShowWeChatDialog(false)}
         maxWidth="sm"
         fullWidth
+        PaperProps={{
+          sx: {
+            m: { xs: 2, sm: 4 },
+            width: { xs: 'calc(100% - 32px)', sm: 'auto' },
+          }
+        }}
       >
-        <DialogTitle sx={{ textAlign: 'center' }}>
+        <DialogTitle sx={{ 
+          textAlign: 'center',
+          fontSize: { xs: '1.125rem', sm: '1.25rem' },
+          py: { xs: 1.5, sm: 2 }
+        }}>
           Share to WeChat
         </DialogTitle>
-        <DialogContent>
-          <Box sx={{ textAlign: 'center', py: 2 }}>
+        <DialogContent sx={{ px: { xs: 2, sm: 3 } }}>
+          <Box sx={{ textAlign: 'center', py: { xs: 1, sm: 2 } }}>
             <img
               src={generateQRCodeUrl(url)}
               alt="QR Code for WeChat sharing"
-              style={{ maxWidth: '200px', height: 'auto' }}
+              style={{ 
+                maxWidth: '180px', 
+                width: '100%', 
+                height: 'auto' 
+              }}
             />
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography 
+              variant="body2" 
+              color="text.secondary" 
+              sx={{ 
+                mt: 2,
+                fontSize: { xs: '0.875rem', sm: '0.875rem' }
+              }}
+            >
               Scan this QR code with WeChat to share
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1, fontWeight: 'medium' }}>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                mt: 1, 
+                fontWeight: 'medium',
+                fontSize: { xs: '0.875rem', sm: '0.875rem' }
+              }}
+            >
               {title}
             </Typography>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+        <DialogActions sx={{ 
+          justifyContent: 'center', 
+          pb: { xs: 2, sm: 2 },
+          px: { xs: 2, sm: 3 },
+          gap: 1
+        }}>
           <Button 
             onClick={handleCopyLink} 
             variant="outlined" 
             size="small"
+            sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
           >
             Copy Link
           </Button>
@@ -190,6 +231,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             onClick={() => setShowWeChatDialog(false)} 
             variant="contained"
             size="small"
+            sx={{ fontSize: { xs: '0.8125rem', sm: '0.875rem' } }}
           >
             Close
           </Button>

@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
   Container,
   Box
 } from '@mui/material';
@@ -15,17 +15,17 @@ import { useLanguage } from '../lib/i18n/LanguageContext';
 
 export default function MainNavbar() {
   const { t } = useLanguage();
-  
+
   return (
     <AppBar position="static" color="transparent" elevation={0}>
-      <Container>
+      <Container >
         <Toolbar disableGutters>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
               Ashes Space
             </Link>
           </Typography>
-          
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button color="inherit" component={Link} href="/">
               {t('nav.home')}
