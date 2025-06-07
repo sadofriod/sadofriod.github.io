@@ -10,8 +10,8 @@ import detectLanguage from '../components/ServerLanguageDetection';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'My Next.js Blog',
-  description: 'A static blog built with Next.js',
+  title: 'Ashes Space',
+  description: 'A comprehensive resource for Ashes of the Singularity: Escalation',
 };
 
 const roboto = Roboto({

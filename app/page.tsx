@@ -8,9 +8,9 @@ export default function Home() {
   const posts = getAllPostIds();
 
   return (
-    <Container>
-      <Grid container sx={{ my: 4 }} gap={2}>
-        <Grid item flex={1}>
+    <Container maxWidth="lg">
+      <Grid container sx={{ my: { xs: 2, md: 4 } }} spacing={{ xs: 2, md: 3 }}>
+        <Grid item xs={12} md={4} lg={3}>
           <UserProfile
             name="Ashes Born"
             avatar="/avatar.jpg"
@@ -24,7 +24,7 @@ export default function Home() {
             }}
           />
         </Grid>
-        <Grid flex={3}>
+        <Grid item xs={12} md={8} lg={9}>
           <PostProfile posts={posts} />
         </Grid>
       </Grid>
