@@ -36,7 +36,7 @@ export async function generateStaticParams() {
 
 export default function BlogPost({ params }: PageProps) {
   const { content, slug, ...metadata } = getPostData(decodeURI(params.slug));
-  const postUrl = `${process.env.SITE_URL || 'http://blog.ashesborn.cloud'}/blog/${params.slug}`;
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://blog.ashesborn.cloud'}/blog/${params.slug}`;
 
   // Generate heading ID from text
   const generateHeadingId = (text: string) => {
