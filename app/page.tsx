@@ -18,8 +18,7 @@ export default function Home() {
             title="Senior Developer"
             company="Tech Corp"
             social={{
-              github: "https://github.com/johndoe",
-              twitter: "johndoe",
+              github: "https://github.com/sadofriod",
               email: "justlikeashes@gamil.com"
             }}
           />
