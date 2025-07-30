@@ -6,12 +6,12 @@ import { useLanguage } from '../lib/i18n/LanguageContext';
 import { format } from 'date-fns';
 import { enUS, zhCN, ja } from 'date-fns/locale';
 import PostListItem from './PostListItem';
-import { 
-  Box, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem, 
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
   type SelectChangeEvent,
   Typography,
   Stack
@@ -61,10 +61,10 @@ export default function PostList({ posts }: PostListProps) {
 
   return (
     <div>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         mb: 3,
         flexWrap: 'wrap',
         gap: 2
@@ -72,7 +72,7 @@ export default function PostList({ posts }: PostListProps) {
         <Typography variant="h6" component="h2">
           {t('blog.posts')} ({posts.length})
         </Typography>
-        
+
         <FormControl size="small" sx={{ minWidth: 150 }}>
           <InputLabel id="sort-select-label">{t('common.sortBy')}</InputLabel>
           <Select
@@ -93,7 +93,7 @@ export default function PostList({ posts }: PostListProps) {
       </Box>
 
       <Stack spacing={2}>
-        {sortPosts(posts).map((post) => (
+        {sortPosts(posts).filter((post) => !post.isHidden).map((post) => (
           <PostListItem
             {...post}
             key={post.slug}

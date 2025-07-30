@@ -18,6 +18,7 @@ export type PostMetadata = {
   slug: string;
   content?: string;
   description?: string;
+  isHidden?: boolean;
 };
 
 export function getAllPostIds() {
@@ -82,6 +83,7 @@ function convertMatterToPostMetadata(matterResult: matter.GrayMatterFile<string>
     keywords: matterResult.data.keywords || '',
     content: matterResult.content,
     description: matterResult.data.description || `${matterResult.content.slice(0, 100)}...` || '',
+    isHidden: matterResult.data.isHidden || false,
   };
 }
 

@@ -4,7 +4,7 @@
         <title>My Blog</title>
         <link>https://blog.ashesborn.cloud/</link>
         <description>This is my blog</description>
-        <lastBuildDate>Sun, 18 May 2025 07:03:07 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 30 Jul 2025 04:38:52 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -148,6 +148,12 @@
             <link>https://blog.ashesborn.cloud/blog/通过服务器在指定时间将网页录制成视频</link>
             <guid>https://blog.ashesborn.cloud/blog/通过服务器在指定时间将网页录制成视频</guid>
             <pubDate>Fri, 16 Jul 2021 13:51:36 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <link>https://blog.ashesborn.cloud/blog/Freezer Backend API Documentation</link>
+            <guid>https://blog.ashesborn.cloud/blog/Freezer Backend API Documentation</guid>
+            <pubDate>Invalid Date</pubDate>
             <author>your.email@example.com (Your Name)</author>
         </item>
     </channel>
