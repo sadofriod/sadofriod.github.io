@@ -1,7 +1,7 @@
 ---
 layout: interesting
 title: Freezer Backend API Documentation
-date: 2025-07-30 12:39:53
+date: 2025-08-20 15:35:00
 tags: interesting
 p: interesting
 categories: interesting
