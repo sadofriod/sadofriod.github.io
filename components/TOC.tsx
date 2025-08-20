@@ -14,6 +14,8 @@ interface TOCProps {
 export default function TOC({ content }: TOCProps) {
   const [tocItems, setTocItems] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const [isFixed, setIsFixed] = useState<boolean>(false);
+  const [originalTop, setOriginalTop] = useState<number>(0);
 
   // Generate heading ID from text (same logic as in the blog post page)
   const generateHeadingId = (text: string) => {
@@ -71,6 +73,48 @@ export default function TOC({ content }: TOCProps) {
     return () => observer.disconnect();
   }, [tocItems]);
 
+  useEffect(() => {
+    // Monitor scroll to determine if TOC should be fixed
+    const handleScroll = () => {
+      // Calculate if we should fix the TOC based on scroll position
+      const scrollY = window.scrollY;
+      
+      // If we haven't recorded the original top position, or if we're near the top
+      if (originalTop === 0 && scrollY < 200) {
+        const tocContainer = document.querySelector('[data-toc-container]');
+        if (tocContainer) {
+          const rect = tocContainer.getBoundingClientRect();
+          setOriginalTop(rect.top + scrollY);
+        }
+        return;
+      }
+
+      // Fix TOC when we've scrolled past its original position
+      const shouldBeFixed = scrollY > originalTop - 120;
+      setIsFixed(shouldBeFixed);
+    };
+
+    // Initial setup
+    const setupOriginalPosition = () => {
+      const tocContainer = document.querySelector('[data-toc-container]');
+      if (tocContainer && originalTop === 0) {
+        const rect = tocContainer.getBoundingClientRect();
+        setOriginalTop(rect.top + window.scrollY);
+      }
+    };
+
+    // Setup with a slight delay to ensure DOM is ready
+    setTimeout(setupOriginalPosition, 100);
+    
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', setupOriginalPosition);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', setupOriginalPosition);
+    };
+  }, [tocItems, originalTop]);
+
   const handleClick = (text: string) => {
     // Generate the same slug ID as used in the blog post page
     const slug = generateHeadingId(text);
@@ -108,10 +152,12 @@ export default function TOC({ content }: TOCProps) {
   if (tocItems.length === 0) return null;
   return (
     <Box
+      data-toc-container="true"
       sx={{
-        position: 'sticky',
-        top: 20,
-        maxHeight: 'calc(100vh - 40px)',
+        position: isFixed ? 'fixed' : 'sticky',
+        top: isFixed ? 20 : 20,
+        right: isFixed ? 20 : 'auto',
+        maxHeight: isFixed ? 'calc(100vh - 40px)' : 'calc(100vh - 40px)',
         overflowY: 'auto',
         border: '1px solid',
         borderColor: 'divider',
@@ -119,7 +165,11 @@ export default function TOC({ content }: TOCProps) {
         backgroundColor: 'background.paper',
         p: 2,
         display: { xs: 'none', lg: 'block' },
-        minWidth: 50,
+        minWidth: isFixed ? 250 : 50,
+        width: isFixed ? 'auto' : '100%',
+        zIndex: isFixed ? 1000 : 'auto',
+        boxShadow: isFixed ? '0 4px 20px rgba(0, 0, 0, 0.15)' : 'none',
+        transition: 'all 0.3s ease-in-out',
       }}
     >
       <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem', fontWeight: 600 }}>
