@@ -21,7 +21,7 @@ export async function GET() {
       title: 'Ashes Space Podcast',
       description: 'A podcast series covering technology, development, and innovation',
       author: 'Ashes Space',
-      email: 'podcast@ashesborn.cloud',
+      email: 'justlikeashes@gmail.com',
       category: 'Technology',
       subcategory: 'Software Development',
       language: 'en',
