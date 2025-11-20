@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPodcasts } from '@/lib/podcasts';
-import { uploadAudioToS3 } from '@/lib/s3';
+import { uploadAudioToS3, uploadImageToS3 } from '@/lib/s3';
 import { addPodcast } from '@/lib/podcastStorage';
 
 export async function GET() {
@@ -32,6 +32,7 @@ export async function POST(request: NextRequest) {
     }
     
     const audioFile = formData.get('audio') as File;
+    const imageFile = formData.get('image') as File;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const duration = formData.get('duration') as string;
@@ -71,7 +72,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert File to Buffer
+    // Validate image if provided
+    let imageUrl: string | undefined;
+    if (imageFile && imageFile.size > 0) {
+      const maxImageSize = 100 * 1024 * 1024; // 10MB
+      const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+
+      if (imageFile.size > maxImageSize) {
+        return NextResponse.json(
+          { error: 'Image size exceeds 10MB limit' },
+          { status: 400 }
+        );
+      }
+
+      if (!allowedImageTypes.includes(imageFile.type)) {
+        return NextResponse.json(
+          { error: 'Invalid image type. Allowed types: JPG, PNG, WEBP' },
+          { status: 400 }
+        );
+      }
+
+      // Convert Image File to Buffer and upload
+      const imageArrayBuffer = await imageFile.arrayBuffer();
+      const imageBuffer = Buffer.from(imageArrayBuffer);
+      imageUrl = await uploadImageToS3(
+        imageBuffer,
+        imageFile.name,
+        imageFile.type
+      );
+    }
+
+    // Convert Audio File to Buffer
     const arrayBuffer = await audioFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
@@ -82,12 +113,13 @@ export async function POST(request: NextRequest) {
       audioFile.type || 'audio/mpeg'
     );
 
-    // Create podcast metadata
+    // Create podcast metadata with S3 URLs
     const podcastData = {
       title,
       description,
       duration,
-      audioUrl,
+      s3AudioUrl: audioUrl, // Store S3 URL
+      s3ImageUrl: imageUrl, // Store S3 URL
       author: author || 'Unknown',
       episodeNumber: episodeNumber ? parseInt(episodeNumber) : undefined,
       season: season ? parseInt(season) : undefined,
@@ -95,7 +127,7 @@ export async function POST(request: NextRequest) {
       explicit: false,
     };
 
-    // Save podcast to Prisma database
+    // Save podcast to Prisma database (will generate presigned URLs in response)
     const savedPodcast = await addPodcast(podcastData);
 
     return NextResponse.json({

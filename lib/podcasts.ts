@@ -4,11 +4,11 @@ export type PodcastMetadata = {
   date: string;
   description: string;
   duration: string; // e.g., "45:30"
-  audioUrl: string; // URL to the audio file
+  audioUrl: string; // Presigned URL to the audio file
   author?: string;
   episodeNumber?: number;
   season?: number;
-  image?: string;
+  image?: string; // Presigned URL to the image file
   keywords?: string[];
   explicit?: boolean;
 };

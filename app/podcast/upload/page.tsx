@@ -34,6 +34,7 @@ export default function PodcastUploadPage() {
   const [uploading, setUploading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string>('');
+  const [selectedImageName, setSelectedImageName] = useState<string>('');
   const [result, setResult] = useState<{
     type: 'success' | 'error' | null;
     message: string;
@@ -92,6 +93,7 @@ export default function PodcastUploadPage() {
         });
         form.reset();
         setSelectedFileName(''); // Reset file name display
+        setSelectedImageName(''); // Reset image name display
       } else {
         setResult({
           type: 'error',
@@ -255,6 +257,37 @@ export default function PodcastUploadPage() {
                 </Button>
               </Box>
 
+              <Box>
+                <Typography variant="subtitle1" gutterBottom fontWeight="medium">
+                  Cover Image
+                </Typography>
+                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
+                  JPG, PNG, WEBP - Max 100MB (Recommended: 1400x1400px)
+                </Typography>
+                <Button
+                  component="label"
+                  variant="outlined"
+                  startIcon={<CloudUpload />}
+                  fullWidth
+                  sx={{ py: 1.5, justifyContent: 'flex-start' }}
+                >
+                  {selectedImageName || 'Choose Cover Image (Optional)'}
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setSelectedImageName(file.name);
+                      }
+                    }}
+                  />
+                </Button>
+              </Box>
+
               <TextField
                 fullWidth
                 id="title"
@@ -348,6 +381,15 @@ export default function PodcastUploadPage() {
               {result.data && (
                 <Card variant="outlined" sx={{ mt: 2, bgcolor: 'background.paper' }}>
                   <CardContent>
+                    {result.data.metadata.image && (
+                      <Box sx={{ mb: 2, textAlign: 'center' }}>
+                        <img 
+                          src={result.data.metadata.image} 
+                          alt="Podcast cover" 
+                          style={{ maxWidth: '200px', borderRadius: '8px' }}
+                        />
+                      </Box>
+                    )}
                     <Typography variant="body2" gutterBottom>
                       <strong>Title:</strong> {result.data.metadata.title}
                     </Typography>
@@ -364,6 +406,18 @@ export default function PodcastUploadPage() {
                         {result.data.metadata.audioUrl}
                       </MuiLink>
                     </Typography>
+                    {result.data.metadata.image && (
+                      <Typography variant="body2" sx={{ wordBreak: 'break-all', mt: 1 }}>
+                        <strong>Cover Image URL:</strong>{' '}
+                        <MuiLink
+                          href={result.data.metadata.image}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {result.data.metadata.image}
+                        </MuiLink>
+                      </Typography>
+                    )}
                   </CardContent>
                 </Card>
               )}
