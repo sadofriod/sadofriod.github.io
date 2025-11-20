@@ -56,3 +56,5 @@ public/sw.js.map
 public/workbox-*.js.map
 public/worker-*.js.map
 .swc/
+
+/lib/generated/prisma

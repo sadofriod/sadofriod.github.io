@@ -40,6 +40,13 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: '소개',
     es: 'Acerca de'
   },
+  'nav.podcast': {
+    en: 'Podcast',
+    zh: '播客',
+    ja: 'ポッドキャスト',
+    ko: '팟캐스트',
+    es: 'Podcast'
+  },
   'blog.readMore': {
     en: 'Read More',
     zh: '阅读更多',

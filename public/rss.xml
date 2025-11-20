@@ -4,7 +4,7 @@
         <title>My Blog</title>
         <link>https://blog.ashesborn.cloud/</link>
         <description>This is my blog</description>
-        <lastBuildDate>Wed, 30 Jul 2025 04:38:52 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 18 Nov 2025 16:48:07 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -14,6 +14,28 @@
             <link>https://blog.ashesborn.cloud/</link>
         </image>
         <copyright>All rights reserved 2025</copyright>
+        <item>
+            <title><![CDATA[Hello, World!]]></title>
+            <link>https://blog.ashesborn.cloud/blog/hello-world</link>
+            <guid>https://blog.ashesborn.cloud/blog/hello-world</guid>
+            <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+            <content:encoded><![CDATA[This is my first blog post using Next.js]]></content:encoded>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Freezer Backend API Documentation]]></title>
+            <link>https://blog.ashesborn.cloud/blog/TENNIS_API_DOCUMENTATION</link>
+            <guid>https://blog.ashesborn.cloud/blog/TENNIS_API_DOCUMENTATION</guid>
+            <pubDate>Wed, 20 Aug 2025 15:35:00 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Freezer Backend API Documentation]]></title>
+            <link>https://blog.ashesborn.cloud/blog/Freezer Backend API Documentation</link>
+            <guid>https://blog.ashesborn.cloud/blog/Freezer Backend API Documentation</guid>
+            <pubDate>Wed, 30 Jul 2025 12:39:53 GMT</pubDate>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
         <item>
             <title><![CDATA[在React Native中函数式的控制Loading Component]]></title>
             <link>https://blog.ashesborn.cloud/blog/在React Native中函数式的控制Loading Component</link>
@@ -36,26 +58,18 @@
             <author>your.email@example.com (Your Name)</author>
         </item>
         <item>
-            <title><![CDATA[增量运行E2E测试]]></title>
-            <link>https://blog.ashesborn.cloud/blog/增量运行E2E测试</link>
-            <guid>https://blog.ashesborn.cloud/blog/增量运行E2E测试</guid>
-            <pubDate>Mon, 08 Aug 2022 19:51:42 GMT</pubDate>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[Hello, World!]]></title>
-            <link>https://blog.ashesborn.cloud/blog/hello-world</link>
-            <guid>https://blog.ashesborn.cloud/blog/hello-world</guid>
-            <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
-            <content:encoded><![CDATA[This is my first blog post using Next.js]]></content:encoded>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
             <title><![CDATA[JS开发中函数式编程的一些经验]]></title>
             <link>https://blog.ashesborn.cloud/blog/JS开发中函数式编程的一些经验</link>
             <guid>https://blog.ashesborn.cloud/blog/JS开发中函数式编程的一些经验</guid>
             <pubDate>Wed, 30 Nov 2022 22:33:43 GMT</pubDate>
             <description><![CDATA[函数式编程, JS函数式编程]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[增量运行E2E测试]]></title>
+            <link>https://blog.ashesborn.cloud/blog/增量运行E2E测试</link>
+            <guid>https://blog.ashesborn.cloud/blog/增量运行E2E测试</guid>
+            <pubDate>Mon, 08 Aug 2022 19:51:42 GMT</pubDate>
             <author>your.email@example.com (Your Name)</author>
         </item>
         <item>
@@ -148,12 +162,6 @@
             <link>https://blog.ashesborn.cloud/blog/通过服务器在指定时间将网页录制成视频</link>
             <guid>https://blog.ashesborn.cloud/blog/通过服务器在指定时间将网页录制成视频</guid>
             <pubDate>Fri, 16 Jul 2021 13:51:36 GMT</pubDate>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <link>https://blog.ashesborn.cloud/blog/Freezer Backend API Documentation</link>
-            <guid>https://blog.ashesborn.cloud/blog/Freezer Backend API Documentation</guid>
-            <pubDate>Invalid Date</pubDate>
             <author>your.email@example.com (Your Name)</author>
         </item>
     </channel>

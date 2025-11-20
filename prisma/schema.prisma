@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("podcast_DATABASE_URL")
+}
+
+model Order {
+  id              String      @id
+  customerName    String?
+  customerEmail   String
+  customerPhone   String?
+  totalAmount     Float
+  status          String      @default("pending")
+  paymentStatus   String      @default("pending")
+  shippingStatus  String      @default("pending")
+  shippingAddress String?
+  shippingMethod  String      @default("standard")
+  trackingNumber  String?
+  notes           String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime
+  OrderItem       OrderItem[]
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   String
+  productId Int
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  Order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  Product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId])
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  sku         String      @unique
+  name        String
+  description String?
+  price       Float
+  stock       Int         @default(0)
+  category    String      @default("uncategorized")
+  status      String      @default("active")
+  images      String?
+  weight      Float?
+  dimensions  String?
+  tags        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime
+  OrderItem   OrderItem[]
+}
+
+
+model Podcast {
+  id            String   @id @default(cuid())
+  title         String
+  date          DateTime @default(now())
+  description   String   @db.Text
+  duration      String
+  audioUrl      String
+  author        String?
+  episodeNumber Int?
+  season        Int?
+  image         String?
+  keywords      String[]
+  explicit      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([date])
+  @@index([episodeNumber, season])
+}

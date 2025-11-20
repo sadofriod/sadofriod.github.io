@@ -5,27 +5,32 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/generate-rss.js && next-sitemap",
+    "build": "prisma generate && next build && node scripts/generate-rss.js && next-sitemap",
     "start": "next start",
     "lint": "next lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@8.9.2+sha512.b9d35fe91b2a5854dadc43034a3e7b2e675fa4b56e20e8e09ef078fa553c18f8aed44051e7b36e8b8dd435f97eb0c44c4ff3b44fc7c6fa7d21e1fac17bbe661e",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.933.0",
+    "@aws-sdk/s3-request-presigner": "^3.933.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.15.10",
     "@mui/material-nextjs": "^7.1.0",
+    "@prisma/client": "^6.19.0",
     "@tailwindcss/postcss": "^4.1.7",
     "@vercel/og": "^0.6.1",
     "biome": "^0.3.3",
     "cookies-next": "^5.1.0",
     "date-fns": "^2.30.0",
+    "dotenv": "^17.2.3",
     "feed": "^4.2.2",
     "gray-matter": "^4.0.3",
     "katex": "^0.16.22",
@@ -57,6 +62,7 @@
     "@types/react-dom": "^18.2.18",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/rss": "^0.0.32",
+    "prisma": "^6.19.0",
     "typescript": "^5.3.3"
   }
 }
