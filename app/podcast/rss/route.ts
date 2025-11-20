@@ -26,7 +26,7 @@ export async function GET() {
       subcategory: 'Software Development',
       language: 'en',
       copyright: `© ${new Date().getFullYear()} Ashes Space`,
-      imageUrl: `${site_url}/podcast-cover.jpg`,
+      imageUrl: `https://youke1.picui.cn/s1/2025/11/20/691f3317bc3e3.jpg`,
     };
 
     const itemsXml = sortedPodcasts
