@@ -39,6 +39,8 @@ export async function POST(request: NextRequest) {
     const author = formData.get('author') as string;
     const episodeNumber = formData.get('episodeNumber') as string;
     const season = formData.get('season') as string;
+    const keywordsString = formData.get('keywords') as string;
+    const explicitString = formData.get('explicit') as string;
 
     if (!audioFile) {
       return NextResponse.json(
@@ -113,6 +115,11 @@ export async function POST(request: NextRequest) {
       audioFile.type || 'audio/mpeg'
     );
 
+    // Process keywords
+    const keywords = keywordsString
+      ? keywordsString.split(',').map(k => k.trim()).filter(k => k.length > 0)
+      : [];
+
     // Create podcast metadata with S3 URLs
     const podcastData = {
       title,
@@ -124,7 +131,8 @@ export async function POST(request: NextRequest) {
       episodeNumber: episodeNumber ? parseInt(episodeNumber) : undefined,
       season: season ? parseInt(season) : undefined,
       date: new Date().toISOString().split('T')[0],
-      explicit: false,
+      keywords,
+      explicit: explicitString === 'true',
     };
 
     // Save podcast to Prisma database (will generate presigned URLs in response)

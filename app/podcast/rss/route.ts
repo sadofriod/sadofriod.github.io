@@ -23,10 +23,12 @@ export async function GET() {
       author: 'Ashes Space',
       email: 'justlikeashes@gmail.com',
       category: 'Technology',
-      subcategory: 'Software Development',
+      subcategory: 'Tech News',
       language: 'en',
       copyright: `© ${new Date().getFullYear()} Ashes Space`,
       imageUrl: `https://youke1.picui.cn/s1/2025/11/20/691f3317bc3e3.jpg`,
+      type: 'episodic', // episodic or serial
+      complete: false, // Set to true if podcast is complete
     };
 
     const itemsXml = sortedPodcasts
@@ -44,13 +46,15 @@ export async function GET() {
       <pubDate>${pubDate}</pubDate>
       <enclosure url="${escapeXml(metadata.audioUrl)}" type="audio/mpeg" length="0"/>
       <itunes:author>${escapeXml(metadata.author || podcastInfo.author)}</itunes:author>
-      <itunes:subtitle>${escapeXml(metadata.description.substring(0, 100))}</itunes:subtitle>
+      <itunes:title>${escapeXml(metadata.title)}</itunes:title>
+      <itunes:subtitle>${escapeXml(metadata.description.substring(0, 255))}</itunes:subtitle>
       <itunes:summary>${escapeXml(metadata.description)}</itunes:summary>
       <itunes:duration>${duration}</itunes:duration>
       ${metadata.image ? `<itunes:image href="${escapeXml(metadata.image)}"/>` : ''}
       ${metadata.episodeNumber ? `<itunes:episode>${metadata.episodeNumber}</itunes:episode>` : ''}
       ${metadata.season ? `<itunes:season>${metadata.season}</itunes:season>` : ''}
-      <itunes:explicit>${metadata.explicit ? 'yes' : 'no'}</itunes:explicit>
+      <itunes:episodeType>${metadata.episodeNumber ? 'full' : 'full'}</itunes:episodeType>
+      <itunes:explicit>${metadata.explicit ? 'true' : 'false'}</itunes:explicit>
       ${metadata.keywords && metadata.keywords.length > 0 ? `<itunes:keywords>${escapeXml(metadata.keywords.join(', '))}</itunes:keywords>` : ''}
     </item>`;
       })
@@ -59,14 +63,18 @@ export async function GET() {
     const rssFeed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" 
      xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
-     xmlns:content="http://purl.org/rss/1.0/modules/content/">
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(podcastInfo.title)}</title>
     <link>${site_url}/podcast</link>
+    <atom:link href="${site_url}/podcast/rss" rel="self" type="application/rss+xml"/>
     <language>${podcastInfo.language}</language>
     <copyright>${escapeXml(podcastInfo.copyright)}</copyright>
     <description>${escapeXml(podcastInfo.description)}</description>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <itunes:author>${escapeXml(podcastInfo.author)}</itunes:author>
+    <itunes:title>${escapeXml(podcastInfo.title)}</itunes:title>
     <itunes:summary>${escapeXml(podcastInfo.description)}</itunes:summary>
     <itunes:owner>
       <itunes:name>${escapeXml(podcastInfo.author)}</itunes:name>
@@ -76,7 +84,9 @@ export async function GET() {
     <itunes:category text="${podcastInfo.category}">
       <itunes:category text="${podcastInfo.subcategory}"/>
     </itunes:category>
-    <itunes:explicit>no</itunes:explicit>
+    <itunes:explicit>false</itunes:explicit>
+    <itunes:type>${podcastInfo.type}</itunes:type>
+    ${podcastInfo.complete ? '<itunes:complete>Yes</itunes:complete>' : ''}
     ${itemsXml}
   </channel>
 </rss>`;

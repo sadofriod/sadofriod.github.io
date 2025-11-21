@@ -35,6 +35,8 @@ export default function PodcastUploadPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string>('');
   const [selectedImageName, setSelectedImageName] = useState<string>('');
+  const [keywords, setKeywords] = useState<string>('');
+  const [explicit, setExplicit] = useState<boolean>(false);
   const [result, setResult] = useState<{
     type: 'success' | 'error' | null;
     message: string;
@@ -76,6 +78,10 @@ export default function PodcastUploadPage() {
 
     // Add auth key to the request
     formData.append('authKey', authKey || sessionStorage.getItem('upload_auth') || '');
+    
+    // Add keywords and explicit
+    formData.append('keywords', keywords);
+    formData.append('explicit', explicit.toString());
 
     try {
       const response = await fetch('/api/podcasts', {
@@ -94,6 +100,8 @@ export default function PodcastUploadPage() {
         form.reset();
         setSelectedFileName(''); // Reset file name display
         setSelectedImageName(''); // Reset image name display
+        setKeywords(''); // Reset keywords
+        setExplicit(false); // Reset explicit
       } else {
         setResult({
           type: 'error',
@@ -353,6 +361,42 @@ export default function PodcastUploadPage() {
                   />
                 </Grid>
               </Grid>
+
+              <TextField
+                fullWidth
+                id="keywords"
+                name="keywords"
+                label="Keywords"
+                placeholder="technology, programming, software (comma separated)"
+                variant="outlined"
+                value={keywords}
+                onChange={(e) => setKeywords(e.target.value)}
+                helperText="Enter keywords separated by commas"
+              />
+
+              <Box>
+                <Typography variant="subtitle1" gutterBottom fontWeight="medium">
+                  Content Rating
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <input
+                    type="checkbox"
+                    id="explicit"
+                    name="explicit"
+                    checked={explicit}
+                    onChange={(e) => setExplicit(e.target.checked)}
+                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                  />
+                  <label htmlFor="explicit" style={{ cursor: 'pointer' }}>
+                    <Typography variant="body1">
+                      Explicit Content
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Check this if the podcast contains explicit language or adult content
+                    </Typography>
+                  </label>
+                </Box>
+              </Box>
 
               <Button
                 type="submit"

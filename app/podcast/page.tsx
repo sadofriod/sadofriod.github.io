@@ -15,11 +15,6 @@ import {
   Alert,
   Link as MuiLink,
   Stack,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
   IconButton,
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -32,6 +27,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import type { Podcast } from '@/lib/podcasts';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import PodcastEditDialog from '@/components/PodcastEditDialog';
 
 export default function PodcastPage() {
   const router = useRouter();
@@ -40,15 +36,6 @@ export default function PodcastPage() {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [editingPodcast, setEditingPodcast] = useState<Podcast | null>(null);
-  const [editFormData, setEditFormData] = useState({
-    title: '',
-    description: '',
-    duration: '',
-    author: '',
-  });
-  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const [selectedAudioFile, setSelectedAudioFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Check if user is admin
@@ -111,28 +98,10 @@ export default function PodcastPage() {
     }
   };
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (formData: FormData) => {
     if (!editingPodcast) return;
 
     try {
-      const authKey = new URLSearchParams(window.location.search).get('authKey') || 
-                      sessionStorage.getItem('upload_auth');
-      
-      const formData = new FormData();
-      formData.append('authKey', authKey || '');
-      formData.append('title', editFormData.title);
-      formData.append('description', editFormData.description);
-      formData.append('duration', editFormData.duration);
-      formData.append('author', editFormData.author);
-      
-      if (selectedImageFile) {
-        formData.append('image', selectedImageFile);
-      }
-      
-      if (selectedAudioFile) {
-        formData.append('audio', selectedAudioFile);
-      }
-      
       const response = await fetch(`/api/podcasts/${editingPodcast.id}`, {
         method: 'PATCH',
         body: formData,
@@ -145,12 +114,10 @@ export default function PodcastPage() {
       const updatedPodcast = await response.json();
       setPodcasts(podcasts.map(p => p.id === editingPodcast.id ? updatedPodcast.podcast : p));
       setEditingPodcast(null);
-      setSelectedImageFile(null);
-      setImagePreview('');
-      setSelectedAudioFile(null);
       alert('Podcast updated successfully');
     } catch (err) {
       alert('Failed to update podcast: ' + (err instanceof Error ? err.message : 'Unknown error'));
+      throw err;
     }
   };
 
@@ -264,18 +231,7 @@ export default function PodcastPage() {
                           <IconButton
                             size="small"
                             color="primary"
-                            onClick={() => {
-                              setEditingPodcast(podcast);
-                              setEditFormData({
-                                title: podcast.metadata.title,
-                                description: podcast.metadata.description,
-                                duration: podcast.metadata.duration,
-                                author: podcast.metadata.author || '',
-                              });
-                              setSelectedImageFile(null);
-                              setImagePreview(podcast.metadata.image || '');
-                              setSelectedAudioFile(null);
-                            }}
+                            onClick={() => setEditingPodcast(podcast)}
                           >
                             <EditIcon />
                           </IconButton>
@@ -349,128 +305,12 @@ export default function PodcastPage() {
       )}
 
       {/* Edit Dialog */}
-      <Dialog
+      <PodcastEditDialog
+        podcast={editingPodcast}
         open={!!editingPodcast}
         onClose={() => setEditingPodcast(null)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Edit Podcast</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            <TextField
-              fullWidth
-              label="Title"
-              value={editFormData.title}
-              onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-            />
-            <TextField
-              fullWidth
-              label="Description"
-              multiline
-              rows={4}
-              value={editFormData.description}
-              onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-            />
-            <TextField
-              fullWidth
-              label="Duration"
-              placeholder="45:30"
-              value={editFormData.duration}
-              onChange={(e) => setEditFormData({ ...editFormData, duration: e.target.value })}
-            />
-            <TextField
-              fullWidth
-              label="Author"
-              value={editFormData.author}
-              onChange={(e) => setEditFormData({ ...editFormData, author: e.target.value })}
-            />
-            
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                Cover Image
-              </Typography>
-              {imagePreview && (
-                <Box sx={{ mb: 2, textAlign: 'center' }}>
-                  <img 
-                    src={imagePreview} 
-                    alt="Current cover" 
-                    style={{ maxWidth: '200px', borderRadius: '8px' }}
-                  />
-                </Box>
-              )}
-              <Button
-                component="label"
-                variant="outlined"
-                startIcon={<UploadIcon />}
-                fullWidth
-              >
-                {selectedImageFile ? selectedImageFile.name : 'Change Cover Image (Optional)'}
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setSelectedImageFile(file);
-                      // Create preview URL
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setImagePreview(reader.result as string);
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                />
-              </Button>
-            </Box>
-            
-            <Box>
-              <Typography variant="subtitle2" gutterBottom>
-                Audio File
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Current: {editingPodcast?.metadata.audioUrl ? 'Audio file exists' : 'No audio file'}
-              </Typography>
-              <Button
-                component="label"
-                variant="outlined"
-                startIcon={<UploadIcon />}
-                fullWidth
-                color={selectedAudioFile ? 'success' : 'primary'}
-              >
-                {selectedAudioFile ? `Selected: ${selectedAudioFile.name}` : 'Change Audio File (Optional)'}
-                <input
-                  type="file"
-                  accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/x-m4a"
-                  hidden
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      setSelectedAudioFile(file);
-                    }
-                  }}
-                />
-              </Button>
-              {selectedAudioFile && (
-                <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 1 }}>
-                  Size: {(selectedAudioFile.size / (1024 * 1024)).toFixed(2)} MB
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
-            setEditingPodcast(null);
-            setSelectedImageFile(null);
-            setImagePreview('');
-            setSelectedAudioFile(null);
-          }}>Cancel</Button>
-          <Button onClick={handleUpdate} variant="contained">Save Changes</Button>
-        </DialogActions>
-      </Dialog>
+        onSave={handleUpdate}
+      />
     </Container>
   );
 }
