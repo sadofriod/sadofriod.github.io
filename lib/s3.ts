@@ -25,14 +25,14 @@ export async function uploadAudioToS3(
     Key: key,
     Body: file,
     ContentType: contentType,
-    // Remove ACL if your bucket has ACLs disabled
-    // If your bucket allows public access, you can set bucket policy instead
+    ACL: 'public-read', // Make the file publicly accessible
   });
 
   try {
     await s3Client.send(command);
-    // Return the public URL
-    return getPresignedUrl(key);
+    // Return the public S3 URL
+    const region = process.env.AWS_REGION || 'us-east-2';
+    return `https://${BUCKET_NAME}.s3.${region}.amazonaws.com/${key}`;
   } catch (error) {
     console.error('Error uploading to S3:', error);
     throw new Error(`Failed to upload audio file to S3: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -52,12 +52,14 @@ export async function uploadImageToS3(
     Key: key,
     Body: file,
     ContentType: contentType,
+    ACL: 'public-read', // Make the file publicly accessible
   });
 
   try {
     await s3Client.send(command);
-    // Return the public URL
-    return getPresignedUrl(key);
+    // Return the public S3 URL
+    const region = process.env.AWS_REGION || 'us-east-2';
+    return `https://${BUCKET_NAME}.s3.${region}.amazonaws.com/${key}`;
   } catch (error) {
     console.error('Error uploading image to S3:', error);
     throw new Error(`Failed to upload image to S3: ${error instanceof Error ? error.message : 'Unknown error'}`);

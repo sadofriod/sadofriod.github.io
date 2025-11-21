@@ -1,6 +1,5 @@
 import { Podcast, PodcastMetadata } from './podcasts';
 import { prisma } from './prisma';
-import { getPresignedUrlFromS3Url } from './s3';
 
 // Database storage using Prisma
 export async function getAllPodcasts(): Promise<Podcast[]> {
@@ -10,27 +9,21 @@ export async function getAllPodcasts(): Promise<Podcast[]> {
     },
   });
 
-  return Promise.all(podcasts.map(async (p) => {
-    // Generate presigned URLs with 7 day expiration
-    const audioPresignedUrl = await getPresignedUrlFromS3Url(p.audioUrl);
-    const imagePresignedUrl = p.image ? await getPresignedUrlFromS3Url(p.image) : undefined;
-
-    return {
-      id: p.id,
-      metadata: {
-        title: p.title,
-        date: p.date.toISOString().split('T')[0],
-        description: p.description,
-        duration: p.duration,
-        audioUrl: audioPresignedUrl,
-        author: p.author || undefined,
-        episodeNumber: p.episodeNumber || undefined,
-        season: p.season || undefined,
-        image: imagePresignedUrl,
-        keywords: p.keywords,
-        explicit: p.explicit,
-      },
-    };
+  return podcasts.map((p) => ({
+    id: p.id,
+    metadata: {
+      title: p.title,
+      date: p.date.toISOString().split('T')[0],
+      description: p.description,
+      duration: p.duration,
+      audioUrl: p.audioUrl, // Direct public S3 URL
+      author: p.author || undefined,
+      episodeNumber: p.episodeNumber || undefined,
+      season: p.season || undefined,
+      image: p.image || undefined, // Direct public S3 URL
+      keywords: p.keywords,
+      explicit: p.explicit,
+    },
   }));
 }
 
@@ -41,10 +34,6 @@ export async function getPodcastById(id: string): Promise<Podcast | null> {
 
   if (!podcast) return null;
 
-  // Generate presigned URLs with 7 day expiration
-  const audioPresignedUrl = await getPresignedUrlFromS3Url(podcast.audioUrl);
-  const imagePresignedUrl = podcast.image ? await getPresignedUrlFromS3Url(podcast.image) : undefined;
-
   return {
     id: podcast.id,
     metadata: {
@@ -52,11 +41,11 @@ export async function getPodcastById(id: string): Promise<Podcast | null> {
       date: podcast.date.toISOString().split('T')[0],
       description: podcast.description,
       duration: podcast.duration,
-      audioUrl: audioPresignedUrl,
+      audioUrl: podcast.audioUrl, // Direct public S3 URL
       author: podcast.author || undefined,
       episodeNumber: podcast.episodeNumber || undefined,
       season: podcast.season || undefined,
-      image: imagePresignedUrl,
+      image: podcast.image || undefined, // Direct public S3 URL
       keywords: podcast.keywords,
       explicit: podcast.explicit,
     },
@@ -82,19 +71,15 @@ export async function addPodcast(data: {
       date: new Date(data.date),
       description: data.description,
       duration: data.duration,
-      audioUrl: data.s3AudioUrl, // Store S3 URL in database
+      audioUrl: data.s3AudioUrl, // Store public S3 URL
       author: data.author,
       episodeNumber: data.episodeNumber,
       season: data.season,
-      image: data.s3ImageUrl, // Store S3 URL in database
+      image: data.s3ImageUrl, // Store public S3 URL
       keywords: data.keywords || [],
       explicit: data.explicit || false,
     },
   });
-
-  // Generate presigned URLs for response
-  const audioPresignedUrl = await getPresignedUrlFromS3Url(podcast.audioUrl);
-  const imagePresignedUrl = podcast.image ? await getPresignedUrlFromS3Url(podcast.image) : undefined;
 
   return {
     id: podcast.id,
@@ -103,11 +88,11 @@ export async function addPodcast(data: {
       date: podcast.date.toISOString().split('T')[0],
       description: podcast.description,
       duration: podcast.duration,
-      audioUrl: audioPresignedUrl,
+      audioUrl: podcast.audioUrl, // Direct public S3 URL
       author: podcast.author || undefined,
       episodeNumber: podcast.episodeNumber || undefined,
       season: podcast.season || undefined,
-      image: imagePresignedUrl,
+      image: podcast.image || undefined, // Direct public S3 URL
       keywords: podcast.keywords,
       explicit: podcast.explicit,
     },
@@ -126,16 +111,12 @@ export async function updatePodcast(id: string, metadata: Partial<PodcastMetadat
         ...(metadata.author !== undefined && { author: metadata.author }),
         ...(metadata.episodeNumber !== undefined && { episodeNumber: metadata.episodeNumber }),
         ...(metadata.season !== undefined && { season: metadata.season }),
-        ...(metadata.s3ImageUrl !== undefined && { image: metadata.s3ImageUrl }), // Store S3 URL
-        ...(metadata.s3AudioUrl !== undefined && { audioUrl: metadata.s3AudioUrl }), // Store S3 URL
+        ...(metadata.s3ImageUrl !== undefined && { image: metadata.s3ImageUrl }), // Store public S3 URL
+        ...(metadata.s3AudioUrl !== undefined && { audioUrl: metadata.s3AudioUrl }), // Store public S3 URL
         ...(metadata.keywords && { keywords: metadata.keywords }),
         ...(metadata.explicit !== undefined && { explicit: metadata.explicit }),
       },
     });
-
-    // Generate presigned URLs for response
-    const audioPresignedUrl = await getPresignedUrlFromS3Url(podcast.audioUrl);
-    const imagePresignedUrl = podcast.image ? await getPresignedUrlFromS3Url(podcast.image) : undefined;
 
     return {
       id: podcast.id,
@@ -144,11 +125,11 @@ export async function updatePodcast(id: string, metadata: Partial<PodcastMetadat
         date: podcast.date.toISOString().split('T')[0],
         description: podcast.description,
         duration: podcast.duration,
-        audioUrl: audioPresignedUrl,
+        audioUrl: podcast.audioUrl, // Direct public S3 URL
         author: podcast.author || undefined,
         episodeNumber: podcast.episodeNumber || undefined,
         season: podcast.season || undefined,
-        image: imagePresignedUrl,
+        image: podcast.image || undefined, // Direct public S3 URL
         keywords: podcast.keywords,
         explicit: podcast.explicit,
       },
