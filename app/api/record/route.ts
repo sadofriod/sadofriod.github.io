@@ -42,6 +42,7 @@ function transformToDb(record: RecordInput) {
     fillQuality: record.填充质量 || null,
     drawQuality: record.抽吸质量 || null,
     description: record.主观描述 || null,
+    updatedAt: new Date(),
   };
 }
 

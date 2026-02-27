@@ -39,6 +39,26 @@ model OrderItem {
   @@unique([orderId, productId])
 }
 
+model Podcast {
+  id            String   @id
+  title         String
+  date          DateTime @default(now())
+  description   String
+  duration      String
+  audioUrl      String
+  author        String?
+  episodeNumber Int?
+  season        Int?
+  image         String?
+  keywords      String[]
+  explicit      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime
+
+  @@index([date])
+  @@index([episodeNumber, season])
+}
+
 model Product {
   id          Int         @id @default(autoincrement())
   sku         String      @unique
@@ -57,40 +77,19 @@ model Product {
   OrderItem   OrderItem[]
 }
 
-
-model Podcast {
-  id            String   @id @default(cuid())
-  title         String
-  date          DateTime @default(now())
-  description   String   @db.Text
-  duration      String
-  audioUrl      String
-  author        String?
-  episodeNumber Int?
-  season        Int?
-  image         String?
-  keywords      String[]
-  explicit      Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@index([date])
-  @@index([episodeNumber, season])
-}
-
 model TobaccoRecord {
-  id            Int      @id @default(autoincrement())
-  brand         String   // 品牌
-  weight        String?  // 克重
-  awakingTime   String?  // 醒草时间
-  pipeType      String?  // 烟斗的类型
-  temperature   String?  // 环境温度
-  humidity      String?  // 环境湿度
-  fillQuality   String?  // 填充质量
-  drawQuality   String?  // 抽吸质量
-  description   String?  @db.Text // 主观描述
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  brand       String
+  weight      String?
+  awakingTime String?
+  pipeType    String?
+  temperature String?
+  humidity    String?
+  fillQuality String?
+  drawQuality String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
 
   @@index([createdAt])
 }
