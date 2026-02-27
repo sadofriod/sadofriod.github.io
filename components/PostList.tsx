@@ -93,13 +93,21 @@ export default function PostList({ posts }: PostListProps) {
       </Box>
 
       <Stack spacing={2}>
-        {sortPosts(posts).filter((post) => !post.isHidden).map((post) => (
-          <PostListItem
-            {...post}
-            key={post.slug}
-            date={format(new Date(post.date), dateFormatPattern, { locale: dateLocale })}
-          />
-        ))}
+        {sortPosts(posts).filter((post) => !post.isHidden).map((post) => {
+          const postDate = new Date(post.date);
+          const isValidDate = post.date && !isNaN(postDate.getTime());
+          const formattedDate = isValidDate
+            ? format(postDate, dateFormatPattern, { locale: dateLocale })
+            : post.date || 'No date';
+          
+          return (
+            <PostListItem
+              {...post}
+              key={post.slug}
+              date={formattedDate}
+            />
+          );
+        })}
       </Stack>
     </div>
   );
