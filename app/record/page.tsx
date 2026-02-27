@@ -27,6 +27,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 
 interface Record {
+  id?: number;
   品牌: string;
   克重: string;
   醒草时间: string;
@@ -41,7 +42,7 @@ interface Record {
 export default function RecordPage() {
   const [records, setRecords] = useState<Record[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [formData, setFormData] = useState<Record>({
     品牌: '',
     克重: '',
@@ -101,14 +102,14 @@ export default function RecordPage() {
     setIsSubmitting(true);
 
     try {
-      const action = editingIndex !== null ? 'update' : 'add';
+      const action = editingId !== null ? 'update' : 'add';
       const response = await fetch('/api/record', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action,
           record: formData,
-          index: editingIndex,
+          id: editingId,
         }),
       });
 
@@ -118,7 +119,7 @@ export default function RecordPage() {
         resetForm();
         setSnackbar({
           open: true,
-          message: editingIndex !== null ? '记录已更新' : '记录已添加',
+          message: editingId !== null ? '记录已更新' : '记录已添加',
           severity: 'success',
         });
       } else {
@@ -141,9 +142,9 @@ export default function RecordPage() {
   };
 
   // 编辑记录
-  const handleEdit = (index: number) => {
-    setEditingIndex(index);
-    setFormData(records[index]);
+  const handleEdit = (record: Record) => {
+    setEditingId(record.id || null);
+    setFormData(record);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -160,7 +161,7 @@ export default function RecordPage() {
       抽吸质量: '',
       主观描述: '',
     });
-    setEditingIndex(null);
+    setEditingId(null);
   };
 
   // 关闭 Snackbar
@@ -192,7 +193,7 @@ export default function RecordPage() {
       {/* 表单 */}
       <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
         <Typography variant="h5" component="h2" gutterBottom fontWeight="medium">
-          {editingIndex !== null ? '编辑记录' : '添加新记录'}
+          {editingId !== null ? '编辑记录' : '添加新记录'}
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={3}>
@@ -301,12 +302,12 @@ export default function RecordPage() {
               variant="contained"
               color="primary"
               disabled={isSubmitting}
-              startIcon={editingIndex !== null ? <SaveIcon /> : <AddIcon />}
+              startIcon={editingId !== null ? <SaveIcon /> : <AddIcon />}
               size="large"
             >
-              {isSubmitting ? '提交中...' : editingIndex !== null ? '更新记录' : '添加记录'}
+              {isSubmitting ? '提交中...' : editingId !== null ? '更新记录' : '添加记录'}
             </Button>
-            {editingIndex !== null && (
+            {editingId !== null && (
               <Button
                 variant="outlined"
                 color="secondary"
@@ -385,7 +386,7 @@ export default function RecordPage() {
                       <Tooltip title="编辑">
                         <IconButton
                           color="primary"
-                          onClick={() => handleEdit(index)}
+                          onClick={() => handleEdit(record)}
                           size="small"
                         >
                           <EditIcon />

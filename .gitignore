@@ -48,6 +48,9 @@ logs
 
 # Next.js specific
 .next-sqlite-db*
+
+# Old CSV data files (migrated to database)
+app/record/*.csv
 .env.production
 public/sw.js
 public/workbox-*.js

@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -75,4 +76,21 @@ model Podcast {
 
   @@index([date])
   @@index([episodeNumber, season])
+}
+
+model TobaccoRecord {
+  id            Int      @id @default(autoincrement())
+  brand         String   // 品牌
+  weight        String?  // 克重
+  awakingTime   String?  // 醒草时间
+  pipeType      String?  // 烟斗的类型
+  temperature   String?  // 环境温度
+  humidity      String?  // 环境湿度
+  fillQuality   String?  // 填充质量
+  drawQuality   String?  // 抽吸质量
+  description   String?  @db.Text // 主观描述
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([createdAt])
 }
