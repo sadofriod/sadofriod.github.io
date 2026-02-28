@@ -1,5 +1,6 @@
 import { Podcast, PodcastMetadata } from './podcasts';
 import { prisma } from './prisma';
+import { randomUUID } from 'crypto';
 
 // Database storage using Prisma
 export async function getAllPodcasts(): Promise<Podcast[]> {
@@ -67,6 +68,7 @@ export async function addPodcast(data: {
 }): Promise<Podcast> {
   const podcast = await prisma.podcast.create({
     data: {
+      id: randomUUID(),
       title: data.title,
       date: new Date(data.date),
       description: data.description,
@@ -78,6 +80,7 @@ export async function addPodcast(data: {
       image: data.s3ImageUrl, // Store public S3 URL
       keywords: data.keywords || [],
       explicit: data.explicit || false,
+      updatedAt: new Date(),
     },
   });
 
