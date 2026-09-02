@@ -6,6 +6,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import MermaidBlock from './MermaidBlock';
 
 const CodeContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -54,6 +55,10 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className }) => {
   // Extract language from className (format: language-javascript)
   const language = className?.replace('language-', '') || 'text';
   
+  if (language === 'mermaid') {
+    return <MermaidBlock chart={children} className={className} />;
+  }
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(children);

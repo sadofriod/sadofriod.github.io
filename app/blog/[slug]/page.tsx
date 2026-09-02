@@ -7,6 +7,7 @@ import rehypeSanitize from 'rehype-sanitize';
 import ShareButton from '../../../components/ShareButton';
 import CodeBlock from '../../../components/CodeBlock';
 import InlineCode from '../../../components/InlineCode';
+import MermaidBlock from '../../../components/MermaidBlock';
 import TOC from '../../../components/TOC';
 import 'katex/dist/katex.min.css';
 import { PluggableList } from 'react-markdown/lib/react-markdown';
@@ -18,7 +19,8 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { metadata } = getPostBySlug(decodeURI(params.slug));
+  const decodedSlug = decodeURIComponent(params.slug);
+  const { metadata } = getPostBySlug(decodedSlug);
 
   return {
     title: metadata.title,
@@ -35,7 +37,8 @@ export async function generateStaticParams() {
 }
 
 export default function BlogPost({ params }: PageProps) {
-  const { content, slug, ...metadata } = getPostData(decodeURI(params.slug));
+  const decodedSlug = decodeURIComponent(params.slug);
+  const { content, slug, ...metadata } = getPostData(decodedSlug);
   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://blog.ashesborn.cloud'}/blog/${params.slug}`;
 
   // Generate heading ID from text
@@ -299,9 +302,14 @@ export default function BlogPost({ params }: PageProps) {
                     if (inline) {
                       return <InlineCode {...props}>{children}</InlineCode>;
                     }
+                    const language = className?.replace('language-', '') || '';
+                    const codeContent = String(children).replace(/\n$/, '');
+                    if (language === 'mermaid') {
+                      return <MermaidBlock chart={codeContent} className={className} />;
+                    }
                     return (
                       <CodeBlock className={className}>
-                        {String(children).replace(/\n$/, '')}
+                        {codeContent}
                       </CodeBlock>
                     );
                   },

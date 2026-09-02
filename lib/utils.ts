@@ -18,7 +18,11 @@ export function encodeUrlWithChinese(url: string): string {
  * @returns Decoded URL string
  */
 export function decodeUrlWithChinese(url: string): string {
-  return decodeURI(url);
+  try {
+    return decodeURIComponent(url);
+  } catch {
+    return decodeURI(url);
+  }
 }
 
 /**
