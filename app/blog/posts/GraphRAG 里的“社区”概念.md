@@ -408,5 +408,3 @@ flowchart TD
 - Global answer = 全局答案
 - Hierarchical structure = 层级结构
 - Query-focused summarization = 以查询为中心的摘要
-
-如果需要，我还可以继续补一份“GraphRAG 社区概念图”和“论文中社区检测流程的时序图”，方便你直接放进学习笔记。

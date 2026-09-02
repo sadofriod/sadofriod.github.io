@@ -2,15 +2,17 @@ import { Container, Typography, Box, Chip, Stack, Divider } from '@mui/material'
 import { getAllPostIds, getPostBySlug, getPostData } from '../../../lib/posts';
 import type { Metadata } from 'next';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import rehypeKatex from 'rehype-katex';
 import ShareButton from '../../../components/ShareButton';
 import CodeBlock from '../../../components/CodeBlock';
 import InlineCode from '../../../components/InlineCode';
 import MermaidBlock from '../../../components/MermaidBlock';
+import MathBlock from '../../../components/MathBlock';
 import TOC from '../../../components/TOC';
-import 'katex/dist/katex.min.css';
-import { PluggableList } from 'react-markdown/lib/react-markdown';
 
 interface PageProps {
   params: {
@@ -290,22 +292,40 @@ export default function BlogPost({ params }: PageProps) {
                   fontSize: '0.875em',
                   fontFamily: 'monospace',
                 },
+                '& .katex-display': {
+                  my: { xs: 2, sm: 2.5 },
+                  py: 1,
+                  overflowX: 'auto',
+                  overflowY: 'hidden',
+                },
+                '& .katex': {
+                  fontSize: '1.05em',
+                },
               }}
             >
               <ReactMarkdown
+                remarkPlugins={[
+                  remarkGfm,
+                  remarkMath
+                ]}
                 rehypePlugins={[
                   rehypeRaw,
-                  rehypeSanitize
-                ] as PluggableList}
+                  rehypeSanitize,
+                  [rehypeKatex, { strict: false }]
+                ]}
                 components={{
-                  code: ({ node, inline, className, children, ...props }) => {
-                    if (inline) {
-                      return <InlineCode {...props}>{children}</InlineCode>;
-                    }
-                    const language = className?.replace('language-', '') || '';
+                  code: ({ node, className, children, ...props }: any) => {
+                    const match = /language-(\w+)/.exec(className || '');
+                    const language = match ? match[1] : (className?.replace('language-', '') || '');
                     const codeContent = String(children).replace(/\n$/, '');
                     if (language === 'mermaid') {
                       return <MermaidBlock chart={codeContent} className={className} />;
+                    }
+                    if (language === 'latex' || language === 'math' || language === 'katex') {
+                      return <MathBlock math={codeContent} className={className} />;
+                    }
+                    if (!match && !String(children).includes('\n')) {
+                      return <InlineCode {...props}>{children}</InlineCode>;
                     }
                     return (
                       <CodeBlock className={className}>
@@ -315,7 +335,7 @@ export default function BlogPost({ params }: PageProps) {
                   },
                   pre: ({ children }) => <Box component='pre'>{children}</Box>,
                   // Add heading components with IDs for TOC
-                  h1: ({ children, ...props }) => {
+                  h1: ({ node, children, ...props }: any) => {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
@@ -342,7 +362,7 @@ export default function BlogPost({ params }: PageProps) {
                       </Typography>
                     );
                   },
-                  h2: ({ children, ...props }) => {
+                  h2: ({ node, children, ...props }: any) => {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
@@ -369,7 +389,7 @@ export default function BlogPost({ params }: PageProps) {
                       </Typography>
                     );
                   },
-                  h3: ({ children, ...props }) => {
+                  h3: ({ node, children, ...props }: any) => {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
@@ -396,7 +416,7 @@ export default function BlogPost({ params }: PageProps) {
                       </Typography>
                     );
                   },
-                  h4: ({ children, ...props }) => {
+                  h4: ({ node, children, ...props }: any) => {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
@@ -414,7 +434,7 @@ export default function BlogPost({ params }: PageProps) {
                       </Typography>
                     );
                   },
-                  h5: ({ children, ...props }) => {
+                  h5: ({ node, children, ...props }: any) => {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
@@ -432,7 +452,7 @@ export default function BlogPost({ params }: PageProps) {
                       </Typography>
                     );
                   },
-                  h6: ({ children, ...props }) => {
+                  h6: ({ node, children, ...props }: any) => {
                     const text = String(children);
                     const id = generateHeadingId(text);
                     return (
