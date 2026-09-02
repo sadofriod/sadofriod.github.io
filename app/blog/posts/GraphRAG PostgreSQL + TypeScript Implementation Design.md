@@ -4,7 +4,7 @@ tags: [GraphRAG, AI, Knowledge Graph, PostgreSQL, TypeScript]
 p: graphrag
 categories: AI
 description: A comprehensive engineering guide on implementing Microsoft GraphRAG with PostgreSQL and TypeScript, covering relation edge weight calculations, community detection pipelines, hierarchical community summarization, and complete PostgreSQL DDL schemas with TypeScript pseudo-code.
-date: 2024-07-20 10:15:00
+date: 2026-07-20 10:15:00
 mathjax: true
 keywords: GraphRAG PostgreSQL implementation, GraphRAG TypeScript guide, Microsoft GraphRAG edge weight calculation, GraphRAG community detection Leiden, GraphRAG database schema DDL, Knowledge Graph RAG TypeScript, GraphRAG global search query pipeline, relational graph RAG PostgreSQL
 ---

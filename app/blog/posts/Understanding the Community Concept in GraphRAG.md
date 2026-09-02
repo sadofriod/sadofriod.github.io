@@ -4,7 +4,7 @@ tags: [GraphRAG, AI, Knowledge Graph, Leiden Algorithm, Community Detection]
 p: graphrag
 categories: AI
 description: An intuitive and in-depth conceptual guide to the "Community" in Microsoft GraphRAG, explaining graph community detection via Leiden algorithm, hierarchical community trees (root/intermediate/leaf), query-focused community summarization, and candidate answer aggregation with TypeScript examples.
-date: 2024-07-23 11:00:00
+date: 2026-07-23 11:00:00
 mathjax: true
 keywords: What is community in Microsoft GraphRAG, GraphRAG hierarchical community detection Leiden, GraphRAG community summary global answer pipeline, GraphRAG community report generation prompt, GraphRAG query focused summarization sensemaking, Knowledge Graph subgraph clustering Leiden algorithm RAG
 ---

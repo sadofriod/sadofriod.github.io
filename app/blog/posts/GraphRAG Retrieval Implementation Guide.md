@@ -4,7 +4,7 @@ tags: [GraphRAG, AI, Information Retrieval, Knowledge Graph, RRF, Search]
 p: graphrag
 categories: AI
 description: A complete implementation guide for the GraphRAG query and retrieval phase, detailing query intent parsing, multi-channel entity retrieval with Reciprocal Rank Fusion (RRF), neighbor expansion, multi-dimensional community scoring, LLM filtering, and final global answer synthesis.
-date: 2024-07-22 16:20:00
+date: 2026-07-22 16:20:00
 mathjax: true
 keywords: GraphRAG retrieval implementation guide, GraphRAG reciprocal rank fusion RRF ranking, GraphRAG global search query, GraphRAG community scoring algorithm, GraphRAG multi channel entity retrieval, GraphRAG query parsing neighbor expansion, Knowledge Graph RAG retrieval pipeline TypeScript, GraphRAG local search vs global search
 ---

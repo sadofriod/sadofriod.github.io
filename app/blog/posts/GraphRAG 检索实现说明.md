@@ -5,7 +5,7 @@ p: graphrag
 categories: AI
 description: 详解 GraphRAG 索引构建完成后的检索阶段全流程实现，涵盖查询意图解析、多路实体召回与 RRF 倒数排名融合、邻居扩展、社区映射与多维打分排序（语义相似度/实体重叠率/图结构得分），以及 LLM 社区过滤与全局答案生成。
 description_en: A complete implementation guide for the GraphRAG query and retrieval phase, detailing query intent parsing, multi-channel entity retrieval with Reciprocal Rank Fusion (RRF), neighbor expansion, multi-dimensional community scoring, LLM filtering, and final global answer synthesis.
-date: 2024-07-22 16:20:00
+date: 2026-07-22 16:20:00
 mathjax: true
 keywords: GraphRAG retrieval implementation guide, GraphRAG reciprocal rank fusion RRF ranking, GraphRAG global search query, GraphRAG 社区检索与排序打分算法, GraphRAG RRF 倒数排名融合多路召回, GraphRAG query parsing neighbor expansion, 知识图谱 RAG 检索流程与接口设计, GraphRAG community summary answer generation, GraphRAG local search vs global search
 ---

@@ -5,7 +5,7 @@ p: graphrag
 categories: AI
 description: 深度解读微软 GraphRAG 核心概念“社区（Community）”的理论本质与工程实践，详解基于 Leiden 算法的高内聚子图划分、层级社区架构（顶层/中层/叶子社区）、社区摘要提取与全局答案聚合管道，并附带 TypeScript 伪代码与 Obsidian 概念图谱。
 description_en: An intuitive and in-depth conceptual guide to the "Community" in Microsoft GraphRAG, explaining graph community detection via Leiden algorithm, hierarchical community trees (root/intermediate/leaf), query-focused community summarization, and candidate answer aggregation with TypeScript examples.
-date: 2024-07-23 11:00:00
+date: 2026-07-23 11:00:00
 mathjax: true
 keywords: What is community in Microsoft GraphRAG, GraphRAG hierarchical community detection Leiden, GraphRAG community summary global answer pipeline, GraphRAG 社区概念详解, GraphRAG 图社区检测与分层结构, GraphRAG community report generation prompt, GraphRAG 全局意义构建 Query-focused summarization, 知识图谱子图挖掘 Leiden 算法 RAG
 ---
@@ -396,15 +396,3 @@ flowchart TD
 
 它是 GraphRAG 从“检索单条事实”走向“理解整个知识库结构”的关键抽象层。
 
----
-
-## 10. 适合记忆的关键词
-
-- Community = 社区
-- Graph community = 图社区
-- Community detection = 社区检测
-- Community summary = 社区摘要
-- Community answer = 社区答案
-- Global answer = 全局答案
-- Hierarchical structure = 层级结构
-- Query-focused summarization = 以查询为中心的摘要

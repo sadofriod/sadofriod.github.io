@@ -5,7 +5,7 @@ p: graphrag
 categories: AI
 description: 深入探讨微软 GraphRAG 在 PostgreSQL 与 TypeScript 技术栈中的工程落地实践，详细解析关系边权重计算公式、图谱与社区检测建模、社区摘要与全局答案生成管道，并提供完整的 PostgreSQL 表结构 DDL 与 TypeScript 核心伪代码实现。
 description_en: A comprehensive engineering guide on implementing Microsoft GraphRAG with PostgreSQL and TypeScript, covering relation edge weight calculations, community detection pipelines, hierarchical community summarization, and complete PostgreSQL DDL schemas with TypeScript pseudo-code.
-date: 2024-07-20 10:15:00
+date: 2026-07-20 10:15:00
 mathjax: true
 keywords: GraphRAG PostgreSQL, GraphRAG TypeScript implementation, Microsoft GraphRAG edge weight calculation, GraphRAG community detection Leiden, GraphRAG database schema DDL, GraphRAG 社区检测算法实现, GraphRAG PostgreSQL 表结构设计, 知识图谱 RAG 落地实践 TypeScript, GraphRAG global search query pipeline, GraphRAG 关系边权重计算
 ---

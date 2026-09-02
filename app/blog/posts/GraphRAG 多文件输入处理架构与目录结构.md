@@ -5,7 +5,7 @@ p: graphrag
 categories: AI
 description: 系统剖析微软 GraphRAG 的多文件输入处理架构与全局索引管道设计，涵盖 TXT/CSV/JSON/Parquet 等多源格式加载、基于句界的分块与跨文档实体去重融合、标准工程目录结构最佳实践及增量更新机制。
 description_en: An in-depth architecture guide on Microsoft GraphRAG multi-document input processing and indexing pipeline, covering multi-format ingestion (TXT/CSV/JSON/Parquet), cross-document chunking, entity resolution deduplication, standard project directory structure, and incremental update workflows.
-date: 2024-07-21 14:30:00
+date: 2026-07-21 14:30:00
 mathjax: true
 keywords: Microsoft GraphRAG multi document processing, GraphRAG indexing pipeline architecture, GraphRAG directory structure settings yaml, GraphRAG incremental update workflow, GraphRAG 多文件跨文档实体去重, GraphRAG 分块大小设置 chunk size overlap, GraphRAG settings yaml configuration guide, 知识图谱 RAG 目录结构最佳实践, GraphRAG InputReader Dataframe
 ---
@@ -171,4 +171,3 @@ embedding:
 2. **定向处理**：仅对新增文档运行完整的索引工作流
 3. **图谱合并**：将增量实体/关系与旧图谱进行基于 `title` 的匹配与合并
 
-> **注意**：增量更新主要针对**新增**文档，对于**修改或删除**文档，目前更稳健的做法仍是**全量重建索引**。

@@ -4,7 +4,7 @@ tags: [GraphRAG, AI, Knowledge Graph, Architecture, Indexing Pipeline]
 p: graphrag
 categories: AI
 description: An in-depth architecture guide on Microsoft GraphRAG multi-document input processing and indexing pipeline, covering multi-format ingestion (TXT/CSV/JSON/Parquet), cross-document chunking, entity resolution deduplication, standard project directory structure, and incremental update workflows.
-date: 2024-07-21 14:30:00
+date: 2026-07-21 14:30:00
 mathjax: true
 keywords: Microsoft GraphRAG multi document processing, GraphRAG indexing pipeline architecture, GraphRAG directory structure settings yaml, GraphRAG incremental update workflow, GraphRAG chunk size overlap configuration, GraphRAG settings yaml guide, Knowledge Graph RAG folder structure best practices, GraphRAG InputReader Dataframe
 ---
