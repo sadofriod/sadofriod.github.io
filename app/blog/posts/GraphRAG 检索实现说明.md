@@ -1,6 +1,6 @@
 ---
 title: GraphRAG 检索实现说明
-tags: [GraphRAG, AI, Information Retrieval, Knowledge Graph, RRF, Search]
+tags: [GraphRAG, Graph RAG, AI, Information Retrieval, Knowledge Graph, RRF, Search]
 p: graphrag
 categories: AI
 description: 详解 GraphRAG 索引构建完成后的检索阶段全流程实现，涵盖查询意图解析、多路实体召回与 RRF 倒数排名融合、邻居扩展、社区映射与多维打分排序（语义相似度/实体重叠率/图结构得分），以及 LLM 社区过滤与全局答案生成。

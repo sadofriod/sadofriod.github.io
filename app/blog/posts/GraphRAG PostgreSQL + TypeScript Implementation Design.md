@@ -1,6 +1,6 @@
 ---
 title: GraphRAG PostgreSQL + TypeScript Implementation Design
-tags: [GraphRAG, AI, Knowledge Graph, PostgreSQL, TypeScript]
+tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, PostgreSQL, TypeScript]
 p: graphrag
 categories: AI
 description: A comprehensive engineering guide on implementing Microsoft GraphRAG with PostgreSQL and TypeScript, covering relation edge weight calculations, community detection pipelines, hierarchical community summarization, and complete PostgreSQL DDL schemas with TypeScript pseudo-code.

@@ -1,6 +1,6 @@
 ---
 title: GraphRAG 里的“社区”概念
-tags: [GraphRAG, AI, Knowledge Graph, Leiden Algorithm, Community Detection]
+tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, Leiden Algorithm, Community Detection]
 p: graphrag
 categories: AI
 description: 深度解读微软 GraphRAG 核心概念“社区（Community）”的理论本质与工程实践，详解基于 Leiden 算法的高内聚子图划分、层级社区架构（顶层/中层/叶子社区）、社区摘要提取与全局答案聚合管道，并附带 TypeScript 伪代码与 Obsidian 概念图谱。

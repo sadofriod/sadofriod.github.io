@@ -1,6 +1,6 @@
 ---
 title: GraphRAG PostgreSQL + TypeScript 实现设计
-tags: [GraphRAG, AI, Knowledge Graph, PostgreSQL, TypeScript]
+tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, PostgreSQL, TypeScript]
 p: graphrag
 categories: AI
 description: 深入探讨微软 GraphRAG 在 PostgreSQL 与 TypeScript 技术栈中的工程落地实践，详细解析关系边权重计算公式、图谱与社区检测建模、社区摘要与全局答案生成管道，并提供完整的 PostgreSQL 表结构 DDL 与 TypeScript 核心伪代码实现。

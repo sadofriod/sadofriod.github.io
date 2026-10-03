@@ -1,6 +1,6 @@
 ---
 title: GraphRAG Multi-Document Input Processing Architecture and Directory Structure
-tags: [GraphRAG, AI, Knowledge Graph, Architecture, Indexing Pipeline]
+tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, Architecture, Indexing Pipeline]
 p: graphrag
 categories: AI
 description: An in-depth architecture guide on Microsoft GraphRAG multi-document input processing and indexing pipeline, covering multi-format ingestion (TXT/CSV/JSON/Parquet), cross-document chunking, entity resolution deduplication, standard project directory structure, and incremental update workflows.

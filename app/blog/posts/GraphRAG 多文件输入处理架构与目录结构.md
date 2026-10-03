@@ -1,6 +1,6 @@
 ---
 title: GraphRAG 多文件输入处理架构与目录结构
-tags: [GraphRAG, AI, Knowledge Graph, Architecture, Indexing Pipeline]
+tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, Architecture, Indexing Pipeline]
 p: graphrag
 categories: AI
 description: 系统剖析微软 GraphRAG 的多文件输入处理架构与全局索引管道设计，涵盖 TXT/CSV/JSON/Parquet 等多源格式加载、基于句界的分块与跨文档实体去重融合、标准工程目录结构最佳实践及增量更新机制。

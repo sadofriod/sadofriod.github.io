@@ -1,6 +1,6 @@
 ---
 title: GraphRAG Retrieval Implementation Guide
-tags: [GraphRAG, AI, Information Retrieval, Knowledge Graph, RRF, Search]
+tags: [GraphRAG, Graph RAG, AI, Information Retrieval, Knowledge Graph, RRF, Search]
 p: graphrag
 categories: AI
 description: A complete implementation guide for the GraphRAG query and retrieval phase, detailing query intent parsing, multi-channel entity retrieval with Reciprocal Rank Fusion (RRF), neighbor expansion, multi-dimensional community scoring, LLM filtering, and final global answer synthesis.
