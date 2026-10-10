@@ -1,6 +1,8 @@
 import { baseUrl } from '../sitemap'
 import { getBlogPosts } from '../blog/utils'
 
+export const dynamic = 'force-static';
+
 // Define the BlogPost type inline
 type BlogPost = {
   metadata: {

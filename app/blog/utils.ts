@@ -1,5 +1,4 @@
-import fs from 'node:fs'
-import path from 'node:path'
+import postIndex from '../../lib/generated/post-index.json'
 
 export type Metadata = {
   title: string
@@ -9,59 +8,24 @@ export type Metadata = {
   category?: string
 }
 
-function parseFrontmatter(fileContent: string) {
-  const frontmatterRegex = /---\s*([\s\S]*?)\s*---/
-  const match = frontmatterRegex.exec(fileContent)
-  
-  if (!match || match.length < 2) {
-    throw new Error('Invalid frontmatter format')
-  }
-  
-  const frontMatterBlock = match[1]
-  const content = fileContent.replace(frontmatterRegex, '').trim()
-  const frontMatterLines = frontMatterBlock.trim().split('\n')
-  const metadata: Partial<Metadata> = {}
-  for (const element of frontMatterLines) {
-    const [key, ...valueArr] = element.split(': ')
-    let value = valueArr.join(': ').trim()
-    value = value.replace(/^['"](.*)['"]$/, '$1') // Remove quotes
-    metadata[key.trim() as keyof Metadata] = value
-  }
-
-  return { metadata: metadata as Metadata, content }
-}
-
-function getMDXFiles(dir: string): string[] {
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === '.mdx' || path.extname(file) === '.md')
-}
-
-function readMDXFile(filePath: string): { metadata: Metadata; content: string } {
-  const rawContent = fs.readFileSync(filePath, 'utf-8')
-  return parseFrontmatter(rawContent)
-}
-
 interface BlogPost {
   metadata: Metadata;
   slug: string;
   content: string;
 }
 
-function getMDXData(dir: string): BlogPost[] {
-  const mdxFiles = getMDXFiles(dir)
-  return mdxFiles.map((file) => {
-    const { metadata, content } = readMDXFile(path.join(dir, file))
-    const slug = path.basename(file, path.extname(file))
-
-    return {
-      metadata,
-      slug,
-      content,
-    }
-  })
-}
-
 export function getBlogPosts(): BlogPost[] {
-  return getMDXData(path.join(process.cwd(), 'app', 'blog', 'posts'))
+  return postIndex.map((post) => ({
+    metadata: {
+      title: post.title,
+      date: post.date,
+      summary: post.summary || post.excerpt || '',
+      image: post.image,
+      category: post.category,
+    },
+    slug: post.slug.replace(/%20/g, ' '),
+    content: '',
+  }))
 }
 
 export function formatDate(date: string, includeRelative = false): string {

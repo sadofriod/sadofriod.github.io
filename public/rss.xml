@@ -4,7 +4,7 @@
         <title>My Blog</title>
         <link>https://blog.ashesborn.cloud/</link>
         <description>This is my blog</description>
-        <lastBuildDate>Wed, 02 Sep 2026 17:20:46 GMT</lastBuildDate>
+        <lastBuildDate>Fri, 09 Oct 2026 05:21:35 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
@@ -23,6 +23,86 @@
             <author>your.email@example.com (Your Name)</author>
         </item>
         <item>
+            <title><![CDATA[GraphRAG 全局检索 Map-Reduce 详解]]></title>
+            <link>https://blog.ashesborn.cloud/blog/graphRAG-global-map-reduce</link>
+            <guid>https://blog.ashesborn.cloud/blog/graphRAG-global-map-reduce</guid>
+            <pubDate>Sat, 03 Oct 2026 12:00:00 GMT</pubDate>
+            <description><![CDATA[深入解析 Microsoft GraphRAG 全局检索中的 Map-Reduce 流程，说明如何将层级社区摘要按 token 预算分块，通过 LLM 并行生成带有用性评分的中间答案，再排序筛选并综合为全局答案。]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG Global Search Map-Reduce Explained]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG Global Map-Reduce</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG Global Map-Reduce</guid>
+            <pubDate>Sat, 03 Oct 2026 12:00:00 GMT</pubDate>
+            <description><![CDATA[A detailed guide to Microsoft GraphRAG global search Map-Reduce, explaining how hierarchical community summaries are shuffled and split by token budget, mapped into scored intermediate answers, ranked, and reduced into a corpus-level response.]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[Understanding the Community Concept in GraphRAG]]></title>
+            <link>https://blog.ashesborn.cloud/blog/Understanding the Community Concept in GraphRAG</link>
+            <guid>https://blog.ashesborn.cloud/blog/Understanding the Community Concept in GraphRAG</guid>
+            <pubDate>Thu, 23 Jul 2026 11:00:00 GMT</pubDate>
+            <description><![CDATA[An intuitive and in-depth conceptual guide to the "Community" in Microsoft GraphRAG, explaining graph community detection via Leiden algorithm, hierarchical community trees (root/intermediate/leaf), query-focused community summarization, and candidate answer aggregation with TypeScript examples.]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG 里的“社区”概念]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG 里的“社区”概念</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG 里的“社区”概念</guid>
+            <pubDate>Thu, 23 Jul 2026 11:00:00 GMT</pubDate>
+            <description><![CDATA[深度解读微软 GraphRAG 核心概念“社区（Community）”的理论本质与工程实践，详解基于 Leiden 算法的高内聚子图划分、层级社区架构（顶层/中层/叶子社区）、社区摘要提取与全局答案聚合管道，并附带 TypeScript 伪代码与 Obsidian 概念图谱。]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG 检索实现说明]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG 检索实现说明</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG 检索实现说明</guid>
+            <pubDate>Wed, 22 Jul 2026 16:20:00 GMT</pubDate>
+            <description><![CDATA[详解 GraphRAG 索引构建完成后的检索阶段全流程实现，涵盖查询意图解析、多路实体召回与 RRF 倒数排名融合、邻居扩展、社区映射与多维打分排序（语义相似度/实体重叠率/图结构得分），以及 LLM 社区过滤与全局答案生成。]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG Retrieval Implementation Guide]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG Retrieval Implementation Guide</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG Retrieval Implementation Guide</guid>
+            <pubDate>Wed, 22 Jul 2026 16:20:00 GMT</pubDate>
+            <description><![CDATA[A complete implementation guide for the GraphRAG query and retrieval phase, detailing query intent parsing, multi-channel entity retrieval with Reciprocal Rank Fusion (RRF), neighbor expansion, multi-dimensional community scoring, LLM filtering, and final global answer synthesis.]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG 多文件输入处理架构与目录结构]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG 多文件输入处理架构与目录结构</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG 多文件输入处理架构与目录结构</guid>
+            <pubDate>Tue, 21 Jul 2026 14:30:00 GMT</pubDate>
+            <description><![CDATA[系统剖析微软 GraphRAG 的多文件输入处理架构与全局索引管道设计，涵盖 TXT/CSV/JSON/Parquet 等多源格式加载、基于句界的分块与跨文档实体去重融合、标准工程目录结构最佳实践及增量更新机制。]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG Multi-Document Input Processing Architecture and Directory Structure]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG Multi-Document Input Processing Architecture and Directory Structure</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG Multi-Document Input Processing Architecture and Directory Structure</guid>
+            <pubDate>Tue, 21 Jul 2026 14:30:00 GMT</pubDate>
+            <description><![CDATA[An in-depth architecture guide on Microsoft GraphRAG multi-document input processing and indexing pipeline, covering multi-format ingestion (TXT/CSV/JSON/Parquet), cross-document chunking, entity resolution deduplication, standard project directory structure, and incremental update workflows.]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG PostgreSQL + TypeScript 实现设计]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript 实现设计</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript 实现设计</guid>
+            <pubDate>Mon, 20 Jul 2026 10:15:00 GMT</pubDate>
+            <description><![CDATA[深入探讨微软 GraphRAG 在 PostgreSQL 与 TypeScript 技术栈中的工程落地实践，详细解析关系边权重计算公式、图谱与社区检测建模、社区摘要与全局答案生成管道，并提供完整的 PostgreSQL 表结构 DDL 与 TypeScript 核心伪代码实现。]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
+            <title><![CDATA[GraphRAG PostgreSQL + TypeScript Implementation Design]]></title>
+            <link>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript Implementation Design</link>
+            <guid>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript Implementation Design</guid>
+            <pubDate>Mon, 20 Jul 2026 10:15:00 GMT</pubDate>
+            <description><![CDATA[A comprehensive engineering guide on implementing Microsoft GraphRAG with PostgreSQL and TypeScript, covering relation edge weight calculations, community detection pipelines, hierarchical community summarization, and complete PostgreSQL DDL schemas with TypeScript pseudo-code.]]></description>
+            <author>your.email@example.com (Your Name)</author>
+        </item>
+        <item>
             <title><![CDATA[Freezer Backend API Documentation]]></title>
             <link>https://blog.ashesborn.cloud/blog/TENNIS_API_DOCUMENTATION</link>
             <guid>https://blog.ashesborn.cloud/blog/TENNIS_API_DOCUMENTATION</guid>
@@ -34,70 +114,6 @@
             <link>https://blog.ashesborn.cloud/blog/在React Native中函数式的控制Loading Component</link>
             <guid>https://blog.ashesborn.cloud/blog/在React Native中函数式的控制Loading Component</guid>
             <pubDate>Fri, 06 Sep 2024 06:21:00 GMT</pubDate>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[Understanding the Community Concept in GraphRAG]]></title>
-            <link>https://blog.ashesborn.cloud/blog/Understanding the Community Concept in GraphRAG</link>
-            <guid>https://blog.ashesborn.cloud/blog/Understanding the Community Concept in GraphRAG</guid>
-            <pubDate>Tue, 23 Jul 2024 11:00:00 GMT</pubDate>
-            <description><![CDATA[An intuitive and in-depth conceptual guide to the "Community" in Microsoft GraphRAG, explaining graph community detection via Leiden algorithm, hierarchical community trees (root/intermediate/leaf), query-focused community summarization, and candidate answer aggregation with TypeScript examples.]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG 里的“社区”概念]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG 里的“社区”概念</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG 里的“社区”概念</guid>
-            <pubDate>Tue, 23 Jul 2024 11:00:00 GMT</pubDate>
-            <description><![CDATA[深度解读微软 GraphRAG 核心概念“社区（Community）”的理论本质与工程实践，详解基于 Leiden 算法的高内聚子图划分、层级社区架构（顶层/中层/叶子社区）、社区摘要提取与全局答案聚合管道，并附带 TypeScript 伪代码与 Obsidian 概念图谱。]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG 检索实现说明]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG 检索实现说明</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG 检索实现说明</guid>
-            <pubDate>Mon, 22 Jul 2024 16:20:00 GMT</pubDate>
-            <description><![CDATA[详解 GraphRAG 索引构建完成后的检索阶段全流程实现，涵盖查询意图解析、多路实体召回与 RRF 倒数排名融合、邻居扩展、社区映射与多维打分排序（语义相似度/实体重叠率/图结构得分），以及 LLM 社区过滤与全局答案生成。]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG Retrieval Implementation Guide]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG Retrieval Implementation Guide</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG Retrieval Implementation Guide</guid>
-            <pubDate>Mon, 22 Jul 2024 16:20:00 GMT</pubDate>
-            <description><![CDATA[A complete implementation guide for the GraphRAG query and retrieval phase, detailing query intent parsing, multi-channel entity retrieval with Reciprocal Rank Fusion (RRF), neighbor expansion, multi-dimensional community scoring, LLM filtering, and final global answer synthesis.]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG 多文件输入处理架构与目录结构]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG 多文件输入处理架构与目录结构</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG 多文件输入处理架构与目录结构</guid>
-            <pubDate>Sun, 21 Jul 2024 14:30:00 GMT</pubDate>
-            <description><![CDATA[系统剖析微软 GraphRAG 的多文件输入处理架构与全局索引管道设计，涵盖 TXT/CSV/JSON/Parquet 等多源格式加载、基于句界的分块与跨文档实体去重融合、标准工程目录结构最佳实践及增量更新机制。]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG Multi-Document Input Processing Architecture and Directory Structure]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG Multi-Document Input Processing Architecture and Directory Structure</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG Multi-Document Input Processing Architecture and Directory Structure</guid>
-            <pubDate>Sun, 21 Jul 2024 14:30:00 GMT</pubDate>
-            <description><![CDATA[An in-depth architecture guide on Microsoft GraphRAG multi-document input processing and indexing pipeline, covering multi-format ingestion (TXT/CSV/JSON/Parquet), cross-document chunking, entity resolution deduplication, standard project directory structure, and incremental update workflows.]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG PostgreSQL + TypeScript 实现设计]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript 实现设计</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript 实现设计</guid>
-            <pubDate>Sat, 20 Jul 2024 10:15:00 GMT</pubDate>
-            <description><![CDATA[深入探讨微软 GraphRAG 在 PostgreSQL 与 TypeScript 技术栈中的工程落地实践，详细解析关系边权重计算公式、图谱与社区检测建模、社区摘要与全局答案生成管道，并提供完整的 PostgreSQL 表结构 DDL 与 TypeScript 核心伪代码实现。]]></description>
-            <author>your.email@example.com (Your Name)</author>
-        </item>
-        <item>
-            <title><![CDATA[GraphRAG PostgreSQL + TypeScript Implementation Design]]></title>
-            <link>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript Implementation Design</link>
-            <guid>https://blog.ashesborn.cloud/blog/GraphRAG PostgreSQL + TypeScript Implementation Design</guid>
-            <pubDate>Sat, 20 Jul 2024 10:15:00 GMT</pubDate>
-            <description><![CDATA[A comprehensive engineering guide on implementing Microsoft GraphRAG with PostgreSQL and TypeScript, covering relation edge weight calculations, community detection pipelines, hierarchical community summarization, and complete PostgreSQL DDL schemas with TypeScript pseudo-code.]]></description>
             <author>your.email@example.com (Your Name)</author>
         </item>
         <item>

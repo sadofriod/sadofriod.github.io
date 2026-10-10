@@ -1,473 +1,91 @@
 'use client';
 
-import { useState, FormEvent, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  Container,
-  Alert,
-  CircularProgress,
-  Grid,
-  Card,
-  CardContent,
-  IconButton,
-  InputAdornment,
-  Link as MuiLink,
-} from '@mui/material';
-import {
-  CloudUpload,
-  Logout,
-  AudioFile,
-  CheckCircle,
-  Error as ErrorIcon,
-  Visibility,
-  VisibilityOff,
-} from '@mui/icons-material';
+import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { Alert, Box, Button, Checkbox, Container, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
 
 export default function PodcastUploadPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authKey, setAuthKey] = useState('');
-  const [authError, setAuthError] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [selectedFileName, setSelectedFileName] = useState<string>('');
-  const [selectedImageName, setSelectedImageName] = useState<string>('');
-  const [keywords, setKeywords] = useState<string>('');
-  const [explicit, setExplicit] = useState<boolean>(false);
-  const [result, setResult] = useState<{
-    type: 'success' | 'error' | null;
-    message: string;
-    data?: any;
-  }>({ type: null, message: '' });
+  const [authenticated, setAuthenticated] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
 
-  const handleAuth = async (e: FormEvent) => {
-    e.preventDefault();
-    setAuthError('');
-
-    try {
-      const response = await fetch('/api/auth/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: authKey }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setIsAuthenticated(true);
-        // Store auth in session storage
-        sessionStorage.setItem('upload_auth', authKey);
-      } else {
-        setAuthError(data.error || 'Invalid authentication key');
-      }
-    } catch (error) {
-      setAuthError('Authentication failed');
-    }
-  };
-
-  const handleUpload = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setUploading(true);
-    setResult({ type: null, message: '' });
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    // Add auth key to the request
-    formData.append('authKey', authKey || sessionStorage.getItem('upload_auth') || '');
-    
-    // Add keywords and explicit
-    formData.append('keywords', keywords);
-    formData.append('explicit', explicit.toString());
-
-    try {
-      const response = await fetch('/api/podcasts', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setResult({
-          type: 'success',
-          message: 'Podcast uploaded successfully!',
-          data: data.podcast,
-        });
-        form.reset();
-        setSelectedFileName(''); // Reset file name display
-        setSelectedImageName(''); // Reset image name display
-        setKeywords(''); // Reset keywords
-        setExplicit(false); // Reset explicit
-      } else {
-        setResult({
-          type: 'error',
-          message: data.error || 'Upload failed',
-        });
-      }
-    } catch (error) {
-      setResult({
-        type: 'error',
-        message: error instanceof Error ? error.message : 'Upload failed',
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  // Check if already authenticated on mount
   useEffect(() => {
-    const storedAuth = sessionStorage.getItem('upload_auth');
-    if (storedAuth) {
-      setAuthKey(storedAuth);
-      setIsAuthenticated(true);
-    }
+    const storedKey = sessionStorage.getItem('upload_auth') || '';
+    setAuthKey(storedKey);
+    setAuthenticated(Boolean(storedKey));
   }, []);
 
-  if (!isAuthenticated) {
+  const authenticate = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const response = await fetch('/api/auth/upload', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ key: authKey }),
+    });
+    if (!response.ok) {
+      setMessage('Invalid upload key');
+      return;
+    }
+    sessionStorage.setItem('upload_auth', authKey);
+    setAuthenticated(true);
+    setMessage('');
+  };
+
+  const upload = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setBusy(true);
+    setMessage('');
+    const formElement = event.currentTarget;
+    const formData = new FormData(formElement);
+    formData.set('authKey', authKey);
+    try {
+      const response = await fetch('/api/podcasts', { method: 'POST', body: formData });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Upload failed');
+      formElement.reset();
+      setMessage('Episode uploaded successfully.');
+    } catch (cause) {
+      setMessage(cause instanceof Error ? cause.message : 'Upload failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!authenticated) {
     return (
-      <Container maxWidth="sm">
-        <Box
-          sx={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            py: 4,
-          }}
-        >
-          <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <AudioFile sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-              <Typography variant="h4" component="h1" gutterBottom fontWeight="bold">
-                Authentication Required
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Enter the upload key to access the podcast upload page
-              </Typography>
-            </Box>
-
-            <form onSubmit={handleAuth}>
-              <TextField
-                fullWidth
-                id="auth-key"
-                name="authKey"
-                type={showPassword ? 'text' : 'password'}
-                label="Upload Key"
-                placeholder="Enter upload key"
-                value={authKey}
-                onChange={(e) => setAuthKey(e.target.value)}
-                required
-                sx={{ mb: 2 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              {authError && (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                  {authError}
-                </Alert>
-              )}
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                sx={{ py: 1.5 }}
-              >
-                Authenticate
-              </Button>
-            </form>
-          </Paper>
+      <Container maxWidth="sm" sx={{ py: 6 }}>
+        <Typography variant="h4" component="h1" sx={{ mb: 3 }}>Podcast upload</Typography>
+        <Box component="form" onSubmit={authenticate}>
+          <Stack spacing={2}>
+            <TextField label="Upload key" type="password" value={authKey} onChange={(event) => setAuthKey(event.target.value)} required />
+            {message && <Alert severity="error">{message}</Alert>}
+            <Button type="submit" variant="contained">Authenticate</Button>
+          </Stack>
         </Box>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ minHeight: '100vh', py: 4 }}>
-        <Paper elevation={2} sx={{ p: { xs: 3, md: 4 } }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              mb: 4,
-              flexWrap: 'wrap',
-              gap: 2,
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <CloudUpload sx={{ fontSize: 40, color: 'primary.main' }} />
-              <Typography variant="h4" component="h1" fontWeight="bold">
-                Upload Podcast
-              </Typography>
-            </Box>
-            <Button
-              variant="outlined"
-              startIcon={<Logout />}
-              onClick={() => {
-                setIsAuthenticated(false);
-                sessionStorage.removeItem('upload_auth');
-                setAuthKey('');
-              }}
-            >
-              Logout
-            </Button>
-          </Box>
-
-          <form onSubmit={handleUpload}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-              <Box>
-                <Typography variant="subtitle1" gutterBottom fontWeight="medium">
-                  Audio File <span style={{ color: '#d32f2f' }}>*</span>
-                </Typography>
-                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
-                  MP3, WAV, OGG, M4A - Max 100MB
-                </Typography>
-                <Button
-                  component="label"
-                  variant="outlined"
-                  startIcon={<CloudUpload />}
-                  fullWidth
-                  sx={{ py: 1.5, justifyContent: 'flex-start' }}
-                >
-                  {selectedFileName || 'Choose Audio File'}
-                  <input
-                    type="file"
-                    id="audio"
-                    name="audio"
-                    accept="audio/*"
-                    required
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setSelectedFileName(file.name);
-                      }
-                    }}
-                  />
-                </Button>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle1" gutterBottom fontWeight="medium">
-                  Cover Image
-                </Typography>
-                <Typography variant="caption" color="text.secondary" display="block" sx={{ mb: 1 }}>
-                  JPG, PNG, WEBP - Max 100MB (Recommended: 1400x1400px)
-                </Typography>
-                <Button
-                  component="label"
-                  variant="outlined"
-                  startIcon={<CloudUpload />}
-                  fullWidth
-                  sx={{ py: 1.5, justifyContent: 'flex-start' }}
-                >
-                  {selectedImageName || 'Choose Cover Image (Optional)'}
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setSelectedImageName(file.name);
-                      }
-                    }}
-                  />
-                </Button>
-              </Box>
-
-              <TextField
-                fullWidth
-                id="title"
-                name="title"
-                label="Title"
-                required
-                variant="outlined"
-              />
-
-              <TextField
-                fullWidth
-                id="description"
-                name="description"
-                label="Description"
-                required
-                multiline
-                rows={4}
-                variant="outlined"
-              />
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    id="duration"
-                    name="duration"
-                    label="Duration"
-                    placeholder="45:30"
-                    required
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    id="author"
-                    name="author"
-                    label="Author"
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    id="episodeNumber"
-                    name="episodeNumber"
-                    label="Episode Number"
-                    type="number"
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    id="season"
-                    name="season"
-                    label="Season"
-                    type="number"
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
-
-              <TextField
-                fullWidth
-                id="keywords"
-                name="keywords"
-                label="Keywords"
-                placeholder="technology, programming, software (comma separated)"
-                variant="outlined"
-                value={keywords}
-                onChange={(e) => setKeywords(e.target.value)}
-                helperText="Enter keywords separated by commas"
-              />
-
-              <Box>
-                <Typography variant="subtitle1" gutterBottom fontWeight="medium">
-                  Content Rating
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <input
-                    type="checkbox"
-                    id="explicit"
-                    name="explicit"
-                    checked={explicit}
-                    onChange={(e) => setExplicit(e.target.checked)}
-                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
-                  />
-                  <label htmlFor="explicit" style={{ cursor: 'pointer' }}>
-                    <Typography variant="body1">
-                      Explicit Content
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Check this if the podcast contains explicit language or adult content
-                    </Typography>
-                  </label>
-                </Box>
-              </Box>
-
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={uploading}
-                startIcon={uploading ? <CircularProgress size={20} /> : <CloudUpload />}
-                sx={{ py: 1.5, mt: 2 }}
-              >
-                {uploading ? 'Uploading...' : 'Upload Podcast'}
-              </Button>
-            </Box>
-          </form>
-
-          {result.type && (
-            <Alert
-              severity={result.type === 'success' ? 'success' : 'error'}
-              icon={result.type === 'success' ? <CheckCircle /> : <ErrorIcon />}
-              sx={{ mt: 3 }}
-            >
-              <Typography variant="subtitle2" fontWeight="bold">
-                {result.type === 'success' ? 'Success!' : 'Error'}
-              </Typography>
-              <Typography variant="body2">{result.message}</Typography>
-              {result.data && (
-                <Card variant="outlined" sx={{ mt: 2, bgcolor: 'background.paper' }}>
-                  <CardContent>
-                    {result.data.metadata.image && (
-                      <Box sx={{ mb: 2, textAlign: 'center' }}>
-                        <img 
-                          src={result.data.metadata.image} 
-                          alt="Podcast cover" 
-                          style={{ maxWidth: '200px', borderRadius: '8px' }}
-                        />
-                      </Box>
-                    )}
-                    <Typography variant="body2" gutterBottom>
-                      <strong>Title:</strong> {result.data.metadata.title}
-                    </Typography>
-                    <Typography variant="body2" gutterBottom>
-                      <strong>Duration:</strong> {result.data.metadata.duration}
-                    </Typography>
-                    <Typography variant="body2" sx={{ wordBreak: 'break-all' }}>
-                      <strong>Audio URL:</strong>{' '}
-                      <MuiLink
-                        href={result.data.metadata.audioUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {result.data.metadata.audioUrl}
-                      </MuiLink>
-                    </Typography>
-                    {result.data.metadata.image && (
-                      <Typography variant="body2" sx={{ wordBreak: 'break-all', mt: 1 }}>
-                        <strong>Cover Image URL:</strong>{' '}
-                        <MuiLink
-                          href={result.data.metadata.image}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {result.data.metadata.image}
-                        </MuiLink>
-                      </Typography>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-            </Alert>
-          )}
-        </Paper>
+    <Container maxWidth="sm" sx={{ py: 6 }}>
+      <Typography variant="h4" component="h1" sx={{ mb: 1 }}>Upload episode</Typography>
+      <Button component={Link} href="/podcast" sx={{ mb: 3 }}>Back to episodes</Button>
+      <Box component="form" onSubmit={upload}>
+        <Stack spacing={2}>
+          <TextField label="Title" name="title" required />
+          <TextField label="Description" name="description" required multiline minRows={3} />
+          <TextField label="Duration" name="duration" placeholder="45:30" required />
+          <TextField label="Author" name="author" />
+          <TextField label="Episode number" name="episodeNumber" type="number" />
+          <TextField label="Season" name="season" type="number" />
+          <TextField label="Keywords" name="keywords" helperText="Separate keywords with commas" />
+          <Button component="label" variant="outlined">Choose audio file<input hidden name="audio" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/mp4,audio/x-m4a" required /></Button>
+          <Button component="label" variant="outlined">Choose cover image<input hidden name="image" type="file" accept="image/jpeg,image/png,image/webp" /></Button>
+          <FormControlLabel control={<Checkbox name="explicit" value="true" />} label="Explicit content" />
+          {message && <Alert severity={message.includes('successfully') ? 'success' : 'error'}>{message}</Alert>}
+          <Button type="submit" variant="contained" disabled={busy}>{busy ? 'Uploading…' : 'Upload episode'}</Button>
+        </Stack>
       </Box>
     </Container>
   );

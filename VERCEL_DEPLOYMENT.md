@@ -1,5 +1,7 @@
 # Vercel Deployment Configuration
 
+> Archived: This guide describes database-backed podcast and record features that have been removed. Use [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for the current deployment.
+
 ## Quick Start
 
 1. **Set up a PostgreSQL database** (e.g., Vercel Postgres, Supabase, or Neon)

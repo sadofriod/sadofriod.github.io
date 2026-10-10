@@ -15,13 +15,14 @@ import MathBlock from '../../../components/MathBlock';
 import TOC from '../../../components/TOC';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const decodedSlug = decodeURIComponent(params.slug);
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
   const { metadata } = getPostBySlug(decodedSlug);
 
   return {
@@ -38,10 +39,13 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function BlogPost({ params }: PageProps) {
-  const decodedSlug = decodeURIComponent(params.slug);
+export const dynamicParams = false;
+
+export default async function BlogPost({ params }: PageProps) {
+  const { slug: routeSlug } = await params;
+  const decodedSlug = decodeURIComponent(routeSlug);
   const { content, slug, ...metadata } = getPostData(decodedSlug);
-  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://blog.ashesborn.cloud'}/blog/${params.slug}`;
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://blog.ashesborn.cloud'}/blog/${routeSlug}`;
 
   // Generate heading ID from text
   const generateHeadingId = (text: string) => {

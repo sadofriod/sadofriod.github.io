@@ -10,9 +10,6 @@ interface LanguageContextType {
   t: (key: string, params?: Record<string, string>) => string;
 }
 
-// We'll use ServerLanguageDetection.tsx for server-side detection
-// This context will primarily handle client-side language management
-
 const LanguageContext = createContext<LanguageContextType>({
   locale: defaultLocale,
   setLocale: () => {},

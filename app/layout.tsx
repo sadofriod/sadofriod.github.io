@@ -6,7 +6,7 @@ import themeOptions from '../lib/theme';
 import { Roboto } from 'next/font/google';
 import { LanguageProvider } from '../lib/i18n/LanguageContext';
 import MainNavbar from '../components/MainNavbar';
-import detectLanguage from '../components/ServerLanguageDetection';
+import { defaultLocale } from '../lib/i18n/translations';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
@@ -21,16 +21,13 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Detect language on the server side
-  const initialLocale = await detectLanguage();
-
   return (
-    <html className={roboto.variable} lang={initialLocale}>
+    <html className={roboto.variable} lang={defaultLocale}>
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-5JRRE2PZ65" />
       <Script id="google-analytics" strategy="afterInteractive">
@@ -43,7 +40,7 @@ export default async function RootLayout({
         `}
       </Script>
       <body>
-        <LanguageProvider initialLocale={initialLocale}>
+        <LanguageProvider initialLocale={defaultLocale}>
           <AppRouterCacheProvider options={{ key: 'css' }}>
             <ThemeProvider theme={themeOptions}>
               <CssBaseline />

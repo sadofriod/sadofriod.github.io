@@ -8,6 +8,8 @@
 
 # next.js
 /.next/
+/.open-next/
+/.wrangler/
 /out/
 
 # production
@@ -25,6 +27,7 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.dev.vars*
 
 # vercel
 .vercel
@@ -61,3 +64,5 @@ public/worker-*.js.map
 .swc/
 
 /lib/generated/prisma
+/lib/generated/post-index.json
+/lib/generated/slug-redirects.json

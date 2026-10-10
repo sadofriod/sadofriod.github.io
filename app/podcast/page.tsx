@@ -1,316 +1,126 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
-  Container,
-  Typography,
+  Alert,
   Box,
+  Button,
   Card,
   CardContent,
-  CardMedia,
-  Grid,
-  Button,
   Chip,
   CircularProgress,
-  Alert,
-  Link as MuiLink,
+  Container,
+  Grid,
   Stack,
-  IconButton,
+  Typography,
 } from '@mui/material';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import RssFeedIcon from '@mui/icons-material/RssFeed';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import RssFeedIcon from '@mui/icons-material/RssFeed';
 import UploadIcon from '@mui/icons-material/Upload';
 import type { Podcast } from '@/lib/podcasts';
-import { format } from 'date-fns';
-import { useRouter } from 'next/navigation';
 import PodcastEditDialog from '@/components/PodcastEditDialog';
 
+function uploadKey(): string {
+  return new URLSearchParams(window.location.search).get('authKey') || sessionStorage.getItem('upload_auth') || '';
+}
+
 export default function PodcastPage() {
-  const router = useRouter();
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
-  const [editingPodcast, setEditingPodcast] = useState<Podcast | null>(null);
+  const [editing, setEditing] = useState<Podcast | null>(null);
 
   useEffect(() => {
-    // Check if user is admin
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const authKey = urlParams.get('authKey');
-      const storedAuth = sessionStorage.getItem('upload_auth');
-      setIsAdmin(!!authKey || !!storedAuth);
-    }
-  }, []);
-
-  useEffect(() => {
-    async function fetchPodcasts() {
+    const queryKey = new URLSearchParams(window.location.search).get('authKey');
+    if (queryKey) sessionStorage.setItem('upload_auth', queryKey);
+    setIsAdmin(Boolean(queryKey || sessionStorage.getItem('upload_auth')));
+    const load = async () => {
       try {
         const response = await fetch('/api/podcasts');
-        if (!response.ok) {
-          throw new Error('Failed to fetch podcasts');
-        }
-        const data = await response.json();
-        setPodcasts(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        if (!response.ok) throw new Error('Could not load episodes');
+        setPodcasts(await response.json());
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : 'Could not load episodes');
       } finally {
         setLoading(false);
       }
-    }
-
-    fetchPodcasts();
+    };
+    void load();
   }, []);
 
-  const rssUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/podcast/rss`
-    : '/podcast/rss';
+  const refresh = async () => {
+    const response = await fetch('/api/podcasts');
+    if (!response.ok) throw new Error('Could not refresh episodes');
+    setPodcasts(await response.json());
+  };
 
-  const handleDelete = async (podcastId: string) => {
-    if (!confirm('Are you sure you want to delete this podcast?')) {
+  const remove = async (podcast: Podcast) => {
+    if (!window.confirm(`Delete “${podcast.metadata.title}”?`)) return;
+    const response = await fetch(`/api/podcasts/${podcast.id}`, {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ authKey: uploadKey() }),
+    });
+    if (!response.ok) {
+      setError('Could not delete this episode');
       return;
     }
-
-    try {
-      const authKey = new URLSearchParams(window.location.search).get('authKey') || 
-                      sessionStorage.getItem('upload_auth');
-      
-      const response = await fetch(`/api/podcasts/${podcastId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ authKey }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete podcast');
-      }
-
-      setPodcasts(podcasts.filter(p => p.id !== podcastId));
-      alert('Podcast deleted successfully');
-    } catch (err) {
-      alert('Failed to delete podcast: ' + (err instanceof Error ? err.message : 'Unknown error'));
-    }
+    await refresh();
   };
 
-  const handleUpdate = async (formData: FormData) => {
-    if (!editingPodcast) return;
-
-    try {
-      const response = await fetch(`/api/podcasts/${editingPodcast.id}`, {
-        method: 'PATCH',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update podcast');
-      }
-
-      const updatedPodcast = await response.json();
-      setPodcasts(podcasts.map(p => p.id === editingPodcast.id ? updatedPodcast.podcast : p));
-      setEditingPodcast(null);
-      alert('Podcast updated successfully');
-    } catch (err) {
-      alert('Failed to update podcast: ' + (err instanceof Error ? err.message : 'Unknown error'));
-      throw err;
-    }
+  const save = async (formData: FormData) => {
+    const response = await fetch(`/api/podcasts/${editing?.id}`, { method: 'PATCH', body: formData });
+    if (!response.ok) throw new Error('Could not update this episode');
+    await refresh();
   };
-
-  if (loading) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8, display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Alert severity="error">{error}</Alert>
-      </Container>
-    );
-  }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
-      {/* Header */}
-      <Box sx={{ mb: 6, textAlign: 'center' }}>
-        <Typography variant="h2" component="h1" gutterBottom>
-          Podcast
-        </Typography>
-        <Typography variant="h6" color="text.secondary" sx={{ mb: 3 }}>
-          Listen to our latest episodes on technology, development, and innovation
-        </Typography>
-        
-        {/* Buttons */}
-        <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            startIcon={<RssFeedIcon />}
-            href={rssUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Subscribe via RSS
-          </Button>
-          
-          {isAdmin && (
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<UploadIcon />}
-              onClick={() => router.push('/podcast/upload')}
-            >
-              Upload Podcast
-            </Button>
-          )}
+    <Container maxWidth="lg" sx={{ py: 5 }}>
+      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
+        <Box>
+          <Typography variant="h3" component="h1">Podcast</Typography>
+          <Typography color="text.secondary">Episodes from Ashes Space</Typography>
+        </Box>
+        <Stack direction="row" spacing={1}>
+          <Button href="/podcast/rss" startIcon={<RssFeedIcon />} target="_blank">RSS</Button>
+          {isAdmin && <Button component={Link} href="/podcast/upload" variant="contained" startIcon={<UploadIcon />}>Upload</Button>}
         </Stack>
-        
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          RSS Feed URL:{' '}
-          <MuiLink href={rssUrl} target="_blank" rel="noopener noreferrer">
-            {rssUrl}
-          </MuiLink>
-        </Typography>
-      </Box>
+      </Stack>
 
-      {/* Podcast List */}
-      {podcasts.length === 0 ? (
-        <Alert severity="info">No podcasts available yet. Check back soon!</Alert>
-      ) : (
-        <Grid container spacing={4}>
-          {podcasts.map((podcast) => (
-            <Grid item xs={12} key={podcast.id}>
-              <Card 
-                sx={{ 
-                  display: 'flex',
-                  flexDirection: { xs: 'column', md: 'row' },
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6,
-                  },
-                }}
-              >
-                {podcast.metadata.image && (
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      width: { xs: '100%', md: 200 },
-                      height: { xs: 200, md: 'auto' },
-                      objectFit: 'cover',
-                    }}
-                    image={podcast.metadata.image}
-                    alt={podcast.metadata.title}
-                  />
-                )}
-                <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <CardContent sx={{ flex: '1 0 auto' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, gap: 1, justifyContent: 'space-between' }}>
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        {podcast.metadata.season && podcast.metadata.episodeNumber && (
-                          <Chip
-                            label={`S${podcast.metadata.season}E${podcast.metadata.episodeNumber}`}
-                            size="small"
-                            color="primary"
-                          />
-                        )}
-                        {podcast.metadata.explicit && (
-                          <Chip label="Explicit" size="small" color="warning" />
-                        )}
-                      </Box>
-                      
-                      {isAdmin && (
-                        <Box>
-                          <IconButton
-                            size="small"
-                            color="primary"
-                            onClick={() => setEditingPodcast(podcast)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            color="error"
-                            onClick={() => handleDelete(podcast.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Box>
-                      )}
-                    </Box>
-                    
-                    <Typography component="h3" variant="h5" sx={{ mb: 1 }}>
-                      {podcast.metadata.title}
-                    </Typography>
-                    
-                    <Stack direction="row" spacing={2} sx={{ mb: 2 }} flexWrap="wrap">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                        <CalendarTodayIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
-                          {format(new Date(podcast.metadata.date), 'MMMM d, yyyy')}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                        <AccessTimeIcon fontSize="small" color="action" />
-                        <Typography variant="body2" color="text.secondary">
-                          {podcast.metadata.duration}
-                        </Typography>
-                      </Box>
+      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+      {loading ? <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box> : null}
+      {!loading && podcasts.length === 0 && <Alert severity="info">No episodes have been published yet.</Alert>}
+
+      <Grid container spacing={2}>
+        {podcasts.map((podcast) => (
+          <Grid item xs={12} key={podcast.id}>
+            <Card variant="outlined">
+              <CardContent>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
+                  {podcast.metadata.image && <Box component="img" src={podcast.metadata.image} alt="" sx={{ width: 88, height: 88, objectFit: 'cover', borderRadius: 1 }} />}
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                      <Typography variant="h6">{podcast.metadata.title}</Typography>
+                      {podcast.metadata.explicit && <Chip size="small" label="Explicit" />}
                     </Stack>
-                    
-                    <Typography variant="body1" color="text.secondary" paragraph>
-                      {podcast.metadata.description}
-                    </Typography>
-                    
-                    {podcast.metadata.keywords && podcast.metadata.keywords.length > 0 && (
-                      <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {podcast.metadata.keywords.map((keyword, index) => (
-                          <Chip
-                            key={index}
-                            label={keyword}
-                            size="small"
-                            variant="outlined"
-                          />
-                        ))}
-                      </Box>
-                    )}
-                  </CardContent>
-                  
-                  <Box sx={{ px: 2, pb: 2 }}>
-                    <Button
-                      variant="contained"
-                      startIcon={<PlayArrowIcon />}
-                      component="a"
-                      href={podcast.metadata.audioUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      fullWidth
-                      sx={{ maxWidth: { md: 200 } }}
-                    >
-                      Listen Now
-                    </Button>
+                    <Typography variant="body2" color="text.secondary">{podcast.metadata.date} · {podcast.metadata.duration}{podcast.metadata.author ? ` · ${podcast.metadata.author}` : ''}</Typography>
+                    <Typography sx={{ my: 1 }}>{podcast.metadata.description}</Typography>
+                    <audio controls preload="none" src={podcast.metadata.audioUrl} style={{ width: '100%' }}>Audio playback is not supported by this browser.</audio>
                   </Box>
-                </Box>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
-
-      {/* Edit Dialog */}
-      <PodcastEditDialog
-        podcast={editingPodcast}
-        open={!!editingPodcast}
-        onClose={() => setEditingPodcast(null)}
-        onSave={handleUpdate}
-      />
+                  {isAdmin && <Stack direction="row">
+                    <Button aria-label="Edit episode" onClick={() => setEditing(podcast)}><EditIcon /></Button>
+                    <Button aria-label="Delete episode" color="error" onClick={() => void remove(podcast)}><DeleteIcon /></Button>
+                  </Stack>}
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+      <PodcastEditDialog podcast={editing} open={Boolean(editing)} onClose={() => setEditing(null)} onSave={save} />
     </Container>
   );
 }

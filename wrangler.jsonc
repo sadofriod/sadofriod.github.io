@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ashesborn-blog",
+  "main": "worker.js",
+  "compatibility_date": "2026-10-09",
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "run_worker_first": ["/blog/*"]
+  },
+  "routes": [
+    {
+      "pattern": "blog.ashesborn.cloud/*",
+      "zone_name": "ashesborn.cloud"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PODCASTS",
+      "bucket_name": "ashesborn-podcasts"
+    }
+  ]
+}

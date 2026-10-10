@@ -1,5 +1,7 @@
 # Vercel Deployment Checklist
 
+> Archived: This checklist describes database-backed podcast and record features that have been removed. Use [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for the current deployment.
+
 在部署到 Vercel 之前，请确认以下所有项目：
 
 ## 前置准备
