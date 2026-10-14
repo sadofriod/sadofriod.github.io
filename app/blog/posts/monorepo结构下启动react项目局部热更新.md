@@ -48,8 +48,8 @@ date: 2022-08-07T23:00:31
 对于HTML模版（这里的具体语法，需要根据具体使用的模版解析器语法来）：
 
 ```HTML5
-    <script data-tn="react-bundle" type="text/javascript" src="{{reactBundlePath | safe}}"><script>
-    <script data-tn="react-dom-bundle" type="text/javascript" src="{{reactDomBundlePath | safe"></script>
+  <script data-tn="react-bundle" type="text/javascript" src="REACT_BUNDLE_URL"></script>
+  <script data-tn="react-dom-bundle" type="text/javascript" src="REACT_DOM_BUNDLE_URL"></script>
 ```
 
 这里的 `reactBundlePath` 和 `reactDomBundlePath`是react单独编译后的结果，对应的是两个js文件。
@@ -123,20 +123,15 @@ date: 2022-08-07T23:00:31
 对于HTML模版（这里的具体语法，需要根据具体使用的模版解析器语法来）：
 
 ```HTML5
-    {% if isDev%}
-      <script type="text/javascript" src="{{ bundlePath | safe }}/client.bundle.js"></script>
-      <script type="text/javascript" src="{{ bundlePath | safe }}/vendors.client.bundle.js"></script>
-      <script type="text/javascript" src="{{ bundlePath | safe }}/whm.client.bundle.js"></script>
-      <script type="text/javascript" src="{{ bundlePath | safe }}/reactRefreshEntry.client.bundle.js"></script>
-    {% endif %}
-    <!-- .....  -->
-    {% if isDev%}
-      <script type="text/javascript" src="{{ bundlePath | safe }}/main.client.bundle.js"></script>
-    {% else %}
-      {% for url in clientBundle %}
-        <script type="text/javascript" src="{{ bundlePath }}/{{ url | safe }}"></script>
-      {% endfor %}
-    {% endif %}
+    <!-- Development entry points -->
+    <script type="text/javascript" src="BUNDLE_BASE_URL/client.bundle.js"></script>
+    <script type="text/javascript" src="BUNDLE_BASE_URL/vendors.client.bundle.js"></script>
+    <script type="text/javascript" src="BUNDLE_BASE_URL/whm.client.bundle.js"></script>
+    <script type="text/javascript" src="BUNDLE_BASE_URL/reactRefreshEntry.client.bundle.js"></script>
+    <script type="text/javascript" src="BUNDLE_BASE_URL/main.client.bundle.js"></script>
+
+    <!-- Production: render one script tag per client bundle manifest entry. -->
+    <script type="text/javascript" src="BUNDLE_BASE_URL/CLIENT_BUNDLE_FILE"></script>
 ```
 
 至此就完成在monorepo下，react项目的局部热更新。

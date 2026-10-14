@@ -86,10 +86,9 @@ export const GlobalLoadingProvider: React.FC<React.PropsWithChildren> = ({
 	const handleClose = () => {
 		setIsShow(false)
 	}
+	const loadingContextValue = { show: handleShow };
 	return (
-		<GlobalLoadingContext.Provider value={{
-			show: handleShow,
-		}}>
+		<GlobalLoadingContext.Provider value={loadingContextValue}>
 			{children}
 			<Modal
         animationType="slide"

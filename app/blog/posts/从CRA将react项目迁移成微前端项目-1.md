@@ -394,15 +394,12 @@ date: 2023-01-11 21:53:18
    * 
     * @typedef {object} Options
     * @property {string} options.baseUrl
-    * @property {{
-    *    [key: string]: string[]
-    *  }} options.paths
+    * @property {Record<string, string[]>} options.paths
     * 获取webpack使用的alias的绝对路径
     *
     * @param {Options} options
-    * @param {{
-    *  rootPath: string;
-    * }} extension
+    * @param {Object} extension
+    * @property {string} extension.rootPath
     */
     function getWebpackAliases(options = {}, extension = {}) {
       const { baseUrl, paths: aliasPath } = options;
