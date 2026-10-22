@@ -25,10 +25,11 @@
       "bucket_name": "ashesborn-photos"
     }
   ],
-  // Hyperdrive is created against a Postgres instance that must exist first:
-  //   npx wrangler hyperdrive create blog-db --connection-string="postgres://…"
-  // then uncomment the block below with the printed id. Until then the Worker
-  // deploys fine and the photo/podcast APIs answer 503 ("Database is not
-  // configured") instead of taking the whole site down.
-  // "hyperdrive": [{ "binding": "HYPERDRIVE", "id": "<config id>" }]
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ashesborn-blog",
+      "database_id": "507abc83-44bf-41db-b238-34d7fa17b202"
+    }
+  ]
 }

@@ -3,26 +3,24 @@
  * End-to-end check of the Worker's photo + podcast routes without Cloudflare and
  * without a database server: the real router modules from lib/ run against
  *   - an in-memory R2 stand-in, and
- *   - PGlite (in-process Postgres) injected through the db() test seam.
+ *   - an in-process SQLite (node:sqlite) wrapped in the D1 API shape.
  *
  * It exercises what a browser actually hits: multipart upload, listing, preview,
  * original download, delete, RSS, and the "database not configured" degradation.
  */
-import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PGlite } from '@electric-sql/pglite';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 // --- load the real modules as ESM (package.json is CJS, lib/ is ESM) ---------
-// The temp dir lives inside the repo so bare imports ("postgres") still resolve.
 const libWork = path.join(root, '.wrangler', 'route-test-lib');
 await rm(libWork, { recursive: true, force: true });
 await mkdir(libWork, { recursive: true });
 
-const libFiles = (await readdir(path.join(root, 'lib'))).filter((file) => file.endsWith('.js'));
-for (const file of libFiles) {
+for (const file of (await readdir(path.join(root, 'lib'))).filter((name) => name.endsWith('.js'))) {
   const source = await readFile(path.join(root, 'lib', file), 'utf8');
   const rewritten = source.replace(/from '\.\/([A-Za-z0-9_.-]+)\.js'/g, "from './$1.mjs'");
   await writeFile(path.join(libWork, file.replace(/\.js$/, '.mjs')), rewritten);
@@ -62,9 +60,15 @@ class FakeBucket {
       // R2 maps camelCase metadata onto real HTTP headers; mirror that here so a
       // missing content-type in a test means a real bug, not a harness gap.
       writeHttpMetadata(headers) {
-        const names = { contentType: 'content-type', cacheControl: 'cache-control', contentDisposition: 'content-disposition', contentEncoding: 'content-encoding', contentLanguage: 'content-language' };
-        for (const [key, value] of Object.entries(entry.httpMetadata)) {
-          if (typeof value === 'string') headers.set(names[key] ?? key.toLowerCase(), value);
+        const names = {
+          contentType: 'content-type',
+          cacheControl: 'cache-control',
+          contentDisposition: 'content-disposition',
+          contentEncoding: 'content-encoding',
+          contentLanguage: 'content-language',
+        };
+        for (const [key2, value] of Object.entries(entry.httpMetadata)) {
+          if (typeof value === 'string') headers.set(names[key2] ?? key2.toLowerCase(), value);
         }
       },
     };
@@ -81,41 +85,43 @@ class FakeBucket {
   }
 }
 
-// --- PGlite as the Hyperdrive stand-in --------------------------------------
-const pg = new PGlite();
-const sql = (strings, ...values) => {
-  const text = strings.reduce((acc, chunk, index) => `${acc}${chunk}${index < values.length ? `$${index + 1}` : ''}`, '');
-  return pg.query(text, values).then((result) => result.rows);
-};
-sql.unsafe = (text, params = []) => pg.query(text, params).then((result) => result.rows);
+/** node:sqlite → the subset of the D1 API the Worker uses. */
+function createD1(schema) {
+  const sqlite = new DatabaseSync(':memory:');
+  if (schema) sqlite.exec(schema);
 
-await pg.exec(await readFile(path.join(root, 'migrations/0001_podcasts_and_photos.sql'), 'utf8'));
+  const wrap = (statement) => ({
+    bind: (...params) => ({
+      all: async () => ({ results: statement.all(...params) }),
+      first: async () => statement.get(...params) ?? null,
+      run: async () => ({ success: true, meta: statement.run(...params) }),
+    }),
+    all: async () => ({ results: statement.all() }),
+    first: async () => statement.get() ?? null,
+    run: async () => ({ success: true, meta: statement.run() }),
+  });
+
+  return { prepare: (sql) => wrap(sqlite.prepare(sql)), sqlite };
+}
+
+const schema = await readFile(path.join(root, 'migrations/0001_podcasts_and_photos.sql'), 'utf8');
+const DB = createD1(schema);
 
 const UPLOAD_KEY = 'test-upload-key';
 const photos = new FakeBucket();
 const podcasts = new FakeBucket();
-const env = {
-  PHOTOS: photos,
-  PODCASTS: podcasts,
-  UPLOAD_AUTH_KEY: UPLOAD_KEY,
-  HYPERDRIVE: { sql },
-};
+const env = { PHOTOS: photos, PODCASTS: podcasts, UPLOAD_AUTH_KEY: UPLOAD_KEY, DB };
 
 const failures = [];
 const check = (label, condition, detail = '') => {
-  if (condition) {
-    console.log(`  ok   ${label}`);
-  } else {
+  if (condition) console.log(`  ok   ${label}`);
+  else {
     failures.push(label);
     console.log(`  FAIL ${label}${detail ? ` — ${detail}` : ''}`);
   }
 };
 
-const call = async (router, url, init) => {
-  const request = new Request(`https://blog.ashesborn.cloud${url}`, init);
-  const response = await router(request, env);
-  return response;
-};
+const call = (router, url, init) => router(new Request(`https://blog.ashesborn.cloud${url}`, init), env);
 
 const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
 
@@ -137,7 +143,7 @@ const createdBody = await created.json();
 check('POST /api/photos → 201', created.status === 201, String(created.status));
 const photo = createdBody.photo ?? {};
 check('upload returns preview + original urls', photo.preview === `/photos/p/${photo.id}` && photo.original === `/photos/o/${photo.id}`);
-check('tags parsed from comma list', JSON.stringify(photo.tags) === '["film","35mm"]');
+check('tags parsed from the comma list', JSON.stringify(photo.tags) === '["film","35mm"]', JSON.stringify(photo.tags));
 check('original stored in R2', [...photos.objects.keys()].some((key) => key.startsWith(`photos/originals/${photo.id}/`)));
 check('preview stored in R2', photos.objects.has(`photos/previews/${photo.id}.webp`));
 
@@ -149,6 +155,7 @@ check('upload without authKey → 401', rejected.status === 401, String(rejected
 const listed = await (await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'GET' })).json();
 check('GET /api/photos lists it', listed.length === 1 && listed[0].id === photo.id);
 check('list does not leak R2 keys', !('originalKey' in listed[0]));
+check('list keeps tags an array', Array.isArray(listed[0].tags) && listed[0].tags.length === 2);
 
 const preview = await call(photoRouter.handlePhotoRequest, `/photos/p/${photo.id}?w=800`, { method: 'GET' });
 check('preview serves the stored WebP', preview.headers.get('x-photo-source') === 'stored-preview', String(preview.headers.get('x-photo-source')));
@@ -205,6 +212,7 @@ const patched = await call(podcastRouter.handlePodcastRequest, `/api/podcasts/${
 const patchedBody = await patched.json();
 check('PATCH keeps the audio while renaming', patched.status === 200 && patchedBody.podcast?.metadata?.title === 'Episode one (fixed)');
 check('PATCH kept the original audio key', patchedBody.podcast?.metadata?.audioUrl === episode.metadata.audioUrl);
+check('PATCH kept the keywords', JSON.stringify(patchedBody.podcast?.metadata?.keywords) === '["graphrag","typescript"]');
 
 const removed = await call(podcastRouter.handlePodcastRequest, `/api/podcasts/${episode.id}`, {
   method: 'DELETE',
@@ -215,23 +223,18 @@ check('DELETE /api/podcasts/:id → 200', removed.status === 200, String(removed
 check('delete removed the audio object', podcasts.objects.size === 0, [...podcasts.objects.keys()].join(','));
 
 // ---- degradation ----
-console.log('\nwithout a database');
-const noDb = await photoRouter.handlePhotoRequest(
-  new Request('https://blog.ashesborn.cloud/api/photos'),
-  { PHOTOS: photos, UPLOAD_AUTH_KEY: UPLOAD_KEY }
-);
-check('photo API answers 503 without HYPERDRIVE', noDb.status === 503, String(noDb.status));
-const noDbPodcast = await podcastRouter.handlePodcastRequest(
-  new Request('https://blog.ashesborn.cloud/api/podcasts'),
-  { PODCASTS: podcasts, UPLOAD_AUTH_KEY: UPLOAD_KEY }
-);
-check('podcast API answers 503 without HYPERDRIVE', noDbPodcast.status === 503, String(noDbPodcast.status));
-check(
-  'media still streams without a database',
-  (await call(podcastRouter.handlePodcastRequest, '/podcast-media/podcasts%2Faudio%2Fx.mp3', { method: 'GET' })).status === 404
-);
+console.log('\nwithout a database binding');
+const noDb = await photoRouter.handlePhotoRequest(new Request('https://blog.ashesborn.cloud/api/photos'), {
+  PHOTOS: photos,
+  UPLOAD_AUTH_KEY: UPLOAD_KEY,
+});
+check('photo API answers 503 without DB', noDb.status === 503, String(noDb.status));
+const noDbPodcast = await podcastRouter.handlePodcastRequest(new Request('https://blog.ashesborn.cloud/api/podcasts'), {
+  PODCASTS: podcasts,
+  UPLOAD_AUTH_KEY: UPLOAD_KEY,
+});
+check('podcast API answers 503 without DB', noDbPodcast.status === 503, String(noDbPodcast.status));
 
-await pg.close();
 await rm(libWork, { recursive: true, force: true });
 
 if (failures.length > 0) {

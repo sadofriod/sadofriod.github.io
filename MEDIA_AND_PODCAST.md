@@ -1,161 +1,82 @@
-# Photography + podcast: media, database, and the one-time setup
+# Photography + podcast: media, database, and setup
 
-Photography and podcast episodes share the same shape: **bytes in R2, metadata in Postgres**.
-Postgres is reached from the Worker through a **Cloudflare Hyperdrive** binding, so the same
-deployment works against Neon, Supabase, or a self-hosted Postgres without changing code.
+Photography and podcast episodes share the same shape: **bytes in R2, metadata in D1**.
+D1 is Cloudflare's SQLite — serverless, free tier, no external account, and the binding works in
+`wrangler dev` locally without any extra setup.
 
 ```
 browser ──▶ Worker (worker.js)
-              ├─ /photos/p/:id?w=800   → PHOTOS (R2) ──▶ Images binding (transform) ──▶ WebP
-              ├─ /photos/o/:id         → PHOTOS (R2) ──▶ attachment download
-              ├─ /podcast-media/*      → PODCASTS (R2) ──▶ range requests (audio seeking)
+              ├─ /photos/p/:id?w=800   → PHOTOS (R2) → stored WebP preview (or Images transform)
+              ├─ /photos/o/:id         → PHOTOS (R2) → attachment download
+              ├─ /podcast-media/*      → PODCASTS (R2) → range requests (audio seeking)
               ├─ /api/photos, /api/podcasts, /podcast/rss
-              │     └─▶ HYPERDRIVE ──▶ Postgres (photos, podcast_episodes)
+              │     └─▶ DB (D1) → tables photos, podcast_episodes
               └─ everything else       → static assets from out/ (the Next.js export)
 ```
 
-Tables live in `migrations/0001_podcasts_and_photos.sql`; the SQL the Worker runs lives in
-`lib/podcastStore.js` and `lib/photoStore.js` and is exercised against a throwaway Postgres by
-`pnpm test:db`.
+Schema: `migrations/0001_podcasts_and_photos.sql`. SQL lives in `lib/photoStore.js` and
+`lib/podcastStore.js`, and is exercised against an in-process SQLite by `pnpm test:db`
+(20 assertions) and `pnpm test:routes` (28 assertions, the real routers + an in-memory R2).
 
-## One-time setup (needs Cloudflare credentials)
+## Already provisioned
 
-Everything below is a one-off. `wrangler` must be logged in (`CLOUDFLARE_API_TOKEN` in CI already is).
+| Resource | Value |
+| --- | --- |
+| R2 bucket (photos) | `ashesborn-photos` (`wr photos`) |
+| R2 bucket (podcast) | `ashesborn-podcasts` (pre-existing) |
+| D1 database | `ashesborn-blog` — id `507abc83-44bf-41db-b238-34d7fa17b202`, bound as `DB` |
+| D1 schema | applied: tables `photos`, `podcast_episodes` + 3 indexes |
+| Upload key | `UPLOAD_AUTH_KEY` Worker secret (pre-existing) |
+| Plans | `workers_paid` + `r2_paid` active |
 
-### 1. R2 bucket for photos
-
-```bash
-npx wrangler r2 bucket create ashesborn-photos
-```
-
-`wrangler.jsonc` already binds it as `PHOTOS`. The podcast bucket (`ashesborn-podcasts`) already exists.
-
-### 2. Postgres + Hyperdrive
-
-Hyperdrive is a pooler in front of an existing Postgres — it does not create a database.
-Point it at whatever you already run (Neon free tier is enough for both tables):
+## Commands
 
 ```bash
-npx wrangler hyperdrive create blog-db \
-  --connection-string="postgres://user:password@host:5432/dbname?sslmode=require"
+pnpm db:migrate         # wrangler d1 migrations apply ashesborn-blog --remote
+pnpm db:migrate:local   # same against the local dev database
+pnpm test:db            # schema + both stores against in-process SQLite
+pnpm test:routes        # both routers end to end (no Cloudflare, no server)
+pnpm run build          # static export + type check
+npx wrangler deploy --dry-run --outdir .wrangler/dry-run
 ```
 
-This prints a config `id`. Uncomment the block at the end of `wrangler.jsonc` and fill it in:
+## Running the Worker locally
 
-```jsonc
-"hyperdrive": [{ "binding": "HYPERDRIVE", "id": "<that id>" }]
-```
-
-> The block ships **commented out** on purpose: while it is commented the Worker
-> deploys normally and the photo/podcast APIs answer `503 Database is not configured`,
-> so a deploy never breaks on a missing id.
-
-### 3. Schema
+D1 and R2 both have local implementations inside wrangler, so no database server is needed:
 
 ```bash
-DATABASE_URL='postgres://user:password@host:5432/dbname?sslmode=require' pnpm db:migrate
+pnpm db:migrate:local
+wrangler dev --port 8799            # real Worker code, local R2 + local D1
 ```
 
-Prints `applied 0001_podcasts_and_photos.sql` and the resulting table list. Safe to re-run
-(every statement is `IF NOT EXISTS`).
+`UPLOAD_AUTH_KEY` for local runs: put it in `.dev.vars` (gitignored) or pass `--var UPLOAD_AUTH_KEY:dev-key`.
+Then `curl -F file=@photo.jpg -F authKey=dev-key http://127.0.0.1:8799/api/photos` exercises the
+whole path — this is how the two Worker-only bugs below were found.
 
-### 4. Upload key
+## Uploading
 
-`UPLOAD_AUTH_KEY` is already set as a Worker secret (the existing podcast upload flow uses it).
-To rotate:
-
-```bash
-npx wrangler secret put UPLOAD_AUTH_KEY
-```
-
-### 5. Workers Paid (optional but recommended)
-
-Two paid capabilities are used:
-
-| Capability | Bound as | Without it |
-| --- | --- | --- |
-| Hyperdrive | `env.HYPERDRIVE` | photo + podcast APIs answer `503 Database is not configured` |
-| Workers Paid plan | n/a | Hyperdrive is unavailable; the account needs the $5/mo plan |
-
-R2 and Workers Paid are already active on this account (`r2_paid`, `workers_paid`).
-
-### Previews without Cloudflare Images
-
-The upload page downscales each photo in the browser (canvas → WebP, max 1600 px, quality 0.82) and
-posts it next to the original. The Worker stores it at `photos/previews/<id>.webp` and
-`/photos/p/:id` serves that file — so the gallery is fast on the R2 free tier and needs **no**
-Images subscription.
-
-If the account later subscribes to Cloudflare Images, add
-
-```jsonc
-"images": { "binding": "IMAGES" }
-```
-
-and `lib/photoMedia.js` starts transforming the original to arbitrary widths (`?w=400|800|1200|1600|2000`).
-Until then `?w=` is ignored and the stored preview is returned.
-
-## Day-to-day
-
-- Upload a photo: open `/photography/upload?authKey=<UPLOAD_AUTH_KEY>` once — the key is kept in
-  `sessionStorage` for the rest of the session, like the podcast admin flow.
-- Upload an episode: `/podcast?authKey=<UPLOAD_AUTH_KEY>` → *Upload*.
-- RSS stays at `/podcast/rss` (iTunes tags included), episodes are ordered by `published_on desc`.
+- Photo: `/photography/upload?authKey=<UPLOAD_AUTH_KEY>` (key kept in `sessionStorage`, like the
+  podcast admin flow). The page downscales to a 1600 px WebP in the browser and posts both files,
+  so the gallery never serves a 12 MB original and **no image-optimisation product is needed**.
+- Episode: `/podcast?authKey=<UPLOAD_AUTH_KEY>` → *Upload*.
+- RSS: `/podcast/rss` (iTunes tags, ordered by `published_on desc`).
 
 ## Verifying a deployment
 
 ```bash
-curl -s https://blog.ashesborn.cloud/api/photos | head            # [] when empty, 503 when HYPERDRIVE is missing
+curl -s https://blog.ashesborn.cloud/api/photos | head            # [] when empty, 503 if DB is unbound
 curl -s https://blog.ashesborn.cloud/api/photo-collections        # [{"collection":"street","count":2}]
 curl -s https://blog.ashesborn.cloud/api/podcasts | head
-curl -sI "https://blog.ashesborn.cloud/photos/p/<id>?w=800"       # x-photo-source: images-binding | original
+curl -sI "https://blog.ashesborn.cloud/photos/p/<id>"             # x-photo-source: stored-preview
 curl -s https://blog.ashesborn.cloud/podcast/rss | head -c 400
 ```
 
-Local checks that need no credentials:
+## Notes for future work
 
-```bash
-pnpm test:db                 # schema + both stores against in-process Postgres (PGlite)
-pnpm run build               # static export, type-check
-npx wrangler deploy --dry-run --outdir .wrangler/dry-run   # bundle + binding wiring
-```
-
-## Running the Worker locally against a real Postgres
-
-No Cloudflare account and no database server needed — `scripts/pg-wire-server.mjs` serves an
-in-process Postgres (PGlite) over the Postgres wire protocol, and `wrangler dev` points its
-Hyperdrive binding at it:
-
-```bash
-node scripts/pg-wire-server.mjs 55460 &                       # terminal 1
-DATABASE_URL='postgres://postgres:postgres@127.0.0.1:55460/postgres' pnpm db:migrate
-
-# terminal 2 — local R2 simulation + Hyperdrive -> the wire server
-cp wrangler.jsonc wrangler.local.jsonc   # then uncomment the hyperdrive block, id anything
-CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE='postgres://postgres:postgres@127.0.0.1:55460/postgres' \
-  npx wrangler dev --config wrangler.local.jsonc --port 8799
-```
-
-Then `curl -F file=@photo.jpg -F authKey=… http://127.0.0.1:8799/api/photos` exercises the real
-Worker code. Two production-only bugs were found this way and are now fixed in `lib/`:
-connections must be created **per request** (Workers forbid reusing an I/O object across request
-contexts) and JS arrays must be sent as an explicit `{"a","b"}` literal (the Workers build cannot
-infer parameter types, so a raw array becomes `a,b` and Postgres rejects it).
-
-## Restoring the pre-2026 episodes
-
-The earlier implementation kept episodes in a Prisma/Postgres database (plus S3 audio) on Vercel;
-the R2-metadata rewrite that replaced it never carried the rows over, so `/api/podcasts` currently
-returns `[]`. With the old `DATABASE_URL` still available:
-
-```sql
--- old table was "Podcast" (id, title, date, description, duration, audioUrl, author,
--- episodeNumber, season, image, keywords, explicit)
-select id, title, date, description, duration, audioUrl, author,
-       "episodeNumber", season, image, keywords, explicit
-from "Podcast" order by date desc;
-```
-
-Each row needs the audio re-uploaded into R2 (or copied from S3 with `rclone`) and then posted to
-`/api/podcasts` with that metadata — the API is unchanged, so a small script over the export is
-enough. Without the old database the episodes have to be re-uploaded by hand.
+- **Cloudflare Images** is not subscribed on this account (`5403 not authorized`), which is why
+  previews are generated in the browser. Add `"images": { "binding": "IMAGES" }` to
+  `wrangler.jsonc` and `lib/photoMedia.js` starts transforming originals to arbitrary widths.
+- **Old episodes** live in a retired Prisma/Postgres + S3 setup and were never migrated, so
+  `/api/podcasts` starts empty; re-upload through the admin page (the API shape is unchanged).
+- **D1 quirks handled in `lib/`**: arrays are stored as JSON text (`parseJsonArray`/`toJsonArray`),
+  booleans as `0/1`, and `updated_at` is set with `datetime('now')` inside the UPDATE statement.
