@@ -29,12 +29,13 @@ function formDataFromPodcast(podcast: Podcast) {
     episodeNumber: podcast.metadata.episodeNumber?.toString() || '',
     season: podcast.metadata.season?.toString() || '',
     keywords: podcast.metadata.keywords?.join(', ') || '',
+    videoKey: podcast.metadata.videoUrl ? decodeURIComponent(podcast.metadata.videoUrl.replace(/^\/podcast-media\//, '')) : '',
     explicit: podcast.metadata.explicit || false,
   };
 }
 
 export default function PodcastEditDialog({ podcast, open, onClose, onSave }: PodcastEditDialogProps) {
-  const [values, setValues] = useState({ title: '', description: '', duration: '', author: '', episodeNumber: '', season: '', keywords: '', explicit: false });
+  const [values, setValues] = useState({ title: '', description: '', duration: '', author: '', episodeNumber: '', season: '', keywords: '', videoKey: '', explicit: false });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
           <FormControlLabel control={<Checkbox checked={values.explicit} onChange={(event) => setValues({ ...values, explicit: event.target.checked })} />} label="Explicit content" />
           <Button component="label" variant="outlined">Replace audio<input hidden type="file" name="audio" accept="audio/*" /></Button>
           <Button component="label" variant="outlined">Replace cover<input hidden type="file" name="image" accept="image/jpeg,image/png,image/webp" /></Button>
+          <TextField label="Video key in R2" name="videoKey" value={values.videoKey} onChange={(event) => setValues({ ...values, videoKey: event.target.value })} placeholder="S01E01.mp4" helperText="Optional. Must already exist in the PODCASTS bucket; clear to remove." />
           <TextField label="Episode number" name="episodeNumber" value={values.episodeNumber} onChange={(event) => setValues({ ...values, episodeNumber: event.target.value })} type="number" />
           <TextField label="Season" name="season" value={values.season} onChange={(event) => setValues({ ...values, season: event.target.value })} type="number" />
         </DialogContent>

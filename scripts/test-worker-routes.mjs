@@ -74,6 +74,12 @@ class FakeBucket {
     };
   }
 
+  async head(key) {
+    const entry = this.objects.get(key);
+    if (!entry) return null;
+    return { key, size: entry.bytes.byteLength, httpMetadata: entry.httpMetadata ?? {} };
+  }
+
   async delete(keys) {
     for (const key of Array.isArray(keys) ? keys : [keys]) this.objects.delete(key);
   }
@@ -104,7 +110,14 @@ function createD1(schema) {
   return { prepare: (sql) => wrap(sqlite.prepare(sql)), sqlite };
 }
 
-const schema = await readFile(path.join(root, 'migrations/0001_podcasts_and_photos.sql'), 'utf8');
+async function loadSchema() {
+  const dir = path.join(root, 'migrations');
+  const files = (await readdir(dir)).filter((name) => name.endsWith('.sql')).sort();
+  const parts = await Promise.all(files.map((name) => readFile(path.join(dir, name), 'utf8')));
+  return parts.join('\n');
+}
+
+const schema = await loadSchema();
 const DB = createD1(schema);
 
 const UPLOAD_KEY = 'test-upload-key';
@@ -180,6 +193,10 @@ check('delete removed both R2 objects', photos.objects.size === 0, [...photos.ob
 
 // ---- podcasts ----
 console.log('\npodcast routes');
+await podcasts.put('S01E01.mp4', new Uint8Array([0, 0, 0, 32, 102, 116, 121, 112]), {
+  httpMetadata: { contentType: 'video/mp4' },
+});
+
 const episodeForm = new FormData();
 episodeForm.set('audio', new File([new Uint8Array([9, 9, 9])], 'ep1.mp3', { type: 'audio/mpeg' }));
 episodeForm.set('title', 'Episode one');
@@ -187,6 +204,7 @@ episodeForm.set('description', 'First episode');
 episodeForm.set('duration', '12:34');
 episodeForm.set('explicit', 'false');
 episodeForm.set('keywords', 'graphrag, typescript');
+episodeForm.set('videoKey', 'S01E01.mp4');
 episodeForm.set('authKey', UPLOAD_KEY);
 
 const episodeResponse = await call(podcastRouter.handlePodcastRequest, '/api/podcasts', { method: 'POST', body: episodeForm });
@@ -195,12 +213,30 @@ check('POST /api/podcasts → 201', episodeResponse.status === 201, String(episo
 const episode = episodeBody.podcast ?? {};
 check('episode audio url is a worker path', (episode.metadata?.audioUrl ?? '').startsWith('/podcast-media/'));
 check('episode keywords parsed', JSON.stringify(episode.metadata?.keywords) === '["graphrag","typescript"]');
+check('video key becomes a media url', episode.metadata?.videoUrl === '/podcast-media/S01E01.mp4', String(episode.metadata?.videoUrl));
+check('video type recorded from R2 head', episode.metadata?.videoType === 'video/mp4', String(episode.metadata?.videoType));
+
+const badVideo = new FormData();
+badVideo.set('audio', new File([new Uint8Array([1])], 'e.mp3', { type: 'audio/mpeg' }));
+badVideo.set('title', 'x');
+badVideo.set('description', 'x');
+badVideo.set('duration', '1:00');
+badVideo.set('videoKey', 'missing.mp4');
+badVideo.set('authKey', UPLOAD_KEY);
+const rejectedVideo = await call(podcastRouter.handlePodcastRequest, '/api/podcasts', { method: 'POST', body: badVideo });
+check('video key that is not in R2 → 400', rejectedVideo.status === 400, String(rejectedVideo.status));
 
 const episodes = await (await call(podcastRouter.handlePodcastRequest, '/api/podcasts', { method: 'GET' })).json();
 check('GET /api/podcasts lists the episode', episodes.length === 1 && episodes[0].id === episode.id);
 
 const media = await call(podcastRouter.handlePodcastRequest, episode.metadata.audioUrl, { method: 'GET' });
 check('audio streams from R2', media.status === 200 && media.headers.get('content-type') === 'audio/mpeg', String(media.status));
+
+const videoMedia = await call(podcastRouter.handlePodcastRequest, episode.metadata.videoUrl, { method: 'GET' });
+check('video streams from R2', videoMedia.status === 200 && videoMedia.headers.get('content-type') === 'video/mp4', String(videoMedia.status));
+
+const strayMedia = await call(podcastRouter.handlePodcastRequest, '/podcast-media/unreferenced.txt', { method: 'GET' });
+check('objects no episode references are not exposed', strayMedia.status === 404, String(strayMedia.status));
 
 const rss = await (await call(podcastRouter.handlePodcastRequest, '/podcast/rss', { method: 'GET' })).text();
 check('RSS contains the episode', rss.includes('Episode one') && rss.includes('<enclosure'), rss.slice(0, 120));
@@ -220,7 +256,7 @@ const removed = await call(podcastRouter.handlePodcastRequest, `/api/podcasts/${
   body: JSON.stringify({ authKey: UPLOAD_KEY }),
 });
 check('DELETE /api/podcasts/:id → 200', removed.status === 200, String(removed.status));
-check('delete removed the audio object', podcasts.objects.size === 0, [...podcasts.objects.keys()].join(','));
+check('delete removed the audio object', podcasts.objects.size === 1 && podcasts.objects.has('S01E01.mp4'), [...podcasts.objects.keys()].join(','));
 
 // ---- degradation ----
 console.log('\nwithout a database binding');

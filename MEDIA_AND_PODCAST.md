@@ -53,6 +53,29 @@ wrangler dev --port 8799            # real Worker code, local R2 + local D1
 Then `curl -F file=@photo.jpg -F authKey=dev-key http://127.0.0.1:8799/api/photos` exercises the
 whole path — this is how the two Worker-only bugs below were found.
 
+## The episode that was already in R2
+
+`ashesborn-podcasts` already held the files, at the bucket root:
+
+| Key | Size | Type |
+| --- | --- | --- |
+| `S01E01.mp3` | 45,515,673 B | audio/mpeg (MPEG-1 L3, 256 kbps CBR, 44.1 kHz → 23:42) |
+| `S01E01.mp4` | 233,144,891 B | video/mp4 |
+
+They are registered in D1 as one episode (season 1, episode 1) and nothing was moved or
+re-uploaded: `audio_key = 'S01E01.mp3'`, `video_key = 'S01E01.mp4'`.
+
+`/podcast-media/<key>` now serves **only keys an episode actually references** (one indexed lookup
+against `audio_key` / `cover_key` / `video_key`), which is also why root-level keys are fine — the
+old prefix allowlist would have rejected them. Without a DB binding it falls back to the upload
+prefixes.
+
+Video is optional per episode: `video_key` / `video_size` / `video_type` columns, exposed as
+`metadata.videoUrl`, rendered as a `<video controls>` above the audio player. Set it from the admin
+UI by pasting an existing R2 key (the Worker `head()`s the object, so a typo is a 400, not a broken
+player). Video is deliberately **not** uploaded through the Worker — a 200 MB multipart body is not
+something a request should carry; put the file in R2 and reference it.
+
 ## Uploading
 
 - Photo: `/photography/upload?authKey=<UPLOAD_AUTH_KEY>` (key kept in `sessionStorage`, like the

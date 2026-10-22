@@ -8,7 +8,7 @@
  * to a temp `.mjs` (with relative imports rewritten) before import — that keeps
  * this test on the actual SQL that ships.
  */
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
@@ -52,9 +52,17 @@ await asModule('lib/db.js');
 const photoStore = await asModule('lib/photoStore.js');
 const podcastStore = await asModule('lib/podcastStore.js');
 
-const schema = await readFile(path.join(root, 'migrations/0001_podcasts_and_photos.sql'), 'utf8');
+async function loadSchema() {
+  const dir = path.join(root, 'migrations');
+  const files = (await readdir(dir)).filter((name) => name.endsWith('.sql')).sort();
+  const parts = await Promise.all(files.map((name) => readFile(path.join(dir, name), 'utf8')));
+  return parts.join('\n');
+}
+
+const schema = await loadSchema();
+// Applied once: D1 tracks applied migrations (d1_migrations), and ALTER TABLE ADD
+// COLUMN in 0002 cannot be made idempotent in plain SQL.
 const db = createD1(schema);
-db.sqlite.exec(schema); // idempotency: every statement is IF NOT EXISTS
 
 const failures = [];
 const check = (label, condition, detail = '') => {
@@ -107,6 +115,26 @@ const newer = await podcastStore.insertPodcast(db, {
 });
 check('null cover/keywords accepted', newer.metadata.image === '/podcast-media/podcasts%2Fcovers%2Fb%2Fcover.jpg');
 check('empty keywords come back as []', Array.isArray(newer.metadata.keywords) && newer.metadata.keywords.length === 0);
+check('no video → no videoUrl', newer.metadata.videoUrl === undefined);
+
+const withVideo = await podcastStore.insertPodcast(db, {
+  id: 'ep-3',
+  title: 'Episode with video',
+  date: '2026-04-01',
+  description: 'video companion',
+  duration: '23:42',
+  audioKey: 'S01E01.mp3',
+  audioSize: 45_515_673,
+  audioType: 'audio/mpeg',
+  videoKey: 'S01E01.mp4',
+  videoSize: 233_144_891,
+  videoType: 'video/mp4',
+  keywords: [],
+  explicit: false,
+});
+check('video key becomes a media url', withVideo.metadata.videoUrl === '/podcast-media/S01E01.mp4', String(withVideo.metadata.videoUrl));
+check('video size/type round-trip', withVideo.metadata.videoSize === 233_144_891 && withVideo.metadata.videoType === 'video/mp4');
+await podcastStore.removePodcast(db, 'ep-3');
 
 const listed = await podcastStore.listPodcasts(db);
 check('list orders by published_on desc', listed[0].id === 'ep-2', listed.map((row) => row.metadata.date).join(','));
