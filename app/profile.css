@@ -811,3 +811,499 @@ html body {
     transform: none;
   }
 }
+
+/* ==========================================================================
+   Blog chrome — the same neo-brutalist language as the profile surfaces,
+   applied to the article list, article page, podcast and admin forms.
+   ========================================================================== */
+
+/* ---------- top navigation ---------- */
+
+.brutal-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+  border-bottom: var(--brutal-border);
+  background: var(--paper);
+}
+
+.brutal-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  flex-wrap: wrap;
+}
+
+.brutal-nav__brand {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.brutal-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.brutal-nav__link {
+  padding: 6px 10px;
+  border: 2px solid transparent;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.14s ease, border-color 0.14s ease;
+}
+
+.brutal-nav__link:hover {
+  border-color: var(--ink);
+  background: var(--yellow);
+}
+
+.brutal-nav__link--active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ---------- form controls ---------- */
+
+.brutal-select {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 0.9rem;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+}
+
+.brutal-select:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* ---------- article list ---------- */
+
+.post-list {
+  display: grid;
+  gap: 18px;
+}
+
+.post-list__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.post-list__count {
+  font-family: var(--brutal-mono);
+  font-size: 0.76rem;
+  opacity: 0.7;
+}
+
+.post-card {
+  display: block;
+  border: var(--brutal-border);
+  background: var(--paper);
+  box-shadow: var(--brutal-shadow);
+  padding: 18px 20px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.post-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--brutal-shadow-hover);
+}
+
+.post-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-family: var(--brutal-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+
+.post-card__title {
+  margin: 10px 0 6px;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.post-card:hover .post-card__title {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.post-card__desc {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.post-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.post-badge {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  padding: 2px 8px;
+  font-family: var(--brutal-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.post-badge--pink { background: var(--pink); }
+.post-badge--yellow { background: var(--yellow); }
+.post-badge--blue { background: var(--blue); }
+.post-badge--mint { background: var(--mint); }
+
+/* ---------- article page ---------- */
+
+.article-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 20px 72px;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .article-shell {
+    padding: 40px 40px 88px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .article-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .article-toc {
+    display: none;
+  }
+}
+
+.article__head {
+  border: var(--brutal-border);
+  background: var(--paper);
+  box-shadow: var(--brutal-shadow);
+  padding: 22px;
+  margin-bottom: 26px;
+}
+
+.article__title {
+  margin: 0 0 12px;
+  font-size: clamp(1.55rem, 4vw, 2.35rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.article__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--brutal-mono);
+  font-size: 0.76rem;
+  opacity: 0.8;
+}
+
+.article-body {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.article-body h1,
+.article-body h2,
+.article-body h3,
+.article-body h4 {
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 32px 0 12px;
+  scroll-margin-top: 96px;
+}
+
+/* The markdown usually opens with the post title; the header card already renders it. */
+.article-body > h1:first-child {
+  display: none;
+}
+
+.article-body h1 { font-size: 1.8rem; border-bottom: 3px solid var(--ink); padding-bottom: 8px; }
+.article-body h2 { font-size: 1.45rem; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
+.article-body h3 { font-size: 1.2rem; }
+.article-body h4 { font-size: 1.05rem; }
+
+.article-body p { margin: 0 0 16px; }
+.article-body ul,
+.article-body ol { margin: 0 0 16px; padding-left: 24px; }
+.article-body li { margin-bottom: 6px; }
+
+.article-body blockquote {
+  margin: 20px 0;
+  padding: 12px 16px;
+  border-left: 6px solid var(--ink);
+  background: #fff;
+  font-style: normal;
+}
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  border: var(--brutal-border);
+}
+
+.article-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.92rem;
+}
+
+.article-body th,
+.article-body td {
+  border: 2px solid var(--ink);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.article-body th {
+  background: var(--yellow);
+}
+
+.article-body :not(pre) > code {
+  border: 1px solid var(--ink);
+  background: #f2ebd9;
+  padding: 1px 5px;
+  font-size: 0.9em;
+}
+
+.article-body pre {
+  margin: 20px 0;
+  padding: 14px 16px;
+  border: var(--brutal-border);
+  box-shadow: 6px 6px 0 var(--ink);
+  background: #111;
+  color: #f5f5f5;
+  overflow-x: auto;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.article-body pre code {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.article-body hr {
+  border: 0;
+  border-top: 3px solid var(--ink);
+  margin: 28px 0;
+}
+
+.article-body a {
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 var(--ink);
+}
+
+.article-body a:hover {
+  box-shadow: inset 0 -1.05em 0 var(--yellow);
+}
+
+.article-body details {
+  border: 2px solid var(--ink);
+  padding: 10px 14px;
+  margin: 18px 0;
+}
+
+.article-body summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.article-toc {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  border: var(--brutal-border);
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--ink);
+  padding: 14px 16px;
+}
+
+.article-toc__title {
+  margin: 0 0 10px;
+  font-family: var(--brutal-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.article-toc a {
+  display: block;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(17, 17, 17, 0.25);
+  color: var(--ink);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.article-toc a:hover {
+  background: var(--yellow);
+}
+
+/* ---------- podcast ---------- */
+
+.podcast-list {
+  display: grid;
+  gap: 20px;
+}
+
+.podcast-card {
+  border: var(--brutal-border);
+  background: var(--paper);
+  box-shadow: var(--brutal-shadow);
+  padding: 18px;
+}
+
+.podcast-card__head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.podcast-card__cover {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border: 2px solid var(--ink);
+}
+
+.podcast-card__title {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.podcast-card__meta {
+  font-family: var(--brutal-mono);
+  font-size: 0.74rem;
+  opacity: 0.75;
+  margin: 6px 0;
+}
+
+.podcast-media {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  border: 2px solid var(--ink);
+  background: #000;
+}
+
+.podcast-empty {
+  border: 3px dashed var(--ink);
+  padding: 26px;
+}
+
+/* ---------- admin dialog (episode edit) ---------- */
+
+.brutal-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  background: rgba(17, 17, 17, 0.9);
+  overflow: auto;
+}
+
+.brutal-dialog__panel {
+  width: 100%;
+  max-width: 560px;
+  border: var(--brutal-border);
+  background: var(--paper);
+  box-shadow: var(--brutal-shadow);
+  padding: 22px;
+}
+
+.brutal-dialog__title {
+  margin: 0 0 16px;
+  font-size: 1.2rem;
+}
+
+.brutal-dialog__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.brutal-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.brutal-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: #111;
+}
+
+/* ---------- 404 ---------- */
+
+.not-found {
+  max-width: 640px;
+  margin: 72px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.not-found__code {
+  font-family: var(--brutal-mono);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 12px;
+}

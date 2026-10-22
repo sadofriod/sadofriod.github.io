@@ -1,16 +1,6 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  TextField,
-} from '@mui/material';
 import type { Podcast } from '@/lib/podcasts';
 
 type PodcastEditDialogProps = {
@@ -42,6 +32,20 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
     if (podcast) setValues(formDataFromPodcast(podcast));
   }, [podcast]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open, onClose]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!podcast) return;
@@ -58,28 +62,147 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
     }
   };
 
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <form onSubmit={handleSubmit}>
-        <DialogTitle>Edit episode</DialogTitle>
-        <DialogContent sx={{ display: 'grid', gap: 2, pt: '12px !important' }}>
-          <TextField label="Title" name="title" value={values.title} onChange={(event) => setValues({ ...values, title: event.target.value })} required />
-          <TextField label="Description" name="description" value={values.description} onChange={(event) => setValues({ ...values, description: event.target.value })} multiline minRows={3} required />
-          <TextField label="Duration" name="duration" value={values.duration} onChange={(event) => setValues({ ...values, duration: event.target.value })} placeholder="45:30" required />
-          <TextField label="Author" name="author" value={values.author} onChange={(event) => setValues({ ...values, author: event.target.value })} />
-          <TextField label="Keywords" name="keywords" value={values.keywords} onChange={(event) => setValues({ ...values, keywords: event.target.value })} helperText="Separate keywords with commas" />
-          <FormControlLabel control={<Checkbox checked={values.explicit} onChange={(event) => setValues({ ...values, explicit: event.target.checked })} />} label="Explicit content" />
-          <Button component="label" variant="outlined">Replace audio<input hidden type="file" name="audio" accept="audio/*" /></Button>
-          <Button component="label" variant="outlined">Replace cover<input hidden type="file" name="image" accept="image/jpeg,image/png,image/webp" /></Button>
-          <TextField label="Video key in R2" name="videoKey" value={values.videoKey} onChange={(event) => setValues({ ...values, videoKey: event.target.value })} placeholder="S01E01.mp4" helperText="Optional. Must already exist in the PODCASTS bucket; clear to remove." />
-          <TextField label="Episode number" name="episodeNumber" value={values.episodeNumber} onChange={(event) => setValues({ ...values, episodeNumber: event.target.value })} type="number" />
-          <TextField label="Season" name="season" value={values.season} onChange={(event) => setValues({ ...values, season: event.target.value })} type="number" />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" variant="contained" disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <div
+      className="brutal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="podcast-edit-title"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <div className="brutal-dialog__panel">
+        <form onSubmit={handleSubmit}>
+          <h2 className="brutal-dialog__title" id="podcast-edit-title">
+            Edit episode
+          </h2>
+
+          <div className="form-grid">
+            <label className="form-field">
+              <span>Title</span>
+              <input
+                type="text"
+                name="title"
+                autoFocus
+                value={values.title}
+                onChange={(event) => setValues({ ...values, title: event.target.value })}
+                required
+              />
+            </label>
+
+            <label className="form-field form-field--wide">
+              <span>Description</span>
+              <textarea
+                name="description"
+                rows={3}
+                value={values.description}
+                onChange={(event) => setValues({ ...values, description: event.target.value })}
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Duration</span>
+              <input
+                type="text"
+                name="duration"
+                placeholder="45:30"
+                value={values.duration}
+                onChange={(event) => setValues({ ...values, duration: event.target.value })}
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Author</span>
+              <input
+                type="text"
+                name="author"
+                value={values.author}
+                onChange={(event) => setValues({ ...values, author: event.target.value })}
+              />
+            </label>
+
+            <label className="form-field form-field--wide">
+              <span>Keywords</span>
+              <input
+                type="text"
+                name="keywords"
+                value={values.keywords}
+                onChange={(event) => setValues({ ...values, keywords: event.target.value })}
+                placeholder="Separate keywords with commas"
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Episode number</span>
+              <input
+                type="number"
+                name="episodeNumber"
+                value={values.episodeNumber}
+                onChange={(event) => setValues({ ...values, episodeNumber: event.target.value })}
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Season</span>
+              <input
+                type="number"
+                name="season"
+                value={values.season}
+                onChange={(event) => setValues({ ...values, season: event.target.value })}
+              />
+            </label>
+
+            <label className="form-field form-field--wide">
+              <span>Video key in R2</span>
+              <input
+                type="text"
+                name="videoKey"
+                placeholder="S01E01.mp4"
+                value={values.videoKey}
+                onChange={(event) => setValues({ ...values, videoKey: event.target.value })}
+              />
+            </label>
+          </div>
+
+          <p className="brutal-text" style={{ marginTop: 10, fontSize: '0.85rem', opacity: 0.7 }}>
+            Optional. Must already exist in the PODCASTS bucket; clear to remove.
+          </p>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 14 }}>
+            <label className="brutal-btn">
+              Replace audio
+              <input hidden type="file" name="audio" accept="audio/*" />
+            </label>
+            <label className="brutal-btn">
+              Replace cover
+              <input hidden type="file" name="image" accept="image/jpeg,image/png,image/webp" />
+            </label>
+          </div>
+
+          <label className="brutal-checkbox" style={{ marginTop: 16 }}>
+            <input
+              type="checkbox"
+              checked={values.explicit}
+              onChange={(event) => setValues({ ...values, explicit: event.target.checked })}
+            />{' '}
+            Explicit content
+          </label>
+
+          <div className="brutal-dialog__actions">
+            <button type="button" className="brutal-btn" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" className="brutal-btn brutal-btn--ink" disabled={saving}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

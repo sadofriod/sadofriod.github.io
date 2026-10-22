@@ -1,33 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Container,
-  Box,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  useTheme,
-  useMediaQuery
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 
 export default function MainNavbar() {
   const { t } = useLanguage();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navigationItems = [
     { label: t('nav.home'), href: '/' },
@@ -37,112 +17,37 @@ export default function MainNavbar() {
     { label: t('nav.about'), href: '/about' }
   ];
 
-  const handleMobileMenuToggle = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMenuOpen(false);
+  const isActive = (href: string) => {
+    if (!pathname) return false;
+    if (href === '/') return pathname === '/';
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   return (
-    <>
-      <AppBar position="static" color="transparent" elevation={0}>
-        <Container>
-          <Toolbar disableGutters>
-            <Typography 
-              variant="h6" 
-              component="div" 
-              sx={{ 
-                flexGrow: 1,
-                fontSize: { xs: '1.1rem', md: '1.25rem' }
-              }}
-            >
-              <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                Ashes Space
-              </Link>
-            </Typography>
+    <header className="brutal-nav">
+      <div className="brutal-nav__inner">
+        <Link className="brutal-nav__brand" href="/">
+          Ashes Space
+        </Link>
 
-            {isMobile ? (
-              <>
-                <LanguageSwitcher />
-                <IconButton
-                  color="inherit"
-                  aria-label="open navigation menu"
-                  edge="end"
-                  onClick={handleMobileMenuToggle}
-                  sx={{ ml: 1 }}
-                >
-                  <MenuIcon />
-                </IconButton>
-              </>
-            ) : (
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                {navigationItems.map((item) => (
-                  <Button 
-                    key={item.href}
-                    color="inherit" 
-                    component={Link} 
-                    href={item.href}
-                    sx={{ mx: 0.5 }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
-                <LanguageSwitcher />
-              </Box>
-            )}
-          </Toolbar>
-        </Container>
-      </AppBar>
-
-      {/* Mobile Drawer */}
-      <Drawer
-        anchor="right"
-        open={mobileMenuOpen}
-        onClose={handleMobileMenuClose}
-        sx={{
-          '& .MuiDrawer-paper': {
-            width: 280,
-            pt: 2
-          }
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, pb: 1 }}>
-          <IconButton onClick={handleMobileMenuClose}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        
-        <List>
+        <nav className="brutal-nav__links">
           {navigationItems.map((item) => (
-            <ListItem key={item.href} disablePadding>
-              <ListItemButton
-                component={Link}
-                href={item.href}
-                onClick={handleMobileMenuClose}
-                sx={{ 
-                  py: 2,
-                  px: 3,
-                  '&:hover': {
-                    backgroundColor: 'action.hover'
-                  }
-                }}
-              >
-                <ListItemText 
-                  primary={item.label} 
-                  sx={{ 
-                    '& .MuiListItemText-primary': {
-                      fontSize: '1.1rem',
-                      fontWeight: 500
-                    }
-                  }}
-                />
-              </ListItemButton>
-            </ListItem>
+            <Link
+              key={item.href}
+              className={
+                isActive(item.href)
+                  ? 'brutal-nav__link brutal-nav__link--active'
+                  : 'brutal-nav__link'
+              }
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+            </Link>
           ))}
-        </List>
-      </Drawer>
-    </>
+          <LanguageSwitcher />
+        </nav>
+      </div>
+    </header>
   );
 }

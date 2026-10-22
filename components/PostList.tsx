@@ -4,19 +4,9 @@ import React from 'react';
 import type { PostMetadata } from '../lib/posts';
 import { useLanguage } from '../lib/i18n/LanguageContext';
 import { format } from 'date-fns';
+import type { Locale } from 'date-fns';
 import { enUS, zhCN, ja } from 'date-fns/locale';
 import PostListItem from './PostListItem';
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  type SelectChangeEvent,
-  Typography,
-  Stack
-} from '@mui/material';
-import SortIcon from '@mui/icons-material/Sort';
 
 interface PostListProps {
   posts: PostMetadata[];
@@ -59,7 +49,7 @@ export default function PostList({ posts }: PostListProps) {
   // Get date format pattern based on locale
   const dateFormatPattern = t('common.dateFormat');
 
-  const handleSortChange = (event: SelectChangeEvent<number>) => {
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOrderBy(Number(event.target.value) as SortOrderBy);
   };
 
@@ -77,55 +67,39 @@ export default function PostList({ posts }: PostListProps) {
   };
 
   return (
-    <div>
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        mb: 3,
-        flexWrap: 'wrap',
-        gap: 2
-      }}>
-        <Typography variant="h6" component="h2">
-          {t('blog.posts')} ({localizedPosts.length})
-        </Typography>
+    <div className="post-list">
+      <div className="post-list__head">
+        <h2 className="brutal-title">
+          {t('blog.posts')} <span className="post-list__count">({localizedPosts.length})</span>
+        </h2>
 
-        <FormControl size="small" sx={{ minWidth: 150 }}>
-          <InputLabel id="sort-select-label">{t('common.sortBy')}</InputLabel>
-          <Select
-            labelId="sort-select-label"
-            id="sort-select"
-            value={sortOrderBy}
-            label={t('common.sortBy')}
-            onChange={handleSortChange}
-            startAdornment={
-              <SortIcon fontSize="small" sx={{ mr: 1, opacity: 0.7 }} />
-            }
-          >
-            <MenuItem value={SortOrderBy.DATE}>{t('common.sortByDate')}</MenuItem>
-            <MenuItem value={SortOrderBy.TITLE}>{t('common.sortByTitle')}</MenuItem>
-            <MenuItem value={SortOrderBy.SLUG}>{t('common.sortBySlug')}</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+        <select
+          className="brutal-select"
+          aria-label={t('common.sortBy')}
+          value={sortOrderBy}
+          onChange={handleSortChange}
+        >
+          <option value={SortOrderBy.DATE}>{t('common.sortByDate')}</option>
+          <option value={SortOrderBy.TITLE}>{t('common.sortByTitle')}</option>
+          <option value={SortOrderBy.SLUG}>{t('common.sortBySlug')}</option>
+        </select>
+      </div>
 
-      <Stack spacing={2}>
-        {sortPosts(localizedPosts).filter((post) => !post.isHidden).map((post) => {
-          const postDate = new Date(post.date);
-          const isValidDate = post.date && !isNaN(postDate.getTime());
-          const formattedDate = isValidDate
-            ? format(postDate, dateFormatPattern, { locale: dateLocale })
-            : post.date || 'No date';
-          
-          return (
-            <PostListItem
-              {...post}
-              key={post.slug}
-              date={formattedDate}
-            />
-          );
-        })}
-      </Stack>
+      {sortPosts(localizedPosts).filter((post) => !post.isHidden).map((post) => {
+        const postDate = new Date(post.date);
+        const isValidDate = post.date && !isNaN(postDate.getTime());
+        const formattedDate = isValidDate
+          ? format(postDate, dateFormatPattern, { locale: dateLocale })
+          : post.date || 'No date';
+
+        return (
+          <PostListItem
+            {...post}
+            key={post.slug}
+            date={formattedDate}
+          />
+        );
+      })}
     </div>
   );
 }
