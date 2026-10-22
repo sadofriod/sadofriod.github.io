@@ -5,7 +5,9 @@ date: 2021-12-23 13:34:53
 tags: interesting
 p: interesting
 categories: interesting
-keywords: hexo seo optimize, hexo seo 优化, seo 优化
+keywords: 'hexo seo,hexo 百度收录,hexo sitemap,独立博客 SEO,hexo 优化'
+lang: zh
+translationKey: hexo-seo-优化
 ---
 
 

@@ -10,13 +10,14 @@ type BlogPost = {
     date: string;
     summary: string;
     image?: string;
+    isPrimary?: boolean;
   };
   slug: string;
   content: string;
 };
 
 export async function GET() {
-  const allBlogs = await getBlogPosts()
+  const allBlogs = (await getBlogPosts()).filter((post) => post.metadata.isPrimary !== false)
 
   const itemsXml = allBlogs
     .sort((a: BlogPost, b: BlogPost) => {

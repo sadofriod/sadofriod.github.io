@@ -4,7 +4,9 @@ tags: interesting
 p: interesting
 categories: interesting
 date: 2021-12-13 15:07:14
-keywords: hexo order RSS feed, hexo Catalogs, hexo RSS源, hexo 目录
+keywords: 'hexo 目录,hexo toc,hexo rss,hexo 阅读进度,hexo 主题增强'
+lang: zh
+translationKey: Hexo的一些增强-目录以及RSS订阅
 ---
 
 

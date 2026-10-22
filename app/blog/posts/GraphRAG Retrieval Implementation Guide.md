@@ -7,6 +7,8 @@ description: A complete implementation guide for the GraphRAG query and retrieva
 date: 2026-07-22 16:20:00
 mathjax: true
 keywords: GraphRAG retrieval implementation guide, GraphRAG reciprocal rank fusion RRF ranking, GraphRAG global search query, GraphRAG community scoring algorithm, GraphRAG multi channel entity retrieval, GraphRAG query parsing neighbor expansion, Knowledge Graph RAG retrieval pipeline TypeScript, GraphRAG local search vs global search
+lang: en
+translationKey: graphrag-retrieval
 ---
 
 # GraphRAG Retrieval Implementation Guide

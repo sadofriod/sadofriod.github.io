@@ -6,6 +6,9 @@ tags:
   - AWS
   - Cloudflare
   - VPN
+keywords: 'reality 协议,xray reality,vless reality,cloudflare 转发,自建节点,AWS 代理,reality aws'
+lang: zh
+translationKey: Reality 在 AWS 上搭建并使用 Cloudflare 进行转发
 ---
 
 # Reality 在 AWS 上搭建并使用 Cloudflare 进行转发

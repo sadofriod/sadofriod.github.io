@@ -8,6 +8,8 @@ description_en: A comprehensive engineering guide on implementing Microsoft Grap
 date: 2026-07-20 10:15:00
 mathjax: true
 keywords: GraphRAG PostgreSQL, GraphRAG TypeScript implementation, Microsoft GraphRAG edge weight calculation, GraphRAG community detection Leiden, GraphRAG database schema DDL, GraphRAG 社区检测算法实现, GraphRAG PostgreSQL 表结构设计, 知识图谱 RAG 落地实践 TypeScript, GraphRAG global search query pipeline, GraphRAG 关系边权重计算
+lang: zh
+translationKey: graphrag-design
 ---
 
 # GraphRAG PostgreSQL + TypeScript 实现设计

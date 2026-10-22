@@ -8,6 +8,8 @@ description_en: 'A source-based walkthrough of incremental GraphRAG builds in gr
 date: 2026-10-14 13:00:00
 mathjax: true
 keywords: GraphRAG incremental build by document title, SHA-256 content hash skip unchanged documents, graphrag-ts Markdown section parent diff, GraphRAG update old edge and claim cleanup order, GraphRAG explicit document deletion API, GraphRAG incremental edge weight accumulation, TypeScript incremental knowledge graph indexing
+lang: en
+translationKey: graphrag-incremental-build
 ---
 
 # GraphRAG Incremental Build in TypeScript: Diffing, Updates, and Pruning

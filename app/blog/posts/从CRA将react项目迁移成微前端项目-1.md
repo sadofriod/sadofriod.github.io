@@ -3,8 +3,10 @@ title: 从CRA将react项目迁移成微前端项目-1
 tags: project
 p: project
 categories: project
-keywords: '微前端, CRA 微前端, react 微前端, react monorepo 微前端, micro-front'
+keywords: 'CRA 微前端,微前端迁移,qiankun,module federation,老项目改造,微前端架构,micro frontend react,micro frontend architecture'
 date: 2023-01-11 21:53:18
+lang: zh
+translationKey: 从CRA将react项目迁移成微前端项目-1
 ---
 # 从CRA将react项目迁移成微前端项目 —— 目录结构的确定和构建方式的更改
 

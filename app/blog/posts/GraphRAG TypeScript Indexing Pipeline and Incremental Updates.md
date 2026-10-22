@@ -8,6 +8,8 @@ description_en: 'A source-based walkthrough of graphrag-ts indexing: adaptive ch
 date: 2026-10-14 12:00:00
 mathjax: true
 keywords: GraphRAG TypeScript indexing pipeline implementation, graphrag-ts Markdown-aware chunking, GraphRAG LLM chunking fallback, GraphRAG incremental indexing SHA-256 content hash, GraphRAG recursive Leiden community hierarchy, PostgreSQL GraphRAG weighted edge upsert, GraphRAG community summary fingerprint reuse, TypeScript knowledge graph indexing
+lang: en
+translationKey: graphrag-indexing-pipeline
 ---
 
 # GraphRAG TypeScript Indexing Pipeline and Incremental Updates

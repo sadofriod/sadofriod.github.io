@@ -7,6 +7,8 @@ p: interesting
 categories: interesting
 keywords: hexo seo optimize, hexo seo 优化, seo 优化
 isHidden: true
+lang: en
+translationKey: TENNIS_API_DOCUMENTATION
 ---
 
 # Tennis Service API Documentation

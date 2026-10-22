@@ -6,7 +6,9 @@ categories: project
 description: 函数式编程, JS函数式编程
 date: 2022-11-30 22:33:43
 mathjax: true
-keywords:  前端开发, 函数式编程, JS函数式编程
+keywords: 'JS 函数式编程,函数式 React,纯函数,柯里化,point-free,不可变数据,functional programming javascript'
+lang: zh
+translationKey: JS开发中函数式编程的一些经验
 ---
 # JS开发中函数式编程的一些经验
 

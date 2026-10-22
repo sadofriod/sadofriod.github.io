@@ -45,7 +45,8 @@ const EnhancedCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const PostListItem: React.FC<PostMetadata> = ({ title, date, excerpt, tags, description, category, slug }) => {
+const PostListItem: React.FC<PostMetadata> = ({ title, date, excerpt, tags, description, category, slug, lang, alternates }) => {
+  const languageCount = alternates ? Object.keys(alternates).length : 0;
   return (
     <EnhancedCard elevation={0} sx={{ mb: 4, pb: 1 }}>
       <CardContent sx={{ p: 2 }}>
@@ -82,6 +83,14 @@ const PostListItem: React.FC<PostMetadata> = ({ title, date, excerpt, tags, desc
                   {category}
                 </CategoryLink>
               </Typography>
+              {languageCount > 1 && lang && (
+                <Chip
+                  label={lang === 'zh' ? '中 / EN' : 'EN / 中'}
+                  size="small"
+                  variant="outlined"
+                  sx={{ height: '20px', fontSize: '0.68rem', fontWeight: 600 }}
+                />
+              )}
             </>
           )}
         </Box>

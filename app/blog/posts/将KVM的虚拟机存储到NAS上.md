@@ -2,8 +2,10 @@
 layout: interestring
 title: 将KVM的虚拟机存储到NAS上
 date: 2022-04-27 19:52:50
-keywords: KVM with NAS, KVM storage pool, KVM with NAS
+keywords: 'KVM NAS,虚拟机存储,Proxmox NAS,qcow2,NFS 虚拟机,kvm 迁移存储,proxmox nas storage'
 tags: interestring
+lang: zh
+translationKey: 将KVM的虚拟机存储到NAS上
 ---
 <img src="/images/kvm-log.png">
 
