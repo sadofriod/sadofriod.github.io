@@ -8,7 +8,7 @@
  * so each module is copied to a temp `.mjs` file before import — that keeps this
  * test on the actual source instead of a copy of the SQL.
  */
-import { copyFile, mkdtemp, readFile } from 'node:fs/promises';
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,10 +18,13 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const workdir = await mkdtemp(path.join(tmpdir(), 'blog-db-test-'));
 const asModule = async (relative) => {
   const target = path.join(workdir, path.basename(relative).replace(/\.js$/, '.mjs'));
-  await copyFile(path.join(root, relative), target);
+  const source = await readFile(path.join(root, relative), 'utf8');
+  // relative .js imports must become .mjs imports in the copied module
+  await writeFile(target, source.replace(/from '\.\/([A-Za-z0-9_.-]+)\.js'/g, "from './$1.mjs'"));
   return import(target);
 };
 
+await asModule('lib/pgTypes.js'); // shared helper the stores import
 const podcastStore = await asModule('lib/podcastStore.js');
 const photoStore = await asModule('lib/photoStore.js');
 

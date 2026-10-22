@@ -120,6 +120,28 @@ pnpm run build               # static export, type-check
 npx wrangler deploy --dry-run --outdir .wrangler/dry-run   # bundle + binding wiring
 ```
 
+## Running the Worker locally against a real Postgres
+
+No Cloudflare account and no database server needed — `scripts/pg-wire-server.mjs` serves an
+in-process Postgres (PGlite) over the Postgres wire protocol, and `wrangler dev` points its
+Hyperdrive binding at it:
+
+```bash
+node scripts/pg-wire-server.mjs 55460 &                       # terminal 1
+DATABASE_URL='postgres://postgres:postgres@127.0.0.1:55460/postgres' pnpm db:migrate
+
+# terminal 2 — local R2 simulation + Hyperdrive -> the wire server
+cp wrangler.jsonc wrangler.local.jsonc   # then uncomment the hyperdrive block, id anything
+CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE='postgres://postgres:postgres@127.0.0.1:55460/postgres' \
+  npx wrangler dev --config wrangler.local.jsonc --port 8799
+```
+
+Then `curl -F file=@photo.jpg -F authKey=… http://127.0.0.1:8799/api/photos` exercises the real
+Worker code. Two production-only bugs were found this way and are now fixed in `lib/`:
+connections must be created **per request** (Workers forbid reusing an I/O object across request
+contexts) and JS arrays must be sent as an explicit `{"a","b"}` literal (the Workers build cannot
+infer parameter types, so a raw array becomes `a,b` and Postgres rejects it).
+
 ## Restoring the pre-2026 episodes
 
 The earlier implementation kept episodes in a Prisma/Postgres database (plus S3 audio) on Vercel;
