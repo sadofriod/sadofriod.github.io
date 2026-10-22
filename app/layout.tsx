@@ -7,6 +7,7 @@ import { LanguageProvider } from '../lib/i18n/LanguageContext';
 import MainNavbar from '../components/MainNavbar';
 import { defaultLocale } from '../lib/i18n/translations';
 import Script from 'next/script';
+import './profile.css';
 
 export const metadata: Metadata = {
   title: 'Ashes Space',

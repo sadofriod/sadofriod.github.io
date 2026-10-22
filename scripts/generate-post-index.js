@@ -31,6 +31,7 @@ const posts = fs.readdirSync(postsDirectory)
 
     return {
       slug,
+      file: fileName,
       ...(slug !== legacySlug && { legacySlug }),
       title: data.title || '',
       date: data.date?.toString() || '',

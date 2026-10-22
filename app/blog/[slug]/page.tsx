@@ -13,6 +13,10 @@ import InlineCode from '../../../components/InlineCode';
 import MermaidBlock from '../../../components/MermaidBlock';
 import MathBlock from '../../../components/MathBlock';
 import TOC from '../../../components/TOC';
+import ProfileCallout from '../../../components/profile/ProfileCallout';
+import { BlogPostJsonLd } from '../../../components/JsonLd';
+import { profile } from '../../../data/profile';
+import { slugToFilename } from '../../../lib/utils';
 
 interface PageProps {
   params: Promise<{
@@ -46,6 +50,9 @@ export default async function BlogPost({ params }: PageProps) {
   const decodedSlug = decodeURIComponent(routeSlug);
   const { content, slug, ...metadata } = getPostData(decodedSlug);
   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://blog.ashesborn.cloud'}/blog/${routeSlug}`;
+  // profile.fullStory.file is a file name with extension; route slugs are not.
+  const isFullStory =
+    slugToFilename(decodedSlug) === profile.fullStory.file.replace(/\.(md|mdx)$/, '');
 
   // Generate heading ID from text
   const generateHeadingId = (text: string) => {
@@ -60,6 +67,14 @@ export default async function BlogPost({ params }: PageProps) {
       maxWidth: '100vw',
       overflow: 'hidden',
     }}>
+      <BlogPostJsonLd
+        url={postUrl}
+        title={metadata.title}
+        datePublished={metadata.date}
+        authorName={profile.name}
+        description={metadata.excerpt || metadata.description || metadata.title}
+      />
+
       {/* Main Content Container */}
       <Container 
         sx={{ 
@@ -75,6 +90,8 @@ export default async function BlogPost({ params }: PageProps) {
           mx: { xs: 0, lg: 'auto' },
           width: '100%'
         }}>
+          {isFullStory && <ProfileCallout variant="top" />}
+
           <Box sx={{ my: { xs: 2, sm: 4 } }}>
             {/* Header Section */}
             <Box sx={{
@@ -479,6 +496,8 @@ export default async function BlogPost({ params }: PageProps) {
                 {content}
               </ReactMarkdown>
             </Box>
+
+            <ProfileCallout variant="bottom" />
           </Box>
         </Box>
       </Container>

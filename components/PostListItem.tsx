@@ -78,7 +78,7 @@ const PostListItem: React.FC<PostMetadata> = ({ title, date, excerpt, tags, desc
                 •
               </Typography>
               <Typography variant="caption" sx={{ display: "inline" }}>
-                <CategoryLink href={`/categories/${category}`}>
+                <CategoryLink href={`/category/${category}`}>
                   {category}
                 </CategoryLink>
               </Typography>
