@@ -8,6 +8,8 @@ description_en: 'A source-based guide to local and global GraphRAG retrieval in 
 date: 2026-10-14 12:00:00
 mathjax: true
 keywords: GraphRAG TypeScript hybrid vector and keyword retrieval, GraphRAG local retrieval entity matching and two-hop expansion, GraphRAG three-signal RRF community ranking, PostgreSQL ILIKE child-chunk keyword search, GraphRAG claim and source evidence provenance, GraphRAG global search token budget retries, graphrag-ts local and global retrieval
+lang: en
+translationKey: graphrag-hybrid-retrieval
 ---
 
 # GraphRAG Hybrid Retrieval and Evidence Grounding in TypeScript

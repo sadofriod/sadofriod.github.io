@@ -5,6 +5,8 @@ p: project
 categories: project
 keywords: auto recorder video, html to video, webpage to video, puppeteer recorder
 date: 2021-12-26 14:53:38
+lang: en
+translationKey: record-webpage-to-video
 ---
 
 ## Why is there such a need?

@@ -10,6 +10,9 @@ export type PodcastMetadata = {
   episodeNumber?: number;
   season?: number;
   image?: string;
+  videoUrl?: string;
+  videoSize?: number;
+  videoType?: string;
   keywords?: string[];
   explicit?: boolean;
 };

@@ -1,10 +1,12 @@
 ---
-title: monorepo结构下启动react项目局部热更新
+title: 'monorepo 下 React 局部热更新：共享实例与 HMR 修复'
 tags: project
 p: project
 categories: project
-keywords: 'monorepo react, react hot reload, fast refresh, external react'
+keywords: 'monorepo 热更新,pnpm monorepo,HMR 失效,React 共享实例,微前端本地开发,monorepo 开发体验,monorepo react hot reload'
 date: 2022-08-07T23:00:31
+lang: zh
+translationKey: monorepo结构下启动react项目局部热更新
 ---
 
 <img src="/images/monorepo-react-banner.jpeg" />

@@ -8,6 +8,8 @@ description_en: An in-depth architecture guide on Microsoft GraphRAG multi-docum
 date: 2026-07-21 14:30:00
 mathjax: true
 keywords: Microsoft GraphRAG multi document processing, GraphRAG indexing pipeline architecture, GraphRAG directory structure settings yaml, GraphRAG incremental update workflow, GraphRAG 多文件跨文档实体去重, GraphRAG 分块大小设置 chunk size overlap, GraphRAG settings yaml configuration guide, 知识图谱 RAG 目录结构最佳实践, GraphRAG InputReader Dataframe
+lang: zh
+translationKey: graphrag-multi-document-input
 ---
 
 # GraphRAG 多文件输入处理架构与目录结构

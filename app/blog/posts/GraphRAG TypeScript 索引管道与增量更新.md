@@ -8,6 +8,8 @@ description_en: 'A source-based walkthrough of graphrag-ts indexing: adaptive ch
 date: 2026-10-14 12:00:00
 mathjax: true
 keywords: GraphRAG TypeScript 索引管道实现, graphrag-ts Markdown 智能分块, GraphRAG LLM chunking 失败回退, GraphRAG 增量索引 SHA-256 内容哈希, GraphRAG Leiden 递归社区层级, PostgreSQL GraphRAG 边权聚合, GraphRAG 社区摘要指纹复用, TypeScript knowledge graph indexing pipeline
+lang: zh
+translationKey: graphrag-indexing-pipeline
 ---
 
 # GraphRAG TypeScript 索引管道与增量更新

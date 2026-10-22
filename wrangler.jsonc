@@ -3,10 +3,11 @@
   "name": "ashesborn-blog",
   "main": "worker.js",
   "compatibility_date": "2026-10-09",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./out",
     "binding": "ASSETS",
-    "run_worker_first": ["/blog/*"]
+    "run_worker_first": ["/blog/*", "/api/*", "/podcast/rss", "/podcast-media/*", "/photos/*"]
   },
   "routes": [
     {
@@ -18,6 +19,17 @@
     {
       "binding": "PODCASTS",
       "bucket_name": "ashesborn-podcasts"
+    },
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "ashesborn-photos"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ashesborn-blog",
+      "database_id": "507abc83-44bf-41db-b238-34d7fa17b202"
     }
   ]
 }

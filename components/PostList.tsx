@@ -32,6 +32,23 @@ export default function PostList({ posts }: PostListProps) {
   const { locale, t } = useLanguage();
   const [sortOrderBy, setSortOrderBy] = React.useState<SortOrderBy>(SortOrderBy.DATE);
 
+  // Language versions of one article are a single entry: show the one matching
+  // the visitor's locale, else the canonical (English) copy.
+  const localizedPosts = React.useMemo(() => {
+    const groups = new Map<string, PostMetadata[]>();
+
+    for (const post of posts) {
+      const key = post.translationKey || post.slug;
+      const group = groups.get(key);
+      if (group) group.push(post);
+      else groups.set(key, [post]);
+    }
+
+    return Array.from(groups.values()).map(
+      (group) => group.find((post) => post.lang === locale) ?? group.find((post) => post.isPrimary) ?? group[0]
+    );
+  }, [posts, locale]);
+
   // Map locale to date-fns locale
   const localeMap: Record<string, Locale> = {
     'en': enUS,
@@ -46,14 +63,14 @@ export default function PostList({ posts }: PostListProps) {
     setSortOrderBy(Number(event.target.value) as SortOrderBy);
   };
 
-  const sortPosts = (posts: PostMetadata[]) => {
+  const sortPosts = (items: PostMetadata[]) => {
     switch (sortOrderBy) {
       case SortOrderBy.DATE:
-        return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       case SortOrderBy.TITLE:
-        return posts.sort((a, b) => a.title.localeCompare(b.title, locale));
+        return items.sort((a, b) => a.title.localeCompare(b.title, locale));
       case SortOrderBy.SLUG:
-        return posts.sort((a, b) => a.slug.localeCompare(b.slug, locale));
+        return items.sort((a, b) => a.slug.localeCompare(b.slug, locale));
       default:
         return posts;
     }
@@ -70,7 +87,7 @@ export default function PostList({ posts }: PostListProps) {
         gap: 2
       }}>
         <Typography variant="h6" component="h2">
-          {t('blog.posts')} ({posts.length})
+          {t('blog.posts')} ({localizedPosts.length})
         </Typography>
 
         <FormControl size="small" sx={{ minWidth: 150 }}>
@@ -93,7 +110,7 @@ export default function PostList({ posts }: PostListProps) {
       </Box>
 
       <Stack spacing={2}>
-        {sortPosts(posts).filter((post) => !post.isHidden).map((post) => {
+        {sortPosts(localizedPosts).filter((post) => !post.isHidden).map((post) => {
           const postDate = new Date(post.date);
           const isValidDate = post.date && !isNaN(postDate.getTime());
           const formattedDate = isValidDate

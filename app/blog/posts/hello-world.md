@@ -2,6 +2,8 @@
 title: 'Hello, World!'
 date: '2023-01-01'
 excerpt: 'This is my first blog post using Next.js'
+lang: en
+translationKey: hello-world
 ---
 
 # Hello, World!

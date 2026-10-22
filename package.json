@@ -10,7 +10,11 @@
     "deploy": "pnpm run build && wrangler deploy",
     "start": "wrangler dev",
     "lint": "next lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate": "wrangler d1 migrations apply ashesborn-blog --remote",
+    "test:db": "node scripts/test-db-stores.mjs",
+    "test:routes": "node scripts/test-worker-routes.mjs",
+    "db:migrate:local": "wrangler d1 migrations apply ashesborn-blog --local"
   },
   "keywords": [],
   "author": "",

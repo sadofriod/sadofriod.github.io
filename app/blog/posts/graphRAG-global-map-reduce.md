@@ -8,6 +8,8 @@ description_en: A detailed guide to Microsoft GraphRAG global search Map-Reduce,
 date: 2026-10-03 12:00:00
 mathjax: true
 keywords: GraphRAG 全局检索 Map-Reduce 流程, GraphRAG global search MapReduce explained, Microsoft GraphRAG community summary map reduce, GraphRAG Map 阶段并行社区答案生成, GraphRAG Reduce 阶段有用性评分排序, GraphRAG token budget context window, GraphRAG 全局答案生成与社区摘要, GraphRAG global search vs local search, Graph RAG query-focused summarization, GraphRAG map reduce TypeScript pseudocode
+lang: zh
+translationKey: graphrag-map-reduce-explained
 ---
 
 # GraphRAG 全局检索中的 Map-Reduce

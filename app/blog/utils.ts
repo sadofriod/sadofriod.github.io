@@ -6,6 +6,10 @@ export type Metadata = {
   summary: string
   image?: string
   category?: string
+  lang?: string
+  translationKey?: string
+  alternates?: Record<string, string>
+  isPrimary?: boolean
 }
 
 interface BlogPost {
@@ -22,6 +26,10 @@ export function getBlogPosts(): BlogPost[] {
       summary: post.summary || post.excerpt || '',
       image: post.image,
       category: post.category,
+      lang: post.lang,
+      translationKey: post.translationKey,
+      alternates: post.alternates as Record<string, string> | undefined,
+      isPrimary: post.isPrimary,
     },
     slug: post.slug.replace(/%20/g, ' '),
     content: '',

@@ -5,12 +5,26 @@ export const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesbo
 export const dynamic = 'force-static';
 
 export default async function sitemap() {
-  const blogs = getBlogPosts().map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.metadata.date,
-  }))
+  const blogs = getBlogPosts()
+    // one URL per article: the canonical (English) copy, with hreflang links
+    .filter((post) => post.metadata.isPrimary !== false)
+    .map((post) => {
+      const alternates = post.metadata.alternates ?? {};
+      const languages = Object.fromEntries(
+        Object.entries(alternates).map(([lang, slug]) => [
+          lang === 'zh' ? 'zh-CN' : lang,
+          `${baseUrl}/blog/${encodeURI(slug)}`,
+        ])
+      );
 
-  const routes = ['', '/blog', '/podcast'].map((route) => ({
+      return {
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: post.metadata.date,
+        ...(Object.keys(languages).length > 1 ? { alternates: { languages } } : {}),
+      };
+    })
+
+  const routes = ['', '/blog', '/about', '/photography', '/podcast'].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString().split('T')[0],
   }))
