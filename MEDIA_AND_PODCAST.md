@@ -40,14 +40,15 @@ npx wrangler hyperdrive create blog-db \
   --connection-string="postgres://user:password@host:5432/dbname?sslmode=require"
 ```
 
-This prints a config `id`. Put it into `wrangler.jsonc`:
+This prints a config `id`. Uncomment the block at the end of `wrangler.jsonc` and fill it in:
 
 ```jsonc
 "hyperdrive": [{ "binding": "HYPERDRIVE", "id": "<that id>" }]
 ```
 
-> The committed value is the literal placeholder `REPLACE_WITH_HYPERDRIVE_CONFIG_ID`.
-> **A deploy fails until it is replaced.**
+> The block ships **commented out** on purpose: while it is commented the Worker
+> deploys normally and the photo/podcast APIs answer `503 Database is not configured`,
+> so a deploy never breaks on a missing id.
 
 ### 3. Schema
 

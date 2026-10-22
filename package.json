@@ -12,7 +12,8 @@
     "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate": "node scripts/db-migrate.mjs",
-    "test:db": "node scripts/test-db-stores.mjs"
+    "test:db": "node scripts/test-db-stores.mjs",
+    "test:routes": "node scripts/test-worker-routes.mjs"
   },
   "keywords": [],
   "author": "",
