@@ -85,15 +85,30 @@ phrases are the target list:
 - `hexo-seo-优化`, `Hexo…目录以及RSS订阅`, `Hexo…渲染Latex公式` → qualified `hexo *` phrases only
 - `Reality 在 AWS 上搭建并使用 Cloudflare 进行转发` → reality 协议/xray reality/vless reality
 
-## Next (not done yet)
+Titles rewritten to match the phrase people search for (Chinese titles; the English
+versions of these posts carry the English phrases):
 
-1. **Titles/H1** for the micro-frontend piece: lead with `micro frontend react`, keep
-   `architecture`; mention `nx` and `module federation` in the first 100 words.
-2. **One new post per gap** that autocomplete reveals but the blog does not cover:
+| Post | New title |
+| --- | --- |
+| CRA → micro frontend | `CRA 项目迁移成微前端（一）：React 微前端架构与接入` |
+| KVM → NAS | `Proxmox / KVM 虚拟机存储到 NAS：qcow2 与 NFS 实战` |
+| Dynamic forms | `React 动态表单设计（一）：从 JSON Schema 到表单引擎` |
+| monorepo HMR | `monorepo 下 React 局部热更新：共享实例与 HMR 修复` |
+| Functional JS | `JS 函数式编程实践：纯函数、柯里化与 React` |
+| React Native loading | `React Native 用函数式方式控制 Loading 组件` |
+| Bezier | `绘制平滑的三次贝塞尔曲线：算法与 canvas 实践` |
+| Hexo SEO | `Hexo SEO 优化：sitemap、收录与结构化数据` |
+| Hexo TOC/RSS | `Hexo 增强：目录（TOC）与 RSS 订阅` |
+| Hexo LaTeX | `Hexo 渲染 LaTeX 公式：MathJax 与 KaTeX` |
+| Reality on AWS | `AWS 上搭建 Reality 并用 Cloudflare 转发` |
+
+Internal linking: every article's bottom callout now points at About, Photography and the
+writing index (one component, so it covers old and new posts in both languages).
+
+## Next (not done)
+
+1. **One new post per gap** the autocomplete data reveals but the blog does not cover:
    `react dynamic form from json` (the existing post is design-level, not a how-to),
    `playwright run only changed tests` (the E2E post is Cypress-only), `proxmox add nas
    storage to vm`.
-3. **Internal links** from the E2E and micro-frontend posts into the two profile pages
-   (About / Projects) — the profile pages need the link equity more than the old posts do.
-4. Re-run the Trends pull quarterly; `nx micro frontend` at +350 % is the one curve worth
-   watching.
+2. Re-run the Trends pull quarterly; `nx micro frontend` at +350 % is the curve to watch.

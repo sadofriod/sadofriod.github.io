@@ -1,6 +1,6 @@
 ---
 layout: interesting
-title: hexo seo 优化
+title: 'Hexo SEO 优化：sitemap、收录与结构化数据'
 date: 2021-12-23 13:34:53
 tags: interesting
 p: interesting

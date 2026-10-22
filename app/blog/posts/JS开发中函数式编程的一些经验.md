@@ -1,5 +1,5 @@
 ---
-title: JS开发中函数式编程的一些经验
+title: 'JS 函数式编程实践：纯函数、柯里化与 React'
 tags: project
 p: project
 categories: project

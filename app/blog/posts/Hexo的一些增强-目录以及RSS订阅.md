@@ -1,5 +1,5 @@
 ---
-title: Hexo的一些增强--目录以及RSS订阅
+title: 'Hexo 增强：目录（TOC）与 RSS 订阅'
 tags: interesting
 p: interesting
 categories: interesting

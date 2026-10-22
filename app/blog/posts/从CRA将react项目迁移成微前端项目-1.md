@@ -1,5 +1,5 @@
 ---
-title: 从CRA将react项目迁移成微前端项目-1
+title: 'CRA 项目迁移成微前端（一）：React 微前端架构与接入'
 tags: project
 p: project
 categories: project

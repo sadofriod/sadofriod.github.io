@@ -1,6 +1,6 @@
 ---
 layout: interestring
-title: 将KVM的虚拟机存储到NAS上
+title: 'Proxmox / KVM 虚拟机存储到 NAS：qcow2 与 NFS 实战'
 date: 2022-04-27 19:52:50
 keywords: 'KVM NAS,虚拟机存储,Proxmox NAS,qcow2,NFS 虚拟机,kvm 迁移存储,proxmox nas storage'
 tags: interestring

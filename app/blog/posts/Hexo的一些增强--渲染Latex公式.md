@@ -1,6 +1,6 @@
 ---
 layout: interesting
-title: Hexo的一些增强--渲染Latex公式
+title: 'Hexo 渲染 LaTeX 公式：MathJax 与 KaTeX'
 date: 2021-12-09 15:11:37
 tags: interesting
 p: interesting

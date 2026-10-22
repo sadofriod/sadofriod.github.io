@@ -28,6 +28,8 @@ export default function ProfileCallout({ variant }: ProfileCalloutProps) {
       <span>
         Want to know what I am working on now? <Link href="/about">About</Link>
         {' · '}
+        <Link href="/photography">Photography</Link>
+        {' · '}
         <Link href="/blog">All writing</Link>
       </span>
     </aside>

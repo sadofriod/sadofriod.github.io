@@ -1,5 +1,5 @@
 ---
-title: 在React Native中函数式的控制Loading Component
+title: 'React Native 用函数式方式控制 Loading 组件'
 tags: project
 p: project
 categories: project
