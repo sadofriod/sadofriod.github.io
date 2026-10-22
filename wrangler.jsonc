@@ -25,9 +25,6 @@
       "bucket_name": "ashesborn-photos"
     }
   ],
-  "images": {
-    "binding": "IMAGES"
-  },
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",

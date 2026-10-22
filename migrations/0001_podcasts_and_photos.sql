@@ -34,6 +34,8 @@ create table if not exists photos (
   height        integer     not null default 0,
   original_key  text        not null,
   original_size bigint      not null default 0,
+  preview_key   text,
+  preview_size  bigint      not null default 0,
   content_type  text        not null default 'image/jpeg',
   tags          text[]      not null default '{}',
   published     boolean     not null default true,

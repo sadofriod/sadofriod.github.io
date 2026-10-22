@@ -73,10 +73,26 @@ Two paid capabilities are used:
 
 | Capability | Bound as | Without it |
 | --- | --- | --- |
-| Cloudflare Images transforms | `env.IMAGES` (`[images] binding = "IMAGES"`) | `/photos/p/:id` streams the original file; the gallery still works, it just downloads more bytes |
 | Hyperdrive | `env.HYPERDRIVE` | photo + podcast APIs answer `503 Database is not configured` |
+| Workers Paid plan | n/a | Hyperdrive is unavailable; the account needs the $5/mo plan |
 
-Both need the **Workers Paid** plan ($5/mo). R2 itself has a free tier.
+R2 and Workers Paid are already active on this account (`r2_paid`, `workers_paid`).
+
+### Previews without Cloudflare Images
+
+The upload page downscales each photo in the browser (canvas → WebP, max 1600 px, quality 0.82) and
+posts it next to the original. The Worker stores it at `photos/previews/<id>.webp` and
+`/photos/p/:id` serves that file — so the gallery is fast on the R2 free tier and needs **no**
+Images subscription.
+
+If the account later subscribes to Cloudflare Images, add
+
+```jsonc
+"images": { "binding": "IMAGES" }
+```
+
+and `lib/photoMedia.js` starts transforming the original to arbitrary widths (`?w=400|800|1200|1600|2000`).
+Until then `?w=` is ignored and the stored preview is returned.
 
 ## Day-to-day
 

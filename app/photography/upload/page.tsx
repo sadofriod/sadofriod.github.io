@@ -3,6 +3,22 @@
 import Link from 'next/link';
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 
+const PREVIEW_MAX_EDGE = 1600;
+
+/** Downscale in the browser so /photos/p/:id can serve a ~200 KB WebP. */
+async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
+  const scale = Math.min(1, PREVIEW_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d');
+  if (!context) return null;
+  context.drawImage(bitmap, 0, 0, width, height);
+  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.82));
+}
+
 export default function PhotoUploadPage() {
   const [authKey, setAuthKey] = useState('');
   const [busy, setBusy] = useState(false);
@@ -43,13 +59,17 @@ export default function PhotoUploadPage() {
     try {
       data.set('authKey', authKey);
 
-      // Dimensions come from the browser so the Worker never has to decode the image.
+      // Dimensions and the gallery preview both come from the browser, so the
+      // Worker never decodes an image and the gallery never serves a 12 MB original.
       try {
         const bitmap = await createImageBitmap(file);
         data.set('width', String(bitmap.width));
         data.set('height', String(bitmap.height));
+
+        const preview = await renderPreview(bitmap);
+        if (preview) data.set('preview', preview, 'preview.webp');
       } catch {
-        // Non-fatal: the row just records 0×0 and the gallery falls back to natural sizing.
+        // Non-fatal: the row records 0×0 and /photos/p/:id falls back to the original.
       }
 
       const response = await fetch('/api/photos', { method: 'POST', body: data });

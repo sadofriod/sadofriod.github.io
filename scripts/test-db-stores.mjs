@@ -116,6 +116,8 @@ const photoA = await photoStore.insertPhoto(sql, {
   height: 3000,
   originalKey: 'photos/originals/a/fog.jpg',
   originalSize: 5_000_000,
+  previewKey: 'photos/previews/a.webp',
+  previewSize: 180_000,
   contentType: 'image/jpeg',
   tags: ['fog'],
   published: true,
@@ -155,6 +157,7 @@ check('collections only count published', collections.length === 1 && collection
 
 const gone = await photoStore.removePhoto(sql, photoA.id);
 check('photo delete returns r2 key', gone.originalKey === 'photos/originals/a/fog.jpg');
+check('photo delete also returns the preview key', gone.previewKey === 'photos/previews/a.webp');
 
 const tables = await sql.unsafe("select table_name from information_schema.tables where table_schema = 'public' order by 1");
 console.log('\ntables:', tables.map((row) => row.table_name).join(', '));
