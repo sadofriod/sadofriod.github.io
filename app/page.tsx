@@ -4,8 +4,6 @@ import PostList from '@/components/PostList';
 import { getAllPostIds, getPostByFile } from '@/lib/posts';
 import { profile, type SocialIcon } from '@/data/profile';
 
-// Photography module: pending photo assets + routing decision (design doc §7.1 / §7.2).
-
 export const metadata: Metadata = {
   title: 'Ashes Born — Independent engineer building GraphRAG systems',
   description: profile.seo.aboutDescription,
@@ -156,6 +154,20 @@ export default function Home() {
           </p>
         </section>
 
+        <section className="brutal-card brutal-card--blue bento__photography">
+          <p className="brutal-kicker">Photography</p>
+          <h2 className="brutal-title">Frames</h2>
+          <p className="brutal-text">
+            The other half of how I look at things — places, light and the shapes in between.
+            Originals live in R2, previews are generated at the edge.
+          </p>
+          <p className="bento__more">
+            <Link className="brutal-link" href="/photography">
+              open the gallery →
+            </Link>
+          </p>
+        </section>
+
         <section className="brutal-card brutal-card--mint bento__now">
           <p className="brutal-kicker">Now</p>
           <h2 className="brutal-title">Right now</h2>
@@ -179,7 +191,7 @@ export default function Home() {
           </ul>
         </section>
 
-        <section className="brutal-card brutal-card--blue bento__projects">
+        <section className="brutal-card bento__projects">
           <p className="brutal-kicker">Projects</p>
           <h2 className="brutal-title">Things I maintain</h2>
           <ul className="bento-list">

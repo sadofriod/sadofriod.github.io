@@ -7,6 +7,8 @@ description: A comprehensive engineering guide on implementing Microsoft GraphRA
 date: 2026-07-20 10:15:00
 mathjax: true
 keywords: GraphRAG PostgreSQL implementation, GraphRAG TypeScript guide, Microsoft GraphRAG edge weight calculation, GraphRAG community detection Leiden, GraphRAG database schema DDL, Knowledge Graph RAG TypeScript, GraphRAG global search query pipeline, relational graph RAG PostgreSQL
+lang: en
+translationKey: graphrag-design
 ---
 
 # GraphRAG PostgreSQL + TypeScript Implementation Design

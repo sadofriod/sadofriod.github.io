@@ -82,6 +82,7 @@ export default function PodcastUploadPage() {
           <TextField label="Keywords" name="keywords" helperText="Separate keywords with commas" />
           <Button component="label" variant="outlined">Choose audio file<input hidden name="audio" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/mp4,audio/x-m4a" required /></Button>
           <Button component="label" variant="outlined">Choose cover image<input hidden name="image" type="file" accept="image/jpeg,image/png,image/webp" /></Button>
+          <TextField label="Video key in R2" name="videoKey" placeholder="S01E01.mp4" helperText="Optional. An object that already exists in the PODCASTS bucket." />
           <FormControlLabel control={<Checkbox name="explicit" value="true" />} label="Explicit content" />
           {message && <Alert severity={message.includes('successfully') ? 'success' : 'error'}>{message}</Alert>}
           <Button type="submit" variant="contained" disabled={busy}>{busy ? 'Uploading…' : 'Upload episode'}</Button>

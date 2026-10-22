@@ -108,6 +108,17 @@ export default function PodcastPage() {
                     </Stack>
                     <Typography variant="body2" color="text.secondary">{podcast.metadata.date} · {podcast.metadata.duration}{podcast.metadata.author ? ` · ${podcast.metadata.author}` : ''}</Typography>
                     <Typography sx={{ my: 1 }}>{podcast.metadata.description}</Typography>
+                    {podcast.metadata.videoUrl && (
+                      <Box
+                        component="video"
+                        controls
+                        preload="none"
+                        playsInline
+                        poster={podcast.metadata.image}
+                        src={podcast.metadata.videoUrl}
+                        sx={{ width: '100%', borderRadius: 1, mb: 1, bgcolor: 'black' }}
+                      />
+                    )}
                     <audio controls preload="none" src={podcast.metadata.audioUrl} style={{ width: '100%' }}>Audio playback is not supported by this browser.</audio>
                   </Box>
                   {isAdmin && <Stack direction="row">

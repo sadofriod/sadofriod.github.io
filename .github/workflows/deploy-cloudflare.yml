@@ -1,9 +1,9 @@
 name: Deploy Cloudflare Worker
 
 on:
+  # every pull request gets the build check (the deploy step is gated below);
+  # stacked PRs target a feature branch, not master, and still need CI.
   pull_request:
-    branches:
-      - master
   push:
     branches:
       - master

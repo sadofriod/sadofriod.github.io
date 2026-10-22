@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeKatex from 'rehype-katex';
+import Link from 'next/link';
 import ShareButton from '../../../components/ShareButton';
 import CodeBlock from '../../../components/CodeBlock';
 import InlineCode from '../../../components/InlineCode';
@@ -29,10 +30,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const decodedSlug = decodeURIComponent(slug);
   const { metadata } = getPostBySlug(decodedSlug);
 
+  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.ashesborn.cloud';
+  const alternates = metadata.alternates ?? {};
+  const languages =
+    Object.keys(alternates).length > 1
+      ? Object.fromEntries(
+          Object.entries(alternates).map(([lang, siblingSlug]) => [
+            lang === 'zh' ? 'zh-CN' : lang,
+            `${site}/blog/${encodeURI(siblingSlug)}`,
+          ])
+        )
+      : undefined;
+
   return {
     title: metadata.title,
     description: metadata.excerpt || metadata.title,
     keywords: metadata.keywords,
+    ...(languages ? { alternates: { canonical: `${site}/blog/${slug}`, languages } } : {}),
   };
 }
 
@@ -144,6 +158,33 @@ export default async function BlogPost({ params }: PageProps) {
                   day: 'numeric',
                 })}
               </Typography>
+
+              {/* Language versions of this article live under one translationKey:
+                  switching language keeps the visitor on the same content. */}
+              {metadata.lang ? (
+                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 0.5, mb: 1 }}>
+                  {Object.keys(metadata.alternates ?? {}).length > 1 ? (
+                    Object.entries(metadata.alternates ?? {}).map(([lang, siblingSlug]) => {
+                      const label = lang === 'zh' ? '中文' : 'English';
+                      const isCurrent = siblingSlug === decodedSlug;
+
+                      return isCurrent ? (
+                        <Chip key={lang} label={label} size="small" color="primary" />
+                      ) : (
+                        <Link key={lang} href={`/blog/${siblingSlug}`} style={{ textDecoration: 'none' }}>
+                          <Chip label={label} size="small" variant="outlined" clickable />
+                        </Link>
+                      );
+                    })
+                  ) : (
+                    <Chip
+                      label={metadata.lang === 'zh' ? '仅中文' : 'English only'}
+                      size="small"
+                      variant="outlined"
+                    />
+                  )}
+                </Stack>
+              ) : null}
 
               {metadata.tags && metadata.tags.length > 0 && (
                 <Stack

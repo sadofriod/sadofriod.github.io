@@ -8,6 +8,8 @@ description_en: 'A code-level walkthrough of Global Map-Reduce in graphrag-ts: l
 date: 2026-10-14 13:30:00
 mathjax: true
 keywords: GraphRAG Global Map-Reduce token budget 实现, graphrag-ts 社区摘要 claims Map 输入, GraphRAG summaryBatcher 超长摘要 Unicode 分段, GraphRAG bounded concurrency Map retry, GraphRAG usefulness score JSON 校验, GraphRAG Reduce 跳过超预算答案, TypeScript global retrieval partial failure
+lang: zh
+translationKey: graphrag-global-map-reduce-query
 ---
 
 # GraphRAG Global Map-Reduce 查询实现

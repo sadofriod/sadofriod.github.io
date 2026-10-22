@@ -7,6 +7,8 @@ description: A detailed guide to Microsoft GraphRAG global search Map-Reduce, ex
 date: 2026-10-03 12:00:00
 mathjax: true
 keywords: GraphRAG global search MapReduce explained, Microsoft GraphRAG community summary map reduce, GraphRAG parallel map stage intermediate answers, GraphRAG reduce stage usefulness ranking, GraphRAG token budget context window, GraphRAG global answer generation from community summaries, GraphRAG global search vs local search, Graph RAG query-focused summarization, GraphRAG Map-Reduce TypeScript pseudocode, LLM map reduce summarization pipeline
+lang: en
+translationKey: graphrag-map-reduce-explained
 ---
 
 # GraphRAG Global Search Map-Reduce

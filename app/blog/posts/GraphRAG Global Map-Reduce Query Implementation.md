@@ -8,6 +8,8 @@ description_en: 'A code-level walkthrough of Global Map-Reduce in graphrag-ts: l
 date: 2026-10-14 13:30:00
 mathjax: true
 keywords: GraphRAG Global Map-Reduce token budget implementation, graphrag-ts community summary claims Map input, GraphRAG summaryBatcher oversized Unicode splitting, GraphRAG bounded concurrency Map retries, GraphRAG usefulness score JSON validation, GraphRAG Reduce skip over-budget answers, TypeScript global retrieval partial failures
+lang: en
+translationKey: graphrag-global-map-reduce-query
 ---
 
 # GraphRAG Global Map-Reduce Query Implementation

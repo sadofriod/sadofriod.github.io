@@ -1,11 +1,14 @@
 ---
-title: Reality 在 AWS 上搭建并使用 Cloudflare 进行转发
+title: 'AWS 上搭建 Reality 并用 Cloudflare 转发'
 date: 2024-01-15 10:00:00
 categories: 技术
 tags:
   - AWS
   - Cloudflare
   - VPN
+keywords: 'reality 协议,xray reality,vless reality,cloudflare 转发,自建节点,AWS 代理,reality aws'
+lang: zh
+translationKey: Reality 在 AWS 上搭建并使用 Cloudflare 进行转发
 ---
 
 # Reality 在 AWS 上搭建并使用 Cloudflare 进行转发

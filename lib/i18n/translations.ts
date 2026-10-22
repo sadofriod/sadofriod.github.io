@@ -33,6 +33,13 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: '블로그',
     es: 'Blog'
   },
+  'nav.photography': {
+    en: 'Photography',
+    zh: '摄影',
+    ja: '写真',
+    ko: '사진',
+    es: 'Fotografía'
+  },
   'nav.about': {
     en: 'About',
     zh: '关于',

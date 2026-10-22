@@ -3,8 +3,10 @@ title: 增量运行E2E测试
 tags: project
 p: project
 categories: project
-keywords: 'E2E,Cypress,Incremental running'
+keywords: '增量E2E测试,E2E测试太慢,cypress 增量,playwright 只跑改动的测试,AST 分析 测试选择,E2E 测试优化,前端测试工程化,incremental e2e testing'
 date: 2022-08-08 19:51:42
+lang: zh
+translationKey: incremental-e2e-testing
 ---
 
 <img src="/images/e2e-testing-banner.png" />

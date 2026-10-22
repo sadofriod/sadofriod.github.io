@@ -8,6 +8,8 @@ description_en: 'A source-based guide to local and global GraphRAG retrieval in 
 date: 2026-10-14 12:00:00
 mathjax: true
 keywords: GraphRAG TypeScript 混合向量关键词检索, GraphRAG local retrieval 实体匹配与两跳扩展, GraphRAG 三路 RRF 社区排序实现, PostgreSQL ILIKE 子块关键词召回, GraphRAG claim 原文证据溯源, GraphRAG global search token budget retry, graphrag-ts local and global retrieval
+lang: zh
+translationKey: graphrag-hybrid-retrieval
 ---
 
 # GraphRAG 混合检索与证据溯源实现

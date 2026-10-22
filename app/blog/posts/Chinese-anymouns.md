@@ -6,6 +6,8 @@ description: '前端工程师与 Agent 开发工程师求职简历，包含京�
 tags: ['前端工程师简历', 'Agent 开发', 'TypeScript', 'React', 'GraphRAG', '微前端']
 categories: 简历
 keywords: '前端工程师简历, Agent开发工程师简历, TypeScript前端开发工程师, React前端工程师, GraphRAG项目经验, AI Agent应用开发, 微前端架构优化, 低代码平台开发, Salesforce规则引擎开发, Web3交易平台前端开发, 前端工程师求职简历, 京东前端开发经验'
+lang: zh
+translationKey: resume
 ---
 
 # 前端工程师 / Agent 开发工程师简历

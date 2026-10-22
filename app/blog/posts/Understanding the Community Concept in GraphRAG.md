@@ -7,6 +7,8 @@ description: An intuitive and in-depth conceptual guide to the "Community" in Mi
 date: 2026-07-23 11:00:00
 mathjax: true
 keywords: What is community in Microsoft GraphRAG, GraphRAG hierarchical community detection Leiden, GraphRAG community summary global answer pipeline, GraphRAG community report generation prompt, GraphRAG query focused summarization sensemaking, Knowledge Graph subgraph clustering Leiden algorithm RAG
+lang: en
+translationKey: graphrag-community
 ---
 
 # Understanding the Community Concept in GraphRAG

@@ -8,6 +8,8 @@ description_en: A complete implementation guide for the GraphRAG query and retri
 date: 2026-07-22 16:20:00
 mathjax: true
 keywords: GraphRAG retrieval implementation guide, GraphRAG reciprocal rank fusion RRF ranking, GraphRAG global search query, GraphRAG 社区检索与排序打分算法, GraphRAG RRF 倒数排名融合多路召回, GraphRAG query parsing neighbor expansion, 知识图谱 RAG 检索流程与接口设计, GraphRAG community summary answer generation, GraphRAG local search vs global search
+lang: zh
+translationKey: graphrag-retrieval
 ---
 
 # GraphRAG 检索实现说明

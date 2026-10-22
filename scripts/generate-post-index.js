@@ -7,7 +7,9 @@ const postsDirectory = path.join(__dirname, '..', 'app', 'blog', 'posts');
 const generatedDirectory = path.join(__dirname, '..', 'lib', 'generated');
 const outputPath = path.join(generatedDirectory, 'post-index.json');
 const redirectsPath = path.join(generatedDirectory, 'slug-redirects.json');
+const translationsPath = path.join(generatedDirectory, 'post-translations.json');
 const redirects = {};
+const translations = {};
 
 const posts = fs.readdirSync(postsDirectory)
   .filter((fileName) => /\.(md|mdx)$/.test(fileName))
@@ -34,6 +36,8 @@ const posts = fs.readdirSync(postsDirectory)
       file: fileName,
       ...(slug !== legacySlug && { legacySlug }),
       title: data.title || '',
+      lang: data.lang || '',
+      translationKey: data.translationKey || '',
       date: data.date?.toString() || '',
       excerpt: data.excerpt || '',
       tags: Array.isArray(sourceTags) ? sourceTags : [sourceTags],
@@ -48,6 +52,31 @@ const posts = fs.readdirSync(postsDirectory)
     };
   });
 
+// Group posts that are the same article in different languages. One listing entry
+  // per group, and the language switcher can jump straight to the sibling.
+const groups = new Map();
+for (const post of posts) {
+  const key = post.translationKey || post.slug;
+  if (!groups.has(key)) groups.set(key, []);
+  groups.get(key).push(post);
+}
+
+for (const group of groups.values()) {
+  const alternates = {};
+  for (const post of group) {
+    if (post.lang) alternates[post.lang] = post.slug;
+  }
+  // English is the default locale of the site, so it is the canonical copy.
+  const primary = group.find((post) => post.lang === 'en') ?? group[0];
+
+  for (const post of group) {
+    post.alternates = alternates;
+    post.isPrimary = post === primary;
+    if (Object.keys(alternates).length > 1) translations[post.slug] = alternates;
+  }
+}
+
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, JSON.stringify(posts, null, 2));
 fs.writeFileSync(redirectsPath, JSON.stringify(redirects));
+fs.writeFileSync(translationsPath, JSON.stringify(translations, null, 2));

@@ -6,6 +6,8 @@ description: 'Resume for a frontend and AI agent engineer featuring experience b
 tags: ['Frontend Engineer Resume', 'AI Agent Development', 'TypeScript', 'React', 'GraphRAG', 'Micro-Frontends']
 categories: Resume
 keywords: 'frontend engineer resume, AI agent developer resume, TypeScript React frontend engineer, GraphRAG project experience, AI agent application development, micro frontend architecture optimization, low-code data visualization platform development, Salesforce rules engine development, Web3 trading platform frontend development, JD frontend engineer experience, JavaScript TypeScript developer, frontend engineer job application resume'
+lang: en
+translationKey: resume
 ---
 
 # Frontend and Agent Engineer Resume

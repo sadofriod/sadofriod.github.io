@@ -1,10 +1,12 @@
 ---
-title: 在React Native中函数式的控制Loading Component
+title: 'React Native 用函数式方式控制 Loading 组件'
 tags: project
 p: project
 categories: project
-keywords: 'React Native Loading,React Native, functional Loading Component'
+keywords: 'React Native Loading,加载组件,HOC,函数式组件,加载状态管理,react native loading component'
 date: 2024-09-06 06:21:00
+lang: zh
+translationKey: 在React Native中函数式的控制Loading Component
 ---
 
 

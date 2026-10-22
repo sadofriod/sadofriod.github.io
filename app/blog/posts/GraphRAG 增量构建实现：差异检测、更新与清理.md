@@ -8,6 +8,8 @@ description_en: 'A source-based walkthrough of incremental GraphRAG builds in gr
 date: 2026-10-14 13:00:00
 mathjax: true
 keywords: GraphRAG 按文档标题增量更新实现, SHA-256 内容哈希跳过重复索引, graphrag-ts Markdown section parent diff, GraphRAG 更新旧边 claim 清理顺序, GraphRAG 显式删除文档 API, GraphRAG 增量构建边权累加问题, TypeScript incremental knowledge graph indexing
+lang: zh
+translationKey: graphrag-incremental-build
 ---
 
 # GraphRAG 增量构建实现：差异检测、更新与清理
