@@ -1,5 +1,6 @@
 import slugRedirects from './lib/generated/slug-redirects.json';
 import { handlePodcastRequest } from './lib/podcastRouter.js';
+import { handlePhotoRequest } from './lib/photoRouter.js';
 
 export default {
   async fetch(request, env) {
@@ -9,6 +10,9 @@ export default {
     if (redirect) {
       return Response.redirect(new URL(redirect, url), 308);
     }
+
+    const photoResponse = await handlePhotoRequest(request, env);
+    if (photoResponse) return photoResponse;
 
     const podcastResponse = await handlePodcastRequest(request, env);
     if (podcastResponse) return podcastResponse;

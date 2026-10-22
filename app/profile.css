@@ -316,8 +316,12 @@ html body {
   grid-column: span 2;
 }
 
+.bento__photography {
+  grid-column: span 4;
+}
+
 .bento__projects {
-  grid-column: span 2;
+  grid-column: span 4;
 }
 
 @media (max-width: 900px) {
@@ -580,5 +584,230 @@ html body {
   .profile-social a:hover {
     transform: none;
     box-shadow: 4px 4px 0 var(--ink);
+  }
+}
+/* ---------- photography ---------- */
+
+.photo-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 26px;
+}
+
+.photo-chip {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 6px 12px;
+  font-family: var(--brutal-mono);
+  font-size: 0.76rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.photo-chip:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.photo-chip[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.photo-grid {
+  /* multi-column masonry: tall and wide frames pack without leaving holes */
+  columns: 260px;
+  column-gap: 18px;
+}
+
+.photo-tile {
+  display: block;
+  width: 100%;
+  margin: 0 0 18px;
+  break-inside: avoid;
+  padding: 0;
+  border: var(--brutal-border);
+  background: var(--paper);
+  box-shadow: var(--brutal-shadow);
+  cursor: zoom-in;
+  overflow: hidden;
+  text-align: left;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.photo-tile:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--brutal-shadow-hover);
+}
+
+.photo-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.photo-tile__caption {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 12px;
+  border-top: 2px solid var(--ink);
+  font-size: 0.85rem;
+}
+
+.photo-empty {
+  border: 3px dashed var(--ink);
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.photo-empty .brutal-text {
+  margin-bottom: 0;
+}
+
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(17, 17, 17, 0.94);
+}
+
+.photo-lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: min(1400px, 94vw);
+  margin: 0;
+}
+
+.photo-lightbox__figure img {
+  max-width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+  border: 3px solid var(--paper);
+  background: #000;
+}
+
+.photo-lightbox__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: var(--paper);
+  font-family: var(--brutal-mono);
+  font-size: 0.78rem;
+}
+
+.photo-lightbox__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.photo-lightbox__actions button,
+.photo-lightbox__actions a {
+  border: 2px solid var(--paper);
+  background: transparent;
+  color: var(--paper);
+  padding: 5px 10px;
+  font-family: var(--brutal-mono);
+  font-size: 0.76rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.photo-lightbox__actions button:hover,
+.photo-lightbox__actions a:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* ---------- upload form ---------- */
+
+.form-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field--wide {
+  grid-column: 1 / -1;
+}
+
+.form-field span {
+  font-family: var(--brutal-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.form-field input,
+.form-field textarea {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  padding: 9px 10px;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.form-field input:focus-visible,
+.form-field textarea:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.form-preview {
+  margin-top: 18px;
+  border: var(--brutal-border);
+  box-shadow: 6px 6px 0 var(--ink);
+  max-width: 320px;
+}
+
+.form-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 640px) {
+  .photo-grid {
+    columns: 150px;
+    column-gap: 12px;
+  }
+
+  .photo-tile {
+    margin-bottom: 12px;
+  }
+
+  .photo-lightbox__figure img {
+    max-height: 62vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-chip,
+  .photo-tile {
+    transition: none;
+  }
+
+  .photo-chip:hover,
+  .photo-tile:hover {
+    transform: none;
   }
 }

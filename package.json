@@ -10,7 +10,9 @@
     "deploy": "pnpm run build && wrangler deploy",
     "start": "wrangler dev",
     "lint": "next lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "test:db": "node scripts/test-db-stores.mjs"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +37,7 @@
     "next": "15.5.27",
     "next-mdx-remote": "^6.0.0",
     "next-seo": "^6.4.0",
+    "postgres": "3.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^9.1.0",
@@ -54,6 +57,7 @@
     "sugar-high": "^0.9.3"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.2.17",
     "@types/katex": "^0.16.8",
     "@types/node": "^20.17.43",
     "@types/react": "^18.2.48",
