@@ -34,13 +34,14 @@ export const profile = {
   tagline: 'Independent engineer building GraphRAG systems in TypeScript',
   status: {
     label: 'Building graphrag-ts',
-    detail: 'open-source GraphRAG in TypeScript + Postgres/pgvector',
+    detail: 'open-source GraphRAG in TypeScript + Postgres/pgvector · MCP trial open',
     href: 'https://github.com/sadofriod/graphrag-ts',
   },
   socials: [
     { label: 'GitHub', href: 'https://github.com/sadofriod', icon: 'github' },
     { label: 'Email', href: 'mailto:justlikeashes@gmail.com', icon: 'mail' },
     { label: 'Blog', href: 'https://blog.ashesborn.cloud', icon: 'blog' },
+    { label: 'MCP trial', href: 'https://blog.ashesborn.cloud/blog/graphrag-mcp-trial', icon: 'blog' },
   ] as ProfileSocial[],
 
   about: {
