@@ -1,1 +1,560 @@
-[]
+[
+  {
+    "id": "anhao-net",
+    "name": "Anhao — AI 全栈开发者",
+    "url": "https://anhao.net",
+    "blurb": "Anhao · AI 全栈开发者，探索智能产品与人机协作的边界。",
+    "lang": "en",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 1,
+      "author": "fankcoder",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "do1999-com",
+    "name": "Let me Attente",
+    "url": "https://do1999.com",
+    "blurb": "Life is full of nine out of ten, But I want to do...",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 5,
+      "author": "letmatte",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "sai-thissai-com",
+    "name": "Sai's blog",
+    "url": "https://sai.thissai.com",
+    "blurb": "Sai's blog，分享技术知识，不限于PHP、go、MySQL、Redis、linux、MQ、micro service。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 14,
+      "author": "sai190209",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "zzz-xxx",
+    "name": "ZZZ.XXX",
+    "url": "https://zzz.xxx",
+    "blurb": "我博客",
+    "lang": "en",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 18,
+      "author": "Lowlife",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "yangzhenfei-com",
+    "name": "Seeking Complexity",
+    "url": "https://www.yangzhenfei.com",
+    "blurb": "self-reflections of Zhenfei Yang",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 26,
+      "author": "dvorak",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "blog-kevy-net",
+    "name": "K3vyn's Blog",
+    "url": "https://blog.kevy.net",
+    "blurb": "Welcome to my Blog!",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 28,
+      "author": "K3v1Nz",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "xiaoker-com",
+    "name": "啸傲的兔子洞",
+    "url": "https://www.xiaoker.com",
+    "blurb": "啸傲的博客，啸傲跟随好奇心的自然选择在这里记录关于投资、科技、成长等方面的思考，探索精神自由和财富自由。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 31,
+      "author": "xiaoker",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "s7ea-com",
+    "name": "s7ea.com",
+    "url": "https://s7ea.com",
+    "blurb": "我的做了大改造，基于 ai 能力实现。",
+    "lang": "en",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 36,
+      "author": "ujujzhaos",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "blog-515616-xyz",
+    "name": "Don’t Panic Log | 别慌，记下来",
+    "url": "https://blog.515616.xyz",
+    "blurb": "用的 google 的 bloger ，免维护，偶尔写点东西",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 38,
+      "author": "royalmadrid",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "datacenterfieldguides-com",
+    "name": "Data Center Field Guides | Mission-Critical Engineering Manuals by Tristan",
+    "url": "https://datacenterfieldguides.com",
+    "blurb": "Searchable engineering library of 68 data center field protocols covering NVL72 liquid load banks, BMS telemetry, handover refusal, CFD vali",
+    "lang": "en",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 41,
+      "author": "geese1028",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "fbyron-cn",
+    "name": "抓把夕阳给你做炒饭",
+    "url": "https://fbyron.cn",
+    "blurb": "记录旅行、生活与科技，也把一路看见的风景留下来。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 43,
+      "author": "FByron",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "strcpy-me",
+    "name": "Home | virusdefender's blog",
+    "url": "https://strcpy.me",
+    "blurb": "纯静态站，啥都不怕， 你看到 url 中有 是为了和以前用的 php 的系统的 url 兼容，哈哈哈",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 45,
+      "author": "virusdefender",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "meowv-com",
+    "name": "阿星𝑷𝒍𝒖𝒔",
+    "url": "https://meowv.com",
+    "blurb": "阿星𝑷𝒍𝒖𝒔的个人博客",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 46,
+      "author": "hackxing",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "foreverblog-cn",
+    "name": "十年之约 · 不为流量写的博客，值得被人好好读",
+    "url": "https://www.foreverblog.cn",
+    "blurb": "在十年之约，随机遇见一个仍在更新的独立博客。这里的每个博客，都约定了十年不关站。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 47,
+      "author": "villivateur",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "apkdv-com",
+    "name": "LengYue's Blog - 琥珀之月,空谷之兰,皆是孤芳,既是孤芳,但求自赏便罢!",
+    "url": "https://apkdv.com",
+    "blurb": "一名拥有10年经验的移动端与全栈开发者的技术笔记。记录 Android、iOS、Flutter、前端、后端的实战技巧与思考，与你一起深入探索编程世界。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 48,
+      "author": "WebKit",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "crossoverjie-top",
+    "name": "crossoverJie's Blog",
+    "url": "https://crossoverjie.top",
+    "blurb": "You never know what you can do till you try.",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 56,
+      "author": "crossoverJie",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "isharex-com",
+    "name": "爱分享 – 记录生活，分享互联网优秀资源",
+    "url": "https://isharex.com",
+    "blurb": "分享网络上优秀的免费资源，介绍实用、绿色、新奇软件的下载和使用",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 57,
+      "author": "yongd",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "knktc-com",
+    "name": "knktc的杂乱空间",
+    "url": "https://knktc.com",
+    "blurb": "关注linux,云计算,python，杂乱之地...",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 61,
+      "author": "knktc",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "blog-dumogu-top",
+    "name": "首页 | 23朵毒蘑菇",
+    "url": "https://blog.dumogu.top",
+    "blurb": "面对死亡时，我们只说一句话， 时辰未到！",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 63,
+      "author": "wuzhanggui",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "varzy-me",
+    "name": "贼歪",
+    "url": "https://varzy.me",
+    "blurb": "Hi, 我是贼歪。Web 开发者，写字的人，INFJ。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 65,
+      "author": "varzy",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "wztlink1013-com",
+    "name": "尼采般地抒情 · 写代码，也写生活",
+    "url": "https://wztlink1013.com",
+    "blurb": "写代码，也写生活。一个全栈开发者的数字花园。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 66,
+      "author": "ghosts",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "shoka-lostyu-me",
+    "name": "Yume Shoka = 有夢書架 = 吾乃天，壶中之天",
+    "url": "https://shoka.lostyu.me",
+    "blurb": "琉璃的医学 & 编程笔记",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 70,
+      "author": "RuriSmzk",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "lemonadec-cc",
+    "name": "Lemonadeccc",
+    "url": "https://lemonadec.cc",
+    "blurb": "My Role — Developer",
+    "lang": "en",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 72,
+      "author": "Lemonadeccc",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "jacksparrow414-com",
+    "name": "JackSparrow414",
+    "url": "https://jacksparrow414.com",
+    "blurb": "JackSparrow414 的个人博客，记录技术学习与实践心得。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 73,
+      "author": "jacksparrow414",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "debuginn-com",
+    "name": "Debug客栈",
+    "url": "https://debuginn.com",
+    "blurb": "专注于前沿技术、算法分享、互联网、IT 前沿、优质网站推荐、Linux 技术，做一个爱分享的程序猿。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 74,
+      "author": "debuginn",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "blog-ops-coffee-com",
+    "name": "运维咖啡吧",
+    "url": "https://blog.ops-coffee.com",
+    "blurb": "运维咖啡吧 - 享受技术带来的乐趣，体验生活给予的感动",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 76,
+      "author": "37Y37",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "iamjingli-com",
+    "name": "敬礼的唠叨",
+    "url": "https://www.iamjingli.com",
+    "blurb": "常敬礼的个人博客：前端技术、全栈探索、AI 智能体开发、成长复盘与生活观察。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 77,
+      "author": "ChangJingli",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "cao-la",
+    "name": "草啦 - AI网页托管,静态网站服务器,DNS解析,域名转发,短网址,SSL证书",
+    "url": "https://cao.la",
+    "blurb": "草啦提供免费的静态网站服务器：AI 生成的网页上传即上线、链接即分享，支持 CDN 加速、DDoS 防御、DNS解析、域名转发、短网址、SSL证书等",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 78,
+      "author": "caola",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "jetyu-me",
+    "name": "Jet's Notes",
+    "url": "https://jetyu.me",
+    "blurb": "人应该活得像一只鸟，而不是一根羽毛。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 83,
+      "author": "yjxjn",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "ooolo-net",
+    "name": "我的学习笔记",
+    "url": "https://ooolo.net",
+    "blurb": "心有大海，奈何被世俗束缚。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 87,
+      "author": "Figurs",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "zyunt-cn",
+    "name": "Z/YUNT · 浮生有记，山海可期",
+    "url": "https://zyunt.cn",
+    "blurb": "Z/YUNT 记录前端、后端、AI 与系统架构的技术思考与实践。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 90,
+      "author": "SilentBlade",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  }
+]
