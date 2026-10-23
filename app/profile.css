@@ -1389,3 +1389,17 @@ html body {
     transform: none;
   }
 }
+
+.friend-section {
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.friend-section + .friend-section {
+  margin-top: 16px;
+}
+
+.friend-card__title {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}

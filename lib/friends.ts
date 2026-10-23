@@ -7,6 +7,7 @@ export type FriendLink = {
   blurb: string;
   tags?: string[];
   lang?: 'zh' | 'en' | 'ja' | 'ko' | 'es';
+  group?: 'friends' | 'resources';
   source: {
     platform: 'v2ex' | 'manual';
     topic?: string;
@@ -73,6 +74,9 @@ export function getFriends(): FriendLink[] {
     if (entry.lang !== undefined && !['zh', 'en', 'ja', 'ko', 'es'].includes(entry.lang as string)) {
       return fail('invalid lang');
     }
+    if (entry.group !== undefined && entry.group !== 'friends' && entry.group !== 'resources') {
+      return fail('invalid group');
+    }
 
     const source = entry.source;
     if (!isRecord(source)) return fail('source is required');
@@ -95,4 +99,12 @@ export function getFriends(): FriendLink[] {
   });
 
   return published.sort((a, b) => Date.parse(b.source.collectedAt) - Date.parse(a.source.collectedAt));
+}
+
+export function getFriendsByGroup(): { friends: FriendLink[]; resources: FriendLink[] } {
+  const groups: { friends: FriendLink[]; resources: FriendLink[] } = { friends: [], resources: [] };
+  for (const friend of getFriends()) {
+    groups[friend.group ?? 'friends'].push(friend);
+  }
+  return groups;
 }

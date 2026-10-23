@@ -291,6 +291,7 @@ async function main() {
       blurb,
       lang: page.lang,
       tags: ['v2ex'],
+      group: 'friends',
       source: {
         platform: 'v2ex',
         topic: `https://www.v2ex.com/t/${options.topic}`,

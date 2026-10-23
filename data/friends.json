@@ -1,1 +1,178 @@
-[]
+[
+  {
+    "id": "graphrag-com",
+    "name": "GraphRAG — 图增强检索设计模式",
+    "url": "https://graphrag.com",
+    "blurb": "GraphRAG 的设计模式与图增强检索资料集：实体-关系抽取、社区摘要、混合检索该怎么做。",
+    "tags": ["graphrag", "knowledge-graph", "retrieval"],
+    "lang": "en",
+    "group": "resources",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "microsoft-graphrag-docs",
+    "name": "Microsoft GraphRAG 官方文档",
+    "url": "https://microsoft.github.io/graphrag",
+    "blurb": "微软官方 GraphRAG 文档：索引流水线、Leiden 社区摘要与 local / global 两种查询方式。",
+    "tags": ["graphrag", "rag", "docs"],
+    "lang": "en",
+    "group": "resources",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "pgvector",
+    "name": "pgvector",
+    "url": "https://github.com/pgvector/pgvector",
+    "blurb": "Postgres 的向量相似度检索扩展 —— graphrag-ts 的存储与检索底座，HNSW / IVFFlat 索引都在这里。",
+    "tags": ["postgres", "vector-search", "infrastructure"],
+    "lang": "en",
+    "group": "resources",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "modelcontextprotocol-io",
+    "name": "Model Context Protocol 规范",
+    "url": "https://modelcontextprotocol.io",
+    "blurb": "MCP 协议规范与 SDK —— graphrag-ts 的 MCP server 就是按这份规范接进客户端。",
+    "tags": ["mcp", "protocol", "tooling"],
+    "lang": "en",
+    "group": "resources",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "neo4j-blog",
+    "name": "Neo4j Blog",
+    "url": "https://neo4j.com/blog",
+    "blurb": "Neo4j 官方博客：图数据库建模与 GraphRAG 落地的工程经验。",
+    "tags": ["graph-database", "graphrag"],
+    "lang": "en",
+    "group": "resources",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "llamaindex-blog",
+    "name": "LlamaIndex Blog",
+    "url": "https://www.llamaindex.ai/blog",
+    "blurb": "LlamaIndex 官方博客：索引结构、检索与 agent 编排的工程细节。",
+    "tags": ["rag", "retrieval", "agents"],
+    "lang": "en",
+    "group": "resources",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "lilianweng-github-io",
+    "name": "Lil'Log",
+    "url": "https://lilianweng.github.io",
+    "blurb": "Lilian Weng 的长文综述：RAG、agent、推理与记忆，检索方向最系统的中文友好读物。",
+    "tags": ["rag", "agents", "llm"],
+    "lang": "en",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "eugeneyan-com",
+    "name": "Eugene Yan",
+    "url": "https://eugeneyan.com",
+    "blurb": "把 LLM 系统与检索评测写成可复现的工程笔记，做 RAG 产品前值得先读。",
+    "tags": ["llm", "recsys", "evaluation"],
+    "lang": "en",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "hamel-dev",
+    "name": "Hamel Husain",
+    "url": "https://hamel.dev",
+    "blurb": "LLM 评估与产品落地的实战复盘 —— 「先测量再优化」那一派的做法。",
+    "tags": ["llm", "evaluation", "product"],
+    "lang": "en",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "simonwillison-net",
+    "name": "Simon Willison's Weblog",
+    "url": "https://simonwillison.net",
+    "blurb": "LLM 工具链的每日实践与实验记录，做 AI 应用绕不开的信息源。",
+    "tags": ["llm", "tooling", "python"],
+    "lang": "en",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "antfu-me",
+    "name": "Anthony Fu",
+    "url": "https://antfu.me",
+    "blurb": "Vite / Vue 生态核心维护者，TypeScript 工具链与开源工程化的一手笔记。",
+    "tags": ["typescript", "vite", "open-source"],
+    "lang": "en",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "joshwcomeau-com",
+    "name": "Josh W. Comeau",
+    "url": "https://joshwcomeau.com",
+    "blurb": "把 CSS、React 与动效讲透的交互式教程，前端深度的参照系。",
+    "tags": ["css", "react", "frontend"],
+    "lang": "en",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "baoyu-io",
+    "name": "宝玉的分享",
+    "url": "https://baoyu.io",
+    "blurb": "大语言模型、Prompt Engineering 与前端工程的中文长文，翻译质量很高。",
+    "tags": ["llm", "prompt", "zh"],
+    "lang": "zh",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "guangzhengli-com",
+    "name": "Guangzheng Li",
+    "url": "https://guangzhengli.com",
+    "blurb": "AI + 全栈开发者的工程笔记，写过 RAG 入门与知识库落地的系列文章。",
+    "tags": ["rag", "fullstack", "zh"],
+    "lang": "zh",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "diygod-me",
+    "name": "DIYgod",
+    "url": "https://diygod.me",
+    "blurb": "RSSHub / APlayer 作者的前端与开源随笔，中文独立博客里少见的长期主义。",
+    "tags": ["frontend", "open-source", "zh"],
+    "lang": "zh",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  },
+  {
+    "id": "lutaonan-com",
+    "name": "Randy's Blog",
+    "url": "https://lutaonan.com",
+    "blurb": "前端工程师的技术与生活记录，写微前端和工程化之外的思考。",
+    "tags": ["frontend", "engineering", "zh"],
+    "lang": "zh",
+    "group": "friends",
+    "source": { "platform": "manual", "collectedAt": "2026-10-23" },
+    "status": "published"
+  }
+]
