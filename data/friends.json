@@ -556,5 +556,41 @@
       "collectedAt": "2026-10-23"
     },
     "status": "published"
+  },
+  {
+    "id": "gaojinan-com",
+    "name": "搞机男",
+    "url": "https://www.gaojinan.com",
+    "blurb": "Carpe Diem.",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 8,
+      "author": "Tink",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
+  },
+  {
+    "id": "oolaf-top",
+    "name": "Oolaf",
+    "url": "https://www.oolaf.top",
+    "blurb": "Oolaf Blog — 文章宫格与站点阅读面。",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 68,
+      "author": "jenhe",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
   }
 ]
