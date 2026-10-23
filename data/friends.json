@@ -592,5 +592,23 @@
       "collectedAt": "2026-10-23"
     },
     "status": "published"
+  },
+  {
+    "id": "s5s5-me",
+    "name": "[米随随] s5s5 - 本站是基于人类交互的，您的想象决定了我们的应用！",
+    "url": "https://s5s5.me",
+    "blurb": "本站是基于人类交互的，您的想象决定了我们的应用！",
+    "lang": "zh",
+    "tags": [
+      "v2ex"
+    ],
+    "source": {
+      "platform": "v2ex",
+      "topic": "https://www.v2ex.com/t/1250808",
+      "floor": 9,
+      "author": "s5s5",
+      "collectedAt": "2026-10-23"
+    },
+    "status": "published"
   }
 ]
