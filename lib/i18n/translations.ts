@@ -54,6 +54,13 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: '팟캐스트',
     es: 'Podcast'
   },
+  'nav.friends': {
+    en: 'Friends',
+    zh: '友链',
+    ja: 'ともだちリンク',
+    ko: '친구 링크',
+    es: 'Enlaces'
+  },
   'blog.readMore': {
     en: 'Read More',
     zh: '阅读更多',

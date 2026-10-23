@@ -24,7 +24,7 @@ export default async function sitemap() {
       };
     })
 
-  const routes = ['', '/blog', '/about', '/photography', '/podcast'].map((route) => ({
+  const routes = ['', '/blog', '/about', '/photography', '/podcast', '/friends'].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString().split('T')[0],
   }))
