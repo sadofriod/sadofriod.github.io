@@ -1,6 +1,5 @@
 import PostList from "@/components/PostList";
 import { getAllPostIds, PostMetadata } from "@/lib/posts";
-import { Container } from "@mui/material";
 
 interface PageProps {
   params: Promise<{
@@ -28,11 +27,16 @@ const PostCategoryPage = async ({ params }: PageProps) => {
   const { postCategories } = await params;
   const sourcePost = getAllPostIds();
   return (
-    <Container maxWidth="lg" sx={{ my: { xs: 2, md: 4 } }}>
+    <main className="profile-shell">
+      <header className="brutal-card brutal-card--yellow" style={{ marginBottom: 28 }}>
+        <p className="brutal-kicker">Category</p>
+        <h1 className="profile-hero__name">{postCategories}</h1>
+      </header>
+
       <PostList
         posts={filterPostsByCategory(sourcePost, postCategories)}
       />
-    </Container>
+    </main>
   );
 }
 

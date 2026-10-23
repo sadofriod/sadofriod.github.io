@@ -2,23 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Container,
-  Grid,
-  Stack,
-  Typography,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import RssFeedIcon from '@mui/icons-material/RssFeed';
-import UploadIcon from '@mui/icons-material/Upload';
 import type { Podcast } from '@/lib/podcasts';
 import PodcastEditDialog from '@/components/PodcastEditDialog';
 
@@ -78,60 +61,92 @@ export default function PodcastPage() {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 5 }}>
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
-        <Box>
-          <Typography variant="h3" component="h1">Podcast</Typography>
-          <Typography color="text.secondary">Episodes from Ashes Space</Typography>
-        </Box>
-        <Stack direction="row" spacing={1}>
-          <Button href="/podcast/rss" startIcon={<RssFeedIcon />} target="_blank">RSS</Button>
-          {isAdmin && <Button component={Link} href="/podcast/upload" variant="contained" startIcon={<UploadIcon />}>Upload</Button>}
-        </Stack>
-      </Stack>
+    <main className="profile-shell">
+      <header className="brutal-card brutal-card--yellow">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div style={{ minWidth: 0 }}>
+            <p className="brutal-kicker">Podcast</p>
+            <h1 className="profile-hero__name">Podcast</h1>
+            <p className="brutal-text">Episodes from Ashes Space — audio, video and show notes, straight from the feed.</p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            <a className="brutal-btn" href="/podcast/rss" target="_blank" rel="noreferrer">
+              RSS
+            </a>
+            {isAdmin ? (
+              <Link className="brutal-btn brutal-btn--ink" href="/podcast/upload">
+                Upload
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </header>
 
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-      {loading ? <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}><CircularProgress /></Box> : null}
-      {!loading && podcasts.length === 0 && <Alert severity="info">No episodes have been published yet.</Alert>}
+      {error ? (
+        <div className="profile-callout" role="alert">
+          <span className="brutal-kicker">Error</span>
+          <span>{error}</span>
+        </div>
+      ) : null}
 
-      <Grid container spacing={2}>
+      {loading ? <p className="brutal-kicker">Loading episodes…</p> : null}
+
+      {!loading && !error && podcasts.length === 0 ? (
+        <div className="podcast-empty">
+          <p className="brutal-kicker">Empty feed</p>
+          <p className="brutal-text">No episodes have been published yet.</p>
+        </div>
+      ) : null}
+
+      <div className="podcast-list">
         {podcasts.map((podcast) => (
-          <Grid item xs={12} key={podcast.id}>
-            <Card variant="outlined">
-              <CardContent>
-                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
-                  {podcast.metadata.image && <Box component="img" src={podcast.metadata.image} alt="" sx={{ width: 88, height: 88, objectFit: 'cover', borderRadius: 1 }} />}
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-                      <Typography variant="h6">{podcast.metadata.title}</Typography>
-                      {podcast.metadata.explicit && <Chip size="small" label="Explicit" />}
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">{podcast.metadata.date} · {podcast.metadata.duration}{podcast.metadata.author ? ` · ${podcast.metadata.author}` : ''}</Typography>
-                    <Typography sx={{ my: 1 }}>{podcast.metadata.description}</Typography>
-                    {podcast.metadata.videoUrl && (
-                      <Box
-                        component="video"
-                        controls
-                        preload="none"
-                        playsInline
-                        poster={podcast.metadata.image}
-                        src={podcast.metadata.videoUrl}
-                        sx={{ width: '100%', borderRadius: 1, mb: 1, bgcolor: 'black' }}
-                      />
-                    )}
-                    <audio controls preload="none" src={podcast.metadata.audioUrl} style={{ width: '100%' }}>Audio playback is not supported by this browser.</audio>
-                  </Box>
-                  {isAdmin && <Stack direction="row">
-                    <Button aria-label="Edit episode" onClick={() => setEditing(podcast)}><EditIcon /></Button>
-                    <Button aria-label="Delete episode" color="error" onClick={() => void remove(podcast)}><DeleteIcon /></Button>
-                  </Stack>}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
+          <article className="podcast-card" key={podcast.id}>
+            <div className="podcast-card__head">
+              {podcast.metadata.image ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img className="podcast-card__cover" src={podcast.metadata.image} alt="" />
+              ) : null}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <h2 className="podcast-card__title">{podcast.metadata.title}</h2>
+                <p className="podcast-card__meta">
+                  {podcast.metadata.date} · {podcast.metadata.duration}
+                  {podcast.metadata.author ? ` · ${podcast.metadata.author}` : ''}
+                  {podcast.metadata.explicit ? ' · Explicit' : ''}
+                </p>
+                <p className="brutal-text">{podcast.metadata.description}</p>
+              </div>
+            </div>
+
+            {podcast.metadata.videoUrl ? (
+              <video
+                className="podcast-media"
+                controls
+                playsInline
+                preload="none"
+                poster={podcast.metadata.image}
+                src={podcast.metadata.videoUrl}
+              />
+            ) : null}
+
+            <audio className="podcast-media" controls preload="none" src={podcast.metadata.audioUrl}>
+              Audio playback is not supported by this browser.
+            </audio>
+
+            {isAdmin ? (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'flex-end', marginTop: 14 }}>
+                <button type="button" className="brutal-btn" aria-label="Edit episode" onClick={() => setEditing(podcast)}>
+                  Edit
+                </button>
+                <button type="button" className="brutal-btn" aria-label="Delete episode" onClick={() => void remove(podcast)}>
+                  Delete
+                </button>
+              </div>
+            ) : null}
+          </article>
         ))}
-      </Grid>
+      </div>
+
       <PodcastEditDialog podcast={editing} open={Boolean(editing)} onClose={() => setEditing(null)} onSave={save} />
-    </Container>
+    </main>
   );
 }
