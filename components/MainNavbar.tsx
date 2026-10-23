@@ -14,6 +14,7 @@ export default function MainNavbar() {
     { label: t('nav.blog'), href: '/blog' },
     { label: t('nav.photography'), href: '/photography' },
     { label: t('nav.podcast'), href: '/podcast' },
+    { label: t('nav.friends'), href: '/friends' },
     { label: t('nav.about'), href: '/about' }
   ];
 

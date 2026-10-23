@@ -1307,3 +1307,99 @@ html body {
   line-height: 1;
   margin: 0 0 12px;
 }
+
+/* ---------- friends ---------- */
+
+.friend-shell {
+  display: grid;
+  gap: 32px;
+}
+
+.friend-hero__subtitle {
+  margin-top: 16px;
+}
+
+.friend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 24px;
+}
+
+.friend-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.friend-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--brutal-shadow-hover);
+}
+
+.friend-card:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+
+.friend-host {
+  margin: 0 0 12px;
+  font-family: var(--brutal-mono);
+  font-size: 0.8rem;
+}
+
+.friend-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.friend-pill {
+  display: inline-flex;
+  width: auto;
+  max-width: 100%;
+  border-radius: 999px;
+  overflow-wrap: anywhere;
+}
+
+.friend-requirements {
+  margin: 0 0 16px;
+  padding-left: 22px;
+  line-height: 1.8;
+}
+
+.friend-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .friend-card {
+    transition: none;
+  }
+
+  .friend-card:hover {
+    transform: none;
+  }
+}
+
+.friend-section {
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.friend-section + .friend-section {
+  margin-top: 16px;
+}
+
+.friend-card__title {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}

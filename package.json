@@ -14,6 +14,7 @@
     "db:migrate": "wrangler d1 migrations apply ashesborn-blog --remote",
     "test:db": "node scripts/test-db-stores.mjs",
     "test:routes": "node scripts/test-worker-routes.mjs",
+    "friends:collect": "node scripts/friends-collect.mjs",
     "db:migrate:local": "wrangler d1 migrations apply ashesborn-blog --local"
   },
   "keywords": [],
