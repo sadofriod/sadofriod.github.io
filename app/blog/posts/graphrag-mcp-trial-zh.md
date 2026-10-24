@@ -65,4 +65,6 @@ cd graphrag-ts && pnpm install
 真正的门槛是模型：需要一个 chat endpoint，以及一个输出**严格 768 维**的 embedding endpoint（schema 是 `vector(768)`，维度不符会表现为构建失败）。MCP 服务、访问策略和样例语料都在
 [`integrations/mcp`](https://github.com/sadofriod/graphrag-ts/tree/main/integrations/mcp) 里有说明。
 
-仓库里还有一个可选的付费 HTTP API（`POST /api/v1/query`，基于 x402，按次付费、不需要 key）。它是代码和文档的一部分，但**没有在试用期间开启**；在有人把免费版用过两次之前，我不会去卖它。
+另外有一个面向 Agent 的付费接口：`POST /api/v1/query`，单次局部查询 $0.02，走 x402 在 Base 上以 USDC 结算——不用注册、不用申请、不用开票。它跑在独立的域名上，和上面的试用入口分开；客户端从 `402` 响应里就能读到价格和输入结构，不需要提前配置任何东西。
+
+公开的是接口、发现用的元数据和仓库里的自托管路径；部署方自己的配置不公开。只有答案产出之后才会结算，查询失败或超时不会扣买家一分钱。
