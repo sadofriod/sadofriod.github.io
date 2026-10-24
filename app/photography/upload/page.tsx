@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 const PREVIEW_MAX_EDGE = 1600;
 
@@ -20,6 +21,7 @@ async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
 }
 
 export default function PhotoUploadPage() {
+  const { t } = useLanguage();
   const [authKey, setAuthKey] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -75,14 +77,14 @@ export default function PhotoUploadPage() {
       const response = await fetch('/api/photos', { method: 'POST', body: data });
       if (!response.ok) {
         const payload = (await response.json().catch(() => ({}))) as { error?: string };
-        throw new Error(payload.error || `Upload failed (${response.status})`);
+        throw new Error(payload.error || `${t('photoForm.uploadFailed')} (${response.status})`);
       }
 
       form.reset();
       setPreview('');
       setMessage('Uploaded — it is live in the gallery now.');
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Upload failed');
+      setError(cause instanceof Error ? cause.message : t('photoForm.uploadFailed'));
     } finally {
       setBusy(false);
     }
@@ -91,28 +93,28 @@ export default function PhotoUploadPage() {
   return (
     <main className="profile-shell">
       <header className="brutal-card brutal-card--yellow">
-        <p className="brutal-kicker">Photography · admin</p>
-        <h1 className="profile-hero__name">Upload a frame</h1>
+        <p className="brutal-kicker">{t('photography.adminKicker')}</p>
+        <h1 className="profile-hero__name">{t('photography.uploadKicker')}</h1>
         <p className="profile-hero__tagline">
-          Original goes to R2, metadata to Postgres, previews are generated at the edge.
+          {t('photography.uploadTagline')}
         </p>
         <div className="profile-hero__actions">
           <Link className="brutal-btn" href="/photography">
-            ← Back to the gallery
+            {t('photography.backToGallery')}
           </Link>
         </div>
       </header>
 
       {error ? (
         <div className="profile-callout" role="alert">
-          <span className="brutal-kicker">Error</span>
+          <span className="brutal-kicker">{t('common.error')}</span>
           <span>{error}</span>
         </div>
       ) : null}
 
       {message ? (
         <div className="profile-callout profile-callout--bottom" role="status">
-          <span className="brutal-kicker">Done</span>
+          <span className="brutal-kicker">{t('common.done')}</span>
           <span>{message}</span>
         </div>
       ) : null}
@@ -120,51 +122,51 @@ export default function PhotoUploadPage() {
       <form className="brutal-card profile-section" onSubmit={onSubmit}>
         <div className="form-grid">
           <label className="form-field">
-            <span>Image file *</span>
+            <span>{t('photoForm.file')}</span>
             <input type="file" name="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onPick} required />
           </label>
 
           <label className="form-field">
-            <span>Title</span>
-            <input type="text" name="title" placeholder="Morning fog, Hangzhou" maxLength={120} />
+            <span>{t('photoForm.title')}</span>
+            <input type="text" name="title" placeholder={t('photoForm.titlePlaceholder')} maxLength={120} />
           </label>
 
           <label className="form-field">
-            <span>Collection</span>
-            <input type="text" name="collection" placeholder="street" maxLength={40} defaultValue="street" />
+            <span>{t('photoForm.collection')}</span>
+            <input type="text" name="collection" placeholder={t('photoForm.collectionPlaceholder')} maxLength={40} defaultValue="street" />
           </label>
 
           <label className="form-field">
-            <span>Taken on</span>
+            <span>{t('photoForm.takenOn')}</span>
             <input type="date" name="takenOn" />
           </label>
 
           <label className="form-field">
-            <span>Tags (comma separated)</span>
+            <span>{t('photoForm.tags')}</span>
             <input type="text" name="tags" placeholder="film, 35mm" maxLength={120} />
           </label>
 
           <label className="form-field">
-            <span>Sort order</span>
+            <span>{t('photoForm.sortOrder')}</span>
             <input type="number" name="sortOrder" defaultValue={0} step={1} />
           </label>
 
           <label className="form-field form-field--wide">
-            <span>Description</span>
-            <textarea name="description" rows={3} maxLength={600} placeholder="Where it was, what it felt like." />
+            <span>{t('photoForm.description')}</span>
+            <textarea name="description" rows={3} maxLength={600} placeholder={t('photoForm.descriptionPlaceholder')} />
           </label>
         </div>
 
         {preview ? (
           <div className="form-preview">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview} alt="Selected photo preview" />
+            <img src={preview} alt={t('photoForm.preview')} />
           </div>
         ) : null}
 
         <div className="profile-hero__actions">
           <button className="brutal-btn brutal-btn--ink" type="submit" disabled={busy}>
-            {busy ? 'Uploading…' : 'Upload'}
+            {busy ? t('photoForm.uploading') : t('photoForm.submit')}
           </button>
         </div>
       </form>

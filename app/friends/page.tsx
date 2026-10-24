@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import JsonLd from '@/components/JsonLd';
-import { friendHost, getFriendsByGroup } from '@/lib/friends';
+import T from '@/components/T';
+import FriendCard from '@/components/FriendCard';
+import { getFriendsByGroup } from '@/lib/friends';
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 const COLLECTION_TOPIC = 'https://www.v2ex.com/t/1251306';
@@ -20,14 +22,14 @@ export default function FriendsPage() {
   const sections = [
     {
       id: 'friends',
-      title: '同好博客',
-      description: '这些是我收藏的独立博客与技术作者，按收藏时间由新到旧展示，方便继续追踪他们的原创文章与工程实践。',
+      titleKey: 'friends.sectionFriends',
+      descriptionKey: 'friends.sectionFriendsDesc',
       links: groups.friends,
     },
     {
       id: 'resources',
-      title: '参考资源',
-      description: '这些是做 GraphRAG / RAG / Postgres 向量检索时常用的权威参考，作为资料收藏，并非友链交换。',
+      titleKey: 'friends.sectionResources',
+      descriptionKey: 'friends.sectionResourcesDesc',
       links: groups.resources,
     },
   ];
@@ -66,44 +68,33 @@ export default function FriendsPage() {
       />
 
       <header className="brutal-card brutal-card--pink friend-hero">
-        <p className="brutal-kicker">Friends</p>
-        <h1 className="profile-hero__name">友情链接</h1>
-        <p className="brutal-text friend-hero__subtitle">收藏值得常读的独立博客，也整理工程实践中反复查阅的技术参考。</p>
+        <T className="brutal-kicker" as="p" k="friends.kicker" />
+        <T as="h1" className="profile-hero__name" k="friends.title" />
+        <T as="p" className="brutal-text friend-hero__subtitle" k="friends.subtitle" />
         <p className="brutal-text">
-          这里汇集了我阅读的技术作者，以及用 TypeScript 实践 GraphRAG 与 RAG 时查阅的 retrieval 资料。
-          收录以原创内容、站点可访问和技术参考价值为标准，逐一人工筛选，并将同好博客与官方资源分组展示。
-          想交换友链，请将站点名称、链接和一句简介发送至 <a className="brutal-link" href="mailto:justlikeashes@gmail.com">justlikeashes@gmail.com</a>，或在 <a className="brutal-link" href={COLLECTION_TOPIC} target="_blank" rel="noopener">V2EX 收集帖</a>留言。
+          <T k="friends.introLead" />{' '}
+          <a className="brutal-link" href="mailto:justlikeashes@gmail.com">justlikeashes@gmail.com</a>
+          <T k="friends.introTail" />{' '}
+          <a className="brutal-link" href={COLLECTION_TOPIC} target="_blank" rel="noopener">
+            <T k="friends.v2ex" />
+          </a>
         </p>
-        <span className="brutal-pill friend-pill">已收录 {friends.length} 个站点</span>
+        <T
+          as="span"
+          className="brutal-pill friend-pill"
+          k="friends.collected"
+          params={{ count: String(friends.length) }}
+        />
       </header>
 
       {sections.map((section) => (
         <section className="friend-section" key={section.id} aria-labelledby={`friend-${section.id}-title`}>
-          <h2 className="brutal-title" id={`friend-${section.id}-title`}>{section.title}</h2>
-          <p className="brutal-text">{section.description}</p>
+          <T as="h2" className="brutal-title" id={`friend-${section.id}-title`} k={section.titleKey} />
+          <T as="p" className="brutal-text" k={section.descriptionKey} />
           {section.links.length > 0 ? (
             <div className="friend-grid">
               {section.links.map((friend) => (
-                <a
-                  className="brutal-card friend-card"
-                  key={friend.id}
-                  href={friend.url}
-                  target="_blank"
-                  rel="noopener"
-                  title={`${friend.name}：${friend.blurb}`}
-                  aria-label={`在新窗口打开 ${friend.name}`}
-                >
-                  <h3 className="brutal-title friend-card__title">{friend.name}</h3>
-                  <p className="friend-host brutal-muted">{friendHost(friend.url)}</p>
-                  <p className="brutal-text">{friend.blurb}</p>
-                  {friend.tags?.length ? (
-                    <div className="friend-tags">
-                      {friend.tags.map((tag, index) => (
-                        <span className="brutal-pill friend-pill" key={`${tag}-${index}`}>{tag}</span>
-                      ))}
-                    </div>
-                  ) : null}
-                </a>
+                <FriendCard key={friend.id} friend={friend} />
               ))}
             </div>
           ) : null}
@@ -111,33 +102,31 @@ export default function FriendsPage() {
       ))}
 
       {friends.length === 0 ? (
-        <section className="brutal-card brutal-card--blue" aria-label="友链收集中">
-          <p className="brutal-kicker">Collecting links</p>
-          <h2 className="brutal-title">正在认识新的朋友</h2>
-          <p className="brutal-text">
-            目前正在 V2EX 帖子里收集友链，确认后会陆续收录。欢迎来帖子里介绍你的博客。
-          </p>
+        <section className="brutal-card brutal-card--blue">
+          <T as="p" className="brutal-kicker" k="friends.collectingKicker" />
+          <T as="h2" className="brutal-title" k="friends.collectingTitle" />
+          <T as="p" className="brutal-text" k="friends.collectingBody" />
           <a className="brutal-link" href={COLLECTION_TOPIC} target="_blank" rel="noreferrer noopener">
-            前往 V2EX 收集帖 →
+            <T k="friends.collectingCta" />
           </a>
         </section>
       ) : null}
 
       <section className="brutal-card brutal-card--mint" aria-labelledby="friend-apply-title">
-        <p className="brutal-kicker">Exchange links</p>
-        <h2 className="brutal-title" id="friend-apply-title">申请友链</h2>
+        <T as="p" className="brutal-kicker" k="friends.applyKicker" />
+        <T as="h2" className="brutal-title" id="friend-apply-title" k="friends.applyTitle" />
         <ul className="friend-requirements">
-          <li>持续更新的原创博客</li>
-          <li>站点可访问</li>
-          <li>双向链接：也请在你的站点添加 Ashes Space 的链接</li>
+          <li><T k="friends.applyReq1" /></li>
+          <li><T k="friends.applyReq2" /></li>
+          <li><T k="friends.applyReq3" /></li>
         </ul>
-        <p className="brutal-text">请附上站点名称、链接与一句简介，发邮件或在收集帖留言。</p>
+        <T as="p" className="brutal-text" k="friends.applyFooter" />
         <div className="friend-actions">
           <a className="brutal-btn brutal-btn--ink" href="mailto:justlikeashes@gmail.com">
             justlikeashes@gmail.com
           </a>
           <a className="brutal-btn" href={COLLECTION_TOPIC} target="_blank" rel="noreferrer noopener">
-            V2EX 收集帖 →
+            <T k="friends.v2ex" /> →
           </a>
         </div>
       </section>

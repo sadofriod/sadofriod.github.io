@@ -9,7 +9,7 @@ import postTranslations from '../lib/generated/post-translations.json';
 const translationsBySlug = postTranslations as Record<string, Record<string, string>>;
 
 export default function LanguageSwitcher() {
-  const { locale, setLocale } = useLanguage();
+  const { locale, setLocale, t } = useLanguage();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -32,7 +32,7 @@ export default function LanguageSwitcher() {
   return (
     <select
       className="brutal-select"
-      aria-label="Language"
+      aria-label={t('common.language')}
       value={locale}
       onChange={handleChange}
     >

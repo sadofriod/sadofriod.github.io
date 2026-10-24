@@ -18,6 +18,8 @@ import ProfileCallout from '../../../components/profile/ProfileCallout';
 import { BlogPostJsonLd } from '../../../components/JsonLd';
 import { profile } from '../../../data/profile';
 import { slugToFilename } from '../../../lib/utils';
+import T from '../../../components/T';
+import LocalizedDate from '@/components/LocalizedDate';
 
 interface PageProps {
   params: Promise<{
@@ -112,17 +114,11 @@ export default async function BlogPost({ params }: PageProps) {
         {isFullStory && <ProfileCallout variant="top" />}
 
         <header className="article__head">
-          <p className="brutal-kicker">Writing</p>
+          <T k="blog.writing" as="p" className="brutal-kicker" />
           <h1 className="article__title">{metadata.title}</h1>
 
           <div className="article__meta">
-            <span>
-              {new Date(metadata.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
+            <LocalizedDate iso={metadata.date} />
 
             {metadata.category ? <span>{metadata.category}</span> : null}
 
@@ -211,7 +207,7 @@ export default async function BlogPost({ params }: PageProps) {
       </article>
 
       <aside className="article-toc">
-        <p className="article-toc__title">On this page</p>
+        <T k="blog.onThisPage" as="p" className="article-toc__title" />
         <TOC content={content} />
       </aside>
     </main>

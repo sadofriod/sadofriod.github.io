@@ -1,4 +1,5 @@
 import PostList from "@/components/PostList";
+import T from "@/components/T";
 import { getAllPostIds, PostMetadata } from "@/lib/posts";
 
 interface PageProps {
@@ -29,7 +30,7 @@ const PostCategoryPage = async ({ params }: PageProps) => {
   return (
     <main className="profile-shell">
       <header className="brutal-card brutal-card--yellow" style={{ marginBottom: 28 }}>
-        <p className="brutal-kicker">Category</p>
+        <T k="blog.category" as="p" className="brutal-kicker" />
         <h1 className="profile-hero__name">{postCategories}</h1>
       </header>
 

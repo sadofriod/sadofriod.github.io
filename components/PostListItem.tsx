@@ -1,6 +1,7 @@
 import type { PostMetadata } from "@/lib/posts";
 import type React from "react";
 import Link from "next/link";
+import LocalizedDate from '@/components/LocalizedDate';
 
 const PostListItem: React.FC<PostMetadata> = ({ title, date, excerpt, tags, description, category, slug, lang, alternates }) => {
   const languageCount = alternates ? Object.keys(alternates).length : 0;
@@ -10,7 +11,7 @@ const PostListItem: React.FC<PostMetadata> = ({ title, date, excerpt, tags, desc
   return (
     <Link className="post-card" href={`/blog/${slug}`}>
       <div className="post-card__meta">
-        <span>{date}</span>
+        <LocalizedDate iso={date} />
         {category && <span>{category}</span>}
         {languageCount > 1 && (
           <span className="post-badge post-badge--blue">{languageLabel}</span>

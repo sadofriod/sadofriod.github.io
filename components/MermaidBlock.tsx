@@ -17,6 +17,8 @@ import CodeIcon from '@mui/icons-material/Code';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import T from '@/components/T';
 
 const MermaidContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -81,6 +83,7 @@ interface MermaidBlockProps {
 }
 
 export const MermaidBlock: React.FC<MermaidBlockProps> = ({ chart }) => {
+  const { t } = useLanguage();
   const [svgHtml, setSvgHtml] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -180,7 +183,7 @@ export const MermaidBlock: React.FC<MermaidBlockProps> = ({ chart }) => {
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title={showCode ? 'View Diagram' : 'View Code'}>
+          <Tooltip title={showCode ? <T k="common.viewDiagram" /> : <T k="common.viewCode" />}>
             <ActionButton
               onClick={() => setShowCode(!showCode)}
               size="small"
@@ -190,7 +193,7 @@ export const MermaidBlock: React.FC<MermaidBlockProps> = ({ chart }) => {
             </ActionButton>
           </Tooltip>
 
-          <Tooltip title={copied ? 'Copied!' : 'Copy code'}>
+          <Tooltip title={copied ? <T k="common.copied" /> : <T k="common.copyCode" />}>
             <ActionButton onClick={handleCopy} size="small" aria-label="copy code">
               {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
             </ActionButton>
@@ -217,7 +220,7 @@ export const MermaidBlock: React.FC<MermaidBlockProps> = ({ chart }) => {
       ) : error ? (
         <Box sx={{ p: 2 }}>
           <Alert severity="warning" sx={{ mb: 1.5 }}>
-            Mermaid diagram failed to render. Showing source code below.
+            {t('mermaid.failed')}
           </Alert>
           <SyntaxHighlighter
             language="mermaid"

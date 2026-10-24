@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PostList from '@/components/PostList';
+import T from '@/components/T';
 import { getAllPostIds, getPostByFile } from '@/lib/posts';
 import { profile, type SocialIcon } from '@/data/profile';
 
@@ -35,6 +36,37 @@ function socialIcon(icon: SocialIcon) {
   }
 }
 
+/** Social labels are keyed by icon, not by the English label in data/profile.ts. */
+const SOCIAL_KEYS: Record<SocialIcon, string> = {
+  github: 'profile.socialGithub',
+  mail: 'profile.socialEmail',
+  blog: 'profile.socialBlog',
+};
+
+/** Writing-group copy lives under profile.group<Name>{Label,Blurb}. */
+const GROUP_NAMES: Record<string, string> = {
+  graphrag: 'Graphrag',
+  engineering: 'Engineering',
+  notes: 'Notes',
+};
+
+function groupKeys(id: string) {
+  const name = GROUP_NAMES[id] ?? 'Engineering';
+  return {
+    // The graphrag group shares the series copy.
+    label: id === 'graphrag' ? 'profile.seriesLabel' : `profile.group${name}Label`,
+    blurb: `profile.group${name}Blurb`,
+  };
+}
+
+/** Project copy is keyed by repo name. */
+function projectKeys(name: string) {
+  if (name === 'blog.ashesborn.cloud') {
+    return { role: 'profile.projectBlogRole', blurb: 'profile.projectBlogBlurb' };
+  }
+  return { role: 'profile.projectGraphragRole', blurb: 'profile.projectGraphragBlurb' };
+}
+
 export default function Home() {
   const posts = getAllPostIds();
   const series = profile.graphragSeries.posts.map((item) => getPostByFile(item.file));
@@ -61,12 +93,12 @@ export default function Home() {
             height={132}
           />
           <div>
-            <p className="brutal-kicker">Profile</p>
+            <T as="p" className="brutal-kicker" k="home.profile" />
             <h1 className="profile-hero__name">
               {profile.name} <span className="profile-hero__handle">@{profile.handle}</span>
             </h1>
-            <p className="profile-hero__tagline">{profile.tagline}</p>
-            <p className="profile-hero__role">{profile.role}</p>
+            <T as="p" className="profile-hero__tagline" k="profile.tagline" />
+            <T as="p" className="profile-hero__role" k="profile.role" />
 
             <div className="profile-hero__actions">
               <a
@@ -76,14 +108,16 @@ export default function Home() {
                 rel="noopener noreferrer"
               >
                 <span className="brutal-pill__dot" aria-hidden="true" />
-                {profile.status.label}
-                <span className="brutal-muted">· {profile.status.detail}</span>
+                <T k="profile.statusLabel" />
+                <span className="brutal-muted">
+                  · <T k="profile.statusDetail" />
+                </span>
               </a>
               <Link className="brutal-btn brutal-btn--ink" href="/blog">
-                Read the writing →
+                <T k="home.readWriting" />
               </Link>
               <Link className="brutal-btn" href="/about">
-                About
+                <T k="nav.about" />
               </Link>
             </div>
 
@@ -91,7 +125,7 @@ export default function Home() {
               {profile.socials.map((social) => (
                 <a key={social.label} href={social.href}>
                   {socialIcon(social.icon)}
-                  <span>{social.label}</span>
+                  <T k={SOCIAL_KEYS[social.icon]} />
                 </a>
               ))}
             </div>
@@ -102,9 +136,9 @@ export default function Home() {
       {/* Evidence layer: each tile is proof of one side of the work. */}
       <div className="bento">
         <section className="brutal-card brutal-card--pink bento__graphrag">
-          <p className="brutal-kicker">Proof of work</p>
-          <h2 className="brutal-title">{profile.graphragSeries.label}</h2>
-          <p className="brutal-text brutal-muted">{profile.graphragSeries.blurb}</p>
+          <T as="p" className="brutal-kicker" k="home.proofOfWork" />
+          <T as="h2" className="brutal-title" k="profile.seriesLabel" />
+          <T as="p" className="brutal-text brutal-muted" k="profile.seriesBlurb" />
           <ul className="bento-list">
             {series.map((post) => (
               <li key={post.slug}>
@@ -121,67 +155,68 @@ export default function Home() {
           </div>
           <p className="bento__more">
             <Link className="brutal-link" href={`/blog/${series[0].slug}`}>
-              start with the design doc →
+              <T k="home.startWithDesignDoc" />
             </Link>
           </p>
           {profile.graphragSeries.moreHref ? (
             <p className="bento__more">
               <Link className="brutal-link" href={profile.graphragSeries.moreHref}>
-                all writing →
+                <T k="home.allWritingArrow" />
               </Link>
             </p>
           ) : null}
         </section>
 
         <section className="brutal-card bento__writing">
-          <p className="brutal-kicker">Writing</p>
-          <h2 className="brutal-title">By theme</h2>
+          <T as="p" className="brutal-kicker" k="blog.writing" />
+          <T as="h2" className="brutal-title" k="home.byTheme" />
           {groups.map((group) => (
             <div className="bento__group" key={group.id}>
               <div className="bento__group-head">
                 <Link className="brutal-link" href={group.moreHref ?? '/blog'}>
-                  {group.label}
+                  <T k={groupKeys(group.id).label} />
                 </Link>
-                <span className="bento__count">{group.resolvedPosts.length} posts</span>
+                <T
+                  className="bento__count"
+                  k="common.posts"
+                  params={{ count: String(group.resolvedPosts.length) }}
+                />
               </div>
-              <p className="brutal-text brutal-muted">{group.blurb}</p>
+              <T as="p" className="brutal-text brutal-muted" k={groupKeys(group.id).blurb} />
             </div>
           ))}
           <p className="bento__more">
             <Link className="brutal-link" href="/blog">
-              browse all {posts.length} posts →
+              <T k="home.browseAll" params={{ count: String(posts.length) }} />
             </Link>
           </p>
         </section>
 
         <section className="brutal-card brutal-card--blue bento__photography">
-          <p className="brutal-kicker">Photography</p>
-          <h2 className="brutal-title">Frames</h2>
-          <p className="brutal-text">
-            The other half of how I look at things — places, light and the shapes in between.
-            Originals live in R2, previews are generated at the edge.
-          </p>
+          <T as="p" className="brutal-kicker" k="home.photography" />
+          <T as="h2" className="brutal-title" k="home.frames" />
+          <T as="p" className="brutal-text" k="home.photographyBlurb" />
           <p className="bento__more">
             <Link className="brutal-link" href="/photography">
-              open the gallery →
+              <T k="home.openGallery" />
             </Link>
           </p>
         </section>
 
         <section className="brutal-card brutal-card--mint bento__now">
-          <p className="brutal-kicker">Now</p>
-          <h2 className="brutal-title">Right now</h2>
-          <p className="brutal-text">{profile.now[0]}</p>
+          <T as="p" className="brutal-kicker" k="home.now" />
+          <T as="h2" className="brutal-title" k="home.rightNow" />
+          <T as="p" className="brutal-text" k="profile.now1" />
           <p className="bento__more">
             <Link className="brutal-link" href="/about">
-              the full picture →
+              <T k="home.fullPicture" />
             </Link>
           </p>
         </section>
 
         <section className="brutal-card bento__resume">
-          <p className="brutal-kicker">Resume</p>
-          <h2 className="brutal-title">Hire me</h2>
+          <T as="p" className="brutal-kicker" k="home.resume" />
+          <T as="h2" className="brutal-title" k="home.hireMe" />
           <ul className="bento-list">
             {resumes.map((item) => (
               <li key={item.post.slug}>
@@ -192,15 +227,15 @@ export default function Home() {
         </section>
 
         <section className="brutal-card bento__projects">
-          <p className="brutal-kicker">Projects</p>
-          <h2 className="brutal-title">Things I maintain</h2>
+          <T as="p" className="brutal-kicker" k="home.projects" />
+          <T as="h2" className="brutal-title" k="home.thingsIMaintain" />
           <ul className="bento-list">
             {profile.projects.map((project) => (
               <li key={project.name}>
                 <a href={project.href} target="_blank" rel="noopener noreferrer">
                   {project.name}
                   <span className="work-list__meta">
-                    {project.role} · {project.meta}
+                    <T k={projectKeys(project.name).role} /> · {project.meta}
                   </span>
                 </a>
               </li>
@@ -211,8 +246,8 @@ export default function Home() {
 
       <section className="profile-latest">
         <div className="profile-latest__head">
-          <span className="brutal-kicker">Latest</span>
-          <h2>All writing</h2>
+          <T className="brutal-kicker" k="home.latest" />
+          <T as="h2" k="blog.allWriting" />
         </div>
         <PostList posts={posts} />
       </section>

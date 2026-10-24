@@ -7,6 +7,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import MermaidBlock from './MermaidBlock';
+import T from '@/components/T';
 
 const CodeContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -84,7 +85,7 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ children, className }) => {
         >
           {language}
         </Typography>
-        <Tooltip title={copied ? 'Copied!' : 'Copy code'}>
+        <Tooltip title={copied ? <T k="common.copied" /> : <T k="common.copyCode" />}>
           <CopyButton onClick={handleCopy} size="small">
             {copied ? <CheckIcon fontSize="small" /> : <ContentCopyIcon fontSize="small" />}
           </CopyButton>
