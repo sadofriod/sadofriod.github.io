@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import PhotoLightbox from '@/components/PhotoLightbox';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { previewUrl, type Photo, type PhotoCollection } from '@/lib/photos';
+import { fetchAdminSession } from '@/lib/adminSession';
 
 export default function PhotographyPage() {
   const { t } = useLanguage();
@@ -19,7 +20,9 @@ export default function PhotographyPage() {
   useEffect(() => {
     const key = new URLSearchParams(window.location.search).get('authKey');
     if (key) sessionStorage.setItem('upload_auth', key);
-    setIsAdmin(Boolean(key || sessionStorage.getItem('upload_auth')));
+    fetchAdminSession().then((next) => {
+      setIsAdmin(next.authenticated || Boolean(key || sessionStorage.getItem('upload_auth')));
+    });
 
     let cancelled = false;
 

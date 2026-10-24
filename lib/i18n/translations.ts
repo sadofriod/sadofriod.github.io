@@ -1524,6 +1524,20 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: "새 탭에서 {{name}} 열기",
     es: "Abrir {{name}} en una pestaña nueva",
   },
+  "admin.signedIn": {
+    en: "Signed in with Cloudflare Access",
+    zh: "已通过 Cloudflare Access 登录",
+    ja: "Cloudflare Access でサインイン済み",
+    ko: "Cloudflare Access로 로그인됨",
+    es: "Sesión iniciada con Cloudflare Access",
+  },
+  "admin.accessRequired": {
+    en: "Cloudflare Access protects this page. Reload to sign in.",
+    zh: "这个页面由 Cloudflare Access 保护，刷新页面完成登录。",
+    ja: "このページは Cloudflare Access で保護されています。再読み込みしてサインインしてください。",
+    ko: "이 페이지는 Cloudflare Access로 보호됩니다. 새로고침해서 로그인하세요.",
+    es: "Cloudflare Access protege esta página. Recarga para iniciar sesión.",
+  },
 };
 
 export function getTranslation(key: string, locale: Locale = 'en'): string {

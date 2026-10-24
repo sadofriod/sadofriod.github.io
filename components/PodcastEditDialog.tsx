@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import type { Podcast } from '@/lib/podcasts';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { fetchAdminSession, storedUploadKey } from '@/lib/adminSession';
 
 type PodcastEditDialogProps = {
   podcast: Podcast | null;
@@ -54,7 +55,10 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
     const formData = new FormData(event.currentTarget);
     formData.set('explicit', String(values.explicit));
     formData.set('keywords', values.keywords);
-    formData.set('authKey', sessionStorage.getItem('upload_auth') || '');
+    // Access-authenticated requests carry the JWT as a header injected by the edge;
+    // only the legacy path needs the key in the body.
+    const session = await fetchAdminSession();
+    if (!session.access) formData.set('authKey', storedUploadKey());
     setSaving(true);
     try {
       await onSave(formData);

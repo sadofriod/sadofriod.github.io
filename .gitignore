@@ -64,3 +64,6 @@ public/worker-*.js.map
 /lib/generated/prisma
 /lib/generated/post-index.json
 /lib/generated/slug-redirects.json
+
+# workerd crash dumps
+core
