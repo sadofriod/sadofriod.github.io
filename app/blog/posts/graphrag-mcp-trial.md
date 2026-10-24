@@ -95,7 +95,12 @@ Model requirements are the real constraint: a chat endpoint and an embedding end
 The MCP service, its access policy and the sample corpus are documented in
 [`integrations/mcp`](https://github.com/sadofriod/graphrag-ts/tree/main/integrations/mcp).
 
-There is also an optional paid HTTP API (`POST /api/v1/query`) built on x402 for agents that pay per
-call instead of holding a key. It is in the repository and documented, but **not enabled on the
-hosted endpoint** while the trial is running; I am not selling it before anyone has used the free
-version twice.
+There is also a paid HTTP endpoint for agents that would rather pay per call than hold a key:
+`POST /api/v1/query`, priced at $0.02 for one local query over one dataset, settled in USDC on Base
+through x402 — no account, no signup, no invoice. It runs on its own hostname, separate from the
+trial endpoint above, and a client discovers the price and the input schema from the `402` response
+itself, so nothing has to be configured in advance.
+
+What is public is the interface, the discovery metadata and the self-hosting path in the repository;
+the deployment's own configuration stays private. A paid call is settled only after the answer
+exists — a failed or timed-out query costs the caller nothing.
