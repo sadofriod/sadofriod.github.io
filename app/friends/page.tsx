@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import JsonLd from '@/components/JsonLd';
 import T from '@/components/T';
-import { friendHost, getFriendsByGroup } from '@/lib/friends';
+import FriendCard from '@/components/FriendCard';
+import { getFriendsByGroup } from '@/lib/friends';
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 const COLLECTION_TOPIC = 'https://www.v2ex.com/t/1251306';
@@ -93,25 +94,7 @@ export default function FriendsPage() {
           {section.links.length > 0 ? (
             <div className="friend-grid">
               {section.links.map((friend) => (
-                <a
-                  className="brutal-card friend-card"
-                  key={friend.id}
-                  href={friend.url}
-                  target="_blank"
-                  rel="noopener"
-                  title={`${friend.name}：${friend.blurb}`}
-                >
-                  <h3 className="brutal-title friend-card__title">{friend.name}</h3>
-                  <p className="friend-host brutal-muted">{friendHost(friend.url)}</p>
-                  <p className="brutal-text">{friend.blurb}</p>
-                  {friend.tags?.length ? (
-                    <div className="friend-tags">
-                      {friend.tags.map((tag, index) => (
-                        <span className="brutal-pill friend-pill" key={`${tag}-${index}`}>{tag}</span>
-                      ))}
-                    </div>
-                  ) : null}
-                </a>
+                <FriendCard key={friend.id} friend={friend} />
               ))}
             </div>
           ) : null}
