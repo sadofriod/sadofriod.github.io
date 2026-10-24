@@ -39,6 +39,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate post index
+        # lib/generated/post-index.json is gitignored; tsc needs it to resolve types.
+        run: node scripts/generate-post-index.js
+
       - name: Typecheck
         run: pnpm exec tsc --noEmit
 
