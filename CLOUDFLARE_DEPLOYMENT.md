@@ -28,21 +28,29 @@ public gallery reads `GET /api/photos`, so reads and writes cannot share one pro
 `POST /api/admin/photos` and `POST /api/admin/podcasts` hit the same handlers as the public
 paths; with Access configured, the shared key stops being accepted entirely.
 
-Setup, once, in the dashboard:
+Current configuration (applied, no manual step left):
 
-1. **Zero Trust → Settings → Authentication**: keep the built-in One-time PIN, or add GitHub /
-   Google as an identity provider if you want a real OAuth login.
-2. **Zero Trust → Access → Applications → Add an application → Self-hosted**:
-   - domain `blog.ashesborn.cloud`
-   - paths: `/photography/upload`, `/podcast/upload`, `/api/admin`
-   - policy: `Allow` → `Emails` → your address
-3. Copy the application's **Audience (AUD) Tag**.
-4. Set two Worker variables — dashboard (Workers → the worker → Settings → Variables) or
-   `vars` in `wrangler.jsonc`:
-   - `ACCESS_TEAM_DOMAIN=<team>.cloudflareaccess.com`
-   - `ACCESS_AUD=<the AUD tag>`
-5. Once uploads work through Access, the old shared key is dead weight:
-   `pnpm exec wrangler secret delete UPLOAD_AUTH_KEY`.
+| Piece | Value |
+| --- | --- |
+| Team domain | `ssh-ashes.cloudflareaccess.com` (set as `ACCESS_TEAM_DOMAIN`) |
+| Application | `blog admin`, id `0472f03c-5bec-4310-b90a-49bf875693eb` |
+| Audience tag | `00ccd58cb8be64385e15690089c23882b43ffe7a23471e64afa10f73320510c2` (set as `ACCESS_AUD`) |
+| Destinations | `blog.ashesborn.cloud/podcast/upload`, `/photography/upload`, `/api/admin` |
+| Policy | allow, `emails` → `justlikeashes@gmail.com` |
+| Session | 24h |
+| Identity provider | the built-in One-time PIN |
+
+Both variables live in `wrangler.jsonc` under `vars`, so every CI deploy keeps them; a dashboard edit
+alone would be overwritten by the next deploy.
+
+**Signing in**: visiting an admin page redirects to `<team>.cloudflareaccess.com`, which emails a
+one-time code — no password, no shared secret. To use a real OAuth login instead, add an identity
+provider (GitHub / Google / any OIDC) under Zero Trust → Settings → Authentication, then include its
+id in the application's `allowed_idps` (and set `auto_redirect_to_identity` if there is only one).
+
+**Removing the old key**: `UPLOAD_AUTH_KEY` is inert while `ACCESS_*` is set — the Worker never reads
+it. Delete it once you have logged in once and uploaded something:
+`pnpm exec wrangler secret delete UPLOAD_AUTH_KEY`.
 
 How it is enforced: Access injects a `Cf-Access-Jwt-Assertion` header after the visitor signs
 in. `lib/accessAuth.js` verifies it against the team's published signing keys (`/cdn-cgi/access/certs`,
