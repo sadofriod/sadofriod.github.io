@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Podcast } from '@/lib/podcasts';
 import PodcastEditDialog from '@/components/PodcastEditDialog';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { fetchAdminSession, anonymousSession, legacyAuthFields, type AdminSession } from '@/lib/adminSession';
 
 function uploadKey(): string {
   return new URLSearchParams(window.location.search).get('authKey') || sessionStorage.getItem('upload_auth') || '';
@@ -16,12 +17,18 @@ export default function PodcastPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [session, setSession] = useState<AdminSession>(anonymousSession);
   const [editing, setEditing] = useState<Podcast | null>(null);
 
   useEffect(() => {
     const queryKey = new URLSearchParams(window.location.search).get('authKey');
     if (queryKey) sessionStorage.setItem('upload_auth', queryKey);
-    setIsAdmin(Boolean(queryKey || sessionStorage.getItem('upload_auth')));
+    // Access vouches for the visitor with a header the browser never sees; without it the
+    // legacy key in sessionStorage still marks the page as admin.
+    fetchAdminSession().then((next) => {
+      setSession(next);
+      setIsAdmin(next.authenticated || Boolean(queryKey || sessionStorage.getItem('upload_auth')));
+    });
     const load = async () => {
       try {
         const response = await fetch('/api/podcasts');
@@ -44,10 +51,10 @@ export default function PodcastPage() {
 
   const remove = async (podcast: Podcast) => {
     if (!window.confirm(t('podcast.deleteConfirm'))) return;
-    const response = await fetch(`/api/podcasts/${podcast.id}`, {
+    const response = await fetch(`/api/admin/podcasts/${podcast.id}`, {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ authKey: uploadKey() }),
+      body: JSON.stringify(legacyAuthFields(session, uploadKey())),
     });
     if (!response.ok) {
       setError('Could not delete this episode');
@@ -57,7 +64,7 @@ export default function PodcastPage() {
   };
 
   const save = async (formData: FormData) => {
-    const response = await fetch(`/api/podcasts/${editing?.id}`, { method: 'PATCH', body: formData });
+    const response = await fetch(`/api/admin/podcasts/${editing?.id}`, { method: 'PATCH', body: formData });
     if (!response.ok) throw new Error(t('podcast.updateFailed'));
     await refresh();
   };

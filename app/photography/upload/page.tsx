@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { fetchAdminSession, anonymousSession, type AdminSession } from '@/lib/adminSession';
 
 const PREVIEW_MAX_EDGE = 1600;
 
@@ -27,11 +28,13 @@ export default function PhotoUploadPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [preview, setPreview] = useState('');
+  const [session, setSession] = useState<AdminSession>(anonymousSession);
 
   useEffect(() => {
     const key =
       new URLSearchParams(window.location.search).get('authKey') || sessionStorage.getItem('upload_auth') || '';
     setAuthKey(key);
+    fetchAdminSession().then(setSession);
   }, []);
 
   const onPick = (event: ChangeEvent<HTMLInputElement>) => {
@@ -49,8 +52,8 @@ export default function PhotoUploadPage() {
       setError('Pick an image first.');
       return;
     }
-    if (!authKey) {
-      setError('Missing upload key — open this page as /photography/upload?authKey=… once, or sign in through /podcast?authKey=…');
+    if (!session.access && !authKey) {
+      setError(t('admin.accessRequired'));
       return;
     }
 
@@ -59,7 +62,7 @@ export default function PhotoUploadPage() {
     setMessage('');
 
     try {
-      data.set('authKey', authKey);
+      if (!session.access) data.set('authKey', authKey);
 
       // Dimensions and the gallery preview both come from the browser, so the
       // Worker never decodes an image and the gallery never serves a 12 MB original.
@@ -74,7 +77,7 @@ export default function PhotoUploadPage() {
         // Non-fatal: the row records 0×0 and /photos/p/:id falls back to the original.
       }
 
-      const response = await fetch('/api/photos', { method: 'POST', body: data });
+      const response = await fetch('/api/admin/photos', { method: 'POST', body: data });
       if (!response.ok) {
         const payload = (await response.json().catch(() => ({}))) as { error?: string };
         throw new Error(payload.error || `${t('photoForm.uploadFailed')} (${response.status})`);
@@ -89,6 +92,19 @@ export default function PhotoUploadPage() {
       setBusy(false);
     }
   };
+
+  // Access decides who gets here; asking for a key on top of it would only confuse.
+  if (session.access && !session.authenticated) {
+    return (
+      <main className="profile-shell">
+        <header className="brutal-card brutal-card--yellow">
+          <p className="brutal-kicker">{t('photography.adminKicker')}</p>
+          <h1 className="profile-hero__name">{t('photography.uploadKicker')}</h1>
+          <p className="brutal-text">{t('admin.accessRequired')}</p>
+        </header>
+      </main>
+    );
+  }
 
   return (
     <main className="profile-shell">

@@ -17,6 +17,43 @@ requests do not spend Worker CPU on rendering.
   browser-generated WebP preview stored beside the original.
 - `UPLOAD_AUTH_KEY` — Worker secret guarding the upload endpoints.
 
+## Admin surfaces behind Cloudflare Access
+
+The upload and manage surfaces (`/photography/upload`, `/podcast/upload` and every write
+endpoint under `/api/admin/*`) authenticate through **Cloudflare Access** instead of a shared
+key, so no secret ever reaches the browser.
+
+Write endpoints live under `/api/admin/*` on purpose: Access protects a path prefix, and the
+public gallery reads `GET /api/photos`, so reads and writes cannot share one protected prefix.
+`POST /api/admin/photos` and `POST /api/admin/podcasts` hit the same handlers as the public
+paths; with Access configured, the shared key stops being accepted entirely.
+
+Setup, once, in the dashboard:
+
+1. **Zero Trust → Settings → Authentication**: keep the built-in One-time PIN, or add GitHub /
+   Google as an identity provider if you want a real OAuth login.
+2. **Zero Trust → Access → Applications → Add an application → Self-hosted**:
+   - domain `blog.ashesborn.cloud`
+   - paths: `/photography/upload`, `/podcast/upload`, `/api/admin`
+   - policy: `Allow` → `Emails` → your address
+3. Copy the application's **Audience (AUD) Tag**.
+4. Set two Worker variables — dashboard (Workers → the worker → Settings → Variables) or
+   `vars` in `wrangler.jsonc`:
+   - `ACCESS_TEAM_DOMAIN=<team>.cloudflareaccess.com`
+   - `ACCESS_AUD=<the AUD tag>`
+5. Once uploads work through Access, the old shared key is dead weight:
+   `pnpm exec wrangler secret delete UPLOAD_AUTH_KEY`.
+
+How it is enforced: Access injects a `Cf-Access-Jwt-Assertion` header after the visitor signs
+in. `lib/accessAuth.js` verifies it against the team's published signing keys (`/cdn-cgi/access/certs`,
+cached for an hour), checks `aud`, `exp` and `nbf`, and matches the key by `kid`. Anything else —
+no header, bad signature, wrong audience, expired, unknown kid — is a 401. With `ACCESS_TEAM_DOMAIN`
+and `ACCESS_AUD` unset the Worker falls back to `UPLOAD_AUTH_KEY`, which is why the two variables
+working together is the switch that turns Access on.
+
+The admin pages ask `GET /api/whoami` which mode is live: it returns `{ access, authenticated,
+email, keyRequired }`, so a page shows either the signed-in address or the legacy key form.
+
 ## DNS
 
 `blog.ashesborn.cloud` must exist in the `ashesborn.cloud` zone and be **proxied** (orange

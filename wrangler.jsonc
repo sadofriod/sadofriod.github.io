@@ -3,6 +3,14 @@
   "name": "ashesborn-blog",
   "main": "worker.js",
   "compatibility_date": "2026-10-09",
+  // Cloudflare Access gate for /photography/upload, /podcast/upload and /api/admin/*.
+  // Both must be set for Access to take over; without them the legacy UPLOAD_AUTH_KEY
+  // path stays active. Fill these in after creating the Access application (see
+  // CLOUDFLARE_DEPLOYMENT.md), then `wrangler deploy`.
+  // "vars": {
+  //   "ACCESS_TEAM_DOMAIN": "<team>.cloudflareaccess.com",
+  //   "ACCESS_AUD": "<application audience tag>"
+  // },
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./out",

@@ -49,6 +49,7 @@ jobs:
         run: |
           pnpm test:db
           pnpm test:routes
+          pnpm test:auth
 
       - name: Build static site
         run: pnpm run build

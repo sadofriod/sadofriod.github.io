@@ -271,6 +271,54 @@ const noDbPodcast = await podcastRouter.handlePodcastRequest(new Request('https:
 });
 check('podcast API answers 503 without DB', noDbPodcast.status === 503, String(noDbPodcast.status));
 
+// ---- admin alias + Cloudflare Access --------------------------------------
+console.log('\nadmin alias and access gate');
+const adminForm = new FormData();
+adminForm.set('file', new File([png], 'admin.png', { type: 'image/png' }));
+adminForm.set('title', 'Admin');
+adminForm.set('collection', 'street');
+adminForm.set('authKey', UPLOAD_KEY);
+const viaAdmin = await call(photoRouter.handlePhotoRequest, '/api/admin/photos', { method: 'POST', body: adminForm });
+check('POST /api/admin/photos works with the legacy key', viaAdmin.status === 201, String(viaAdmin.status));
+
+const adminNoAuth = new FormData();
+adminNoAuth.set('file', new File([png], 'nope.png', { type: 'image/png' }));
+const adminRejected = await call(photoRouter.handlePhotoRequest, '/api/admin/photos', { method: 'POST', body: adminNoAuth });
+check('POST /api/admin/photos without auth → 401', adminRejected.status === 401, String(adminRejected.status));
+
+// With Access configured the shared key must stop being accepted: the only proof is the
+// Cf-Access-Jwt-Assertion header, which Access injects after the visitor signs in.
+const accessEnv = { ...env, ACCESS_TEAM_DOMAIN: 'ashesborn.cloudflareaccess.com', ACCESS_AUD: 'aud-tag' };
+// The verifier fetches the team's signing keys; keep the test offline and deterministic.
+const realFetch = globalThis.fetch;
+globalThis.fetch = async (input) => {
+  throw new Error(`unexpected network call in tests: ${String(input)}`);
+};
+const accessWithKey = new FormData();
+accessWithKey.set('file', new File([png], 'key.png', { type: 'image/png' }));
+accessWithKey.set('authKey', UPLOAD_KEY);
+const keyIgnored = await photoRouter.handlePhotoRequest(
+  new Request('https://blog.ashesborn.cloud/api/admin/photos', { method: 'POST', body: accessWithKey }),
+  accessEnv
+);
+check('Access configured: the legacy key is no longer accepted', keyIgnored.status === 401, String(keyIgnored.status));
+
+const accessBadJwt = new FormData();
+accessBadJwt.set('file', new File([png], 'jwt.png', { type: 'image/png' }));
+const jwtRejected = await photoRouter.handlePhotoRequest(
+  new Request('https://blog.ashesborn.cloud/api/admin/photos', {
+    method: 'POST',
+    body: accessBadJwt,
+    headers: { 'Cf-Access-Jwt-Assertion': 'header.payload.signature' },
+  }),
+  accessEnv
+);
+check('Access configured: a bogus JWT is rejected', jwtRejected.status === 401, String(jwtRejected.status));
+
+const publicList = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'GET' });
+check('GET /api/photos stays public with Access configured', publicList.status === 200, String(publicList.status));
+globalThis.fetch = realFetch;
+
 await rm(libWork, { recursive: true, force: true });
 
 if (failures.length > 0) {

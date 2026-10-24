@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { fetchAdminSession, anonymousSession, type AdminSession } from '@/lib/adminSession';
 
 export default function PodcastUploadPage() {
   const { t } = useLanguage();
@@ -10,11 +11,20 @@ export default function PodcastUploadPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [session, setSession] = useState<AdminSession>(anonymousSession);
 
   useEffect(() => {
-    const storedKey = sessionStorage.getItem('upload_auth') || '';
-    setAuthKey(storedKey);
-    setAuthenticated(Boolean(storedKey));
+    // Access authenticates the request at the edge; only the legacy path needs a key.
+    fetchAdminSession().then((next) => {
+      setSession(next);
+      if (next.authenticated) {
+        setAuthenticated(true);
+        return;
+      }
+      const storedKey = sessionStorage.getItem('upload_auth') || '';
+      setAuthKey(storedKey);
+      setAuthenticated(next.keyRequired && Boolean(storedKey));
+    });
   }, []);
 
   const authenticate = async (event: FormEvent<HTMLFormElement>) => {
@@ -39,9 +49,9 @@ export default function PodcastUploadPage() {
     setMessage('');
     const formElement = event.currentTarget;
     const formData = new FormData(formElement);
-    formData.set('authKey', authKey);
+    if (!session.access) formData.set('authKey', authKey);
     try {
-      const response = await fetch('/api/podcasts', { method: 'POST', body: formData });
+      const response = await fetch('/api/admin/podcasts', { method: 'POST', body: formData });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || t('podcast.uploadFailed'));
       formElement.reset();
@@ -52,6 +62,19 @@ export default function PodcastUploadPage() {
       setBusy(false);
     }
   };
+
+  // Access decides who gets here; asking for a key on top of it would only confuse.
+  if (session.access && !session.authenticated) {
+    return (
+      <main className="profile-shell">
+        <header className="brutal-card brutal-card--yellow">
+          <p className="brutal-kicker">{t('podcast.adminKicker')}</p>
+          <h1 className="profile-hero__name">{t('podcastForm.kicker')}</h1>
+          <p className="brutal-text">{t('admin.accessRequired')}</p>
+        </header>
+      </main>
+    );
+  }
 
   if (!authenticated) {
     return (
