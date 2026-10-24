@@ -1,16 +1,15 @@
 import Link from 'next/link';
+import T from '@/components/T';
 
 export default function NotFound() {
   return (
     <main className="profile-shell">
       <div className="not-found">
         <p className="not-found__code brutal-kicker">404</p>
-        <h1 className="brutal-title">Page not found</h1>
-        <p className="brutal-text">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved.
-        </p>
+        <T k="notFound.title" as="h1" className="brutal-title" />
+        <T k="notFound.body" as="p" className="brutal-text" />
         <Link className="brutal-btn" href="/">
-          Back home
+          <T k="notFound.backHome" />
         </Link>
       </div>
     </main>

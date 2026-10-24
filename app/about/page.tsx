@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
+import T from '@/components/T';
 import { profile, type SocialIcon } from '@/data/profile';
 import { getPostByFile } from '@/lib/posts';
 
@@ -39,6 +40,40 @@ function socialIcon(icon: SocialIcon) {
       );
   }
 }
+
+/** Social labels are keyed by icon, not by the English label in data/profile.ts. */
+const SOCIAL_KEYS: Record<SocialIcon, string> = {
+  github: 'profile.socialGithub',
+  mail: 'profile.socialEmail',
+  blog: 'profile.socialBlog',
+};
+
+/** Writing-group copy lives under profile.group<Name>{Label,Blurb}. */
+const GROUP_NAMES: Record<string, string> = {
+  graphrag: 'Graphrag',
+  engineering: 'Engineering',
+  notes: 'Notes',
+};
+
+function groupKeys(id: string) {
+  const name = GROUP_NAMES[id] ?? 'Engineering';
+  return {
+    // The graphrag group shares the series copy.
+    label: id === 'graphrag' ? 'profile.seriesLabel' : `profile.group${name}Label`,
+    blurb: `profile.group${name}Blurb`,
+  };
+}
+
+/** Project copy is keyed by repo name. */
+function projectKeys(name: string) {
+  if (name === 'blog.ashesborn.cloud') {
+    return { role: 'profile.projectBlogRole', blurb: 'profile.projectBlogBlurb' };
+  }
+  return { role: 'profile.projectGraphragRole', blurb: 'profile.projectGraphragBlurb' };
+}
+
+/** Paragraphs in profile.now, in order. */
+const NOW_KEYS = ['profile.now1', 'profile.now2', 'profile.now3'];
 
 export default function AboutPage() {
   const fullStory = getPostByFile(profile.fullStory.file);
@@ -82,12 +117,12 @@ export default function AboutPage() {
             height={132}
           />
           <div>
-            <p className="brutal-kicker">Profile</p>
+            <T as="p" className="brutal-kicker" k="home.profile" />
             <h1 className="profile-hero__name">
               {profile.name} <span className="profile-hero__handle">@{profile.handle}</span>
             </h1>
-            <p className="profile-hero__tagline">{profile.tagline}</p>
-            <p className="profile-hero__role">{profile.role}</p>
+            <T as="p" className="profile-hero__tagline" k="profile.tagline" />
+            <T as="p" className="profile-hero__role" k="profile.role" />
 
             <div className="profile-hero__actions">
               <a
@@ -97,8 +132,10 @@ export default function AboutPage() {
                 rel="noopener noreferrer"
               >
                 <span className="brutal-pill__dot" aria-hidden="true" />
-                {profile.status.label}
-                <span className="brutal-muted">· {profile.status.detail}</span>
+                <T k="profile.statusLabel" />
+                <span className="brutal-muted">
+                  · <T k="profile.statusDetail" />
+                </span>
               </a>
             </div>
 
@@ -106,7 +143,7 @@ export default function AboutPage() {
               {profile.socials.map((social) => (
                 <a key={social.label} href={social.href}>
                   {socialIcon(social.icon)}
-                  <span>{social.label}</span>
+                  <T k={SOCIAL_KEYS[social.icon]} />
                 </a>
               ))}
             </div>
@@ -116,46 +153,48 @@ export default function AboutPage() {
 
       <section className="profile-section">
         <div className="profile-section__head">
-          <span className="brutal-kicker">Story</span>
-          <h2>How I got here</h2>
+          <T className="brutal-kicker" k="about.story" />
+          <T as="h2" k="about.howIGotHere" />
         </div>
         <div className="story">
           <div className="story__item">
-            <span className="brutal-kicker">01 / Start</span>
-            <p>{profile.about.start}</p>
+            <T className="brutal-kicker" k="about.stepStart" />
+            <T as="p" k="profile.aboutStart" />
           </div>
           <div className="story__item">
-            <span className="brutal-kicker">02 / Turn</span>
-            <p>{profile.about.turn}</p>
+            <T className="brutal-kicker" k="about.stepTurn" />
+            <T as="p" k="profile.aboutTurn" />
           </div>
           <div className="story__item">
-            <span className="brutal-kicker">03 / Now</span>
-            <p>{profile.about.now}</p>
+            <T className="brutal-kicker" k="about.stepNow" />
+            <T as="p" k="profile.aboutNow" />
           </div>
         </div>
       </section>
 
       <section className="profile-section">
         <div className="brutal-card brutal-card--mint">
-          <p className="brutal-kicker">{profile.fullStory.label}</p>
+          <T as="p" className="brutal-kicker" k="profile.fullStoryLabel" />
           <h2 className="brutal-title">
             <Link className="brutal-link" href={`/blog/${fullStory.slug}`}>
               {fullStory.title}
             </Link>
           </h2>
-          <p className="brutal-text brutal-muted">{profile.fullStory.note}</p>
+          <T as="p" className="brutal-text brutal-muted" k="profile.fullStoryNote" />
         </div>
       </section>
 
       <section className="profile-section">
         <div className="profile-section__head">
-          <span className="brutal-kicker">Now</span>
-          <h2>What I am doing</h2>
+          <T className="brutal-kicker" k="home.now" />
+          <T as="h2" k="about.whatIAmDoing" />
         </div>
         <div className="brutal-card">
           <ul className="now-list">
-            {profile.now.map((item) => (
-              <li key={item}>{item}</li>
+            {NOW_KEYS.map((key) => (
+              <li key={key}>
+                <T k={key} />
+              </li>
             ))}
           </ul>
         </div>
@@ -163,15 +202,15 @@ export default function AboutPage() {
 
       <section className="profile-section">
         <div className="profile-section__head">
-          <span className="brutal-kicker">Selected work</span>
-          <h2>Writing &amp; projects</h2>
+          <T className="brutal-kicker" k="about.selectedWork" />
+          <T as="h2" k="about.writingProjects" />
         </div>
 
         <div className="work-list">
           {writingGroups.map((group) => (
             <div className="brutal-card" key={group.id}>
-              <h3 className="brutal-title">{group.label}</h3>
-              <p className="brutal-text brutal-muted">{group.blurb}</p>
+              <T as="h3" className="brutal-title" k={groupKeys(group.id).label} />
+              <T as="p" className="brutal-text brutal-muted" k={groupKeys(group.id).blurb} />
               <ul>
                 {group.resolvedPosts.map((post) => (
                   <li key={post.slug}>
@@ -182,7 +221,7 @@ export default function AboutPage() {
               {group.moreHref ? (
                 <p className="bento__more">
                   <Link className="brutal-link" href={group.moreHref}>
-                    more in this category →
+                    <T k="about.moreInCategory" />
                   </Link>
                 </p>
               ) : null}
@@ -195,16 +234,16 @@ export default function AboutPage() {
             <div className="brutal-card brutal-card--blue" key={project.name}>
               <h3 className="brutal-title">{project.name}</h3>
               <span className="work-list__meta">
-                {project.role} · {project.meta}
+                <T k={projectKeys(project.name).role} /> · {project.meta}
               </span>
-              <p className="brutal-text">{project.blurb}</p>
+              <T as="p" className="brutal-text" k={projectKeys(project.name).blurb} />
               <a
                 className="brutal-link"
                 href={project.href}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Open →
+                <T k="about.open" />
               </a>
             </div>
           ))}
@@ -212,7 +251,7 @@ export default function AboutPage() {
 
         <div className="profile-stack">
           <div className="brutal-card brutal-card--tight">
-            <p className="brutal-kicker">Resume</p>
+            <T as="p" className="brutal-kicker" k="home.resume" />
             <div className="contact-row">
               {resumeLinks.map((item) => (
                 <Link key={item.post.slug} className="brutal-btn" href={`/blog/${item.post.slug}`}>
@@ -226,8 +265,8 @@ export default function AboutPage() {
 
       <section className="profile-section">
         <div className="profile-section__head">
-          <span className="brutal-kicker">Contact</span>
-          <h2>Say hi</h2>
+          <T className="brutal-kicker" k="about.contact" />
+          <T as="h2" k="about.sayHi" />
         </div>
         <div className="brutal-card">
           <div className="contact-row">

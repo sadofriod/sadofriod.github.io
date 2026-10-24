@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import PhotoLightbox from '@/components/PhotoLightbox';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { previewUrl, type Photo, type PhotoCollection } from '@/lib/photos';
 
 export default function PhotographyPage() {
+  const { t } = useLanguage();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [collections, setCollections] = useState<PhotoCollection[]>([]);
   const [collection, setCollection] = useState('all');
@@ -57,15 +59,15 @@ export default function PhotographyPage() {
   return (
     <main className="profile-shell">
       <header className="brutal-card brutal-card--blue">
-        <p className="brutal-kicker">Photography</p>
-        <h1 className="profile-hero__name">Frames</h1>
+        <p className="brutal-kicker">{t('photography.kicker')}</p>
+        <h1 className="profile-hero__name">{t('photography.title')}</h1>
         <p className="profile-hero__tagline">
-          Places and light I keep coming back to. Originals are one click away.
+          {t('photography.tagline')}
         </p>
         {isAdmin ? (
           <div className="profile-hero__actions">
             <Link className="brutal-btn brutal-btn--ink" href="/photography/upload">
-              Upload a photo →
+              {t('photography.uploadCta')}
             </Link>
           </div>
         ) : null}
@@ -78,7 +80,7 @@ export default function PhotographyPage() {
           aria-pressed={collection === 'all'}
           onClick={() => setCollection('all')}
         >
-          all ({photos.length})
+          {t('photography.all')} ({photos.length})
         </button>
         {collections.map((entry) => (
           <button
@@ -95,19 +97,19 @@ export default function PhotographyPage() {
 
       {error ? (
         <div className="profile-callout" role="alert">
-          <span className="brutal-kicker">Gallery</span>
+          <span className="brutal-kicker">{t('photography.gallery')}</span>
           <span>{error}</span>
         </div>
       ) : null}
 
-      {loading ? <p className="brutal-kicker">Loading frames…</p> : null}
+      {loading ? <p className="brutal-kicker">{t('photography.loading')}</p> : null}
 
       {!loading && !error && visible.length === 0 ? (
         <div className="photo-empty">
-          <p className="brutal-kicker">Empty gallery</p>
+          <p className="brutal-kicker">{t('photography.empty')}</p>
           <p className="brutal-text">
-            Nothing published yet. Upload one from <Link className="brutal-link" href="/photography/upload">/photography/upload</Link>;
-            the metadata lands in Postgres and the file in R2.
+            {t('photography.emptyLead')}{' '}
+            <Link className="brutal-link" href="/photography/upload">{t('photography.uploadLink')}</Link>.
           </p>
         </div>
       ) : null}
@@ -119,7 +121,7 @@ export default function PhotographyPage() {
             type="button"
             className="photo-tile"
             onClick={() => setOpenIndex(index)}
-            aria-label={`Open ${photo.title || 'photo'}`}
+            aria-label={t('photography.openTitle', { title: photo.title || t('photography.untitled') })}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -130,7 +132,7 @@ export default function PhotographyPage() {
               height={photo.height || undefined}
             />
             <span className="photo-tile__caption">
-              <span>{photo.title || 'Untitled'}</span>
+              <span>{photo.title || t('photography.untitled')}</span>
               <span className="bento__count">{photo.collection}</span>
             </span>
           </button>

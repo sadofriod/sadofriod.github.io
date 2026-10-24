@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import type { Podcast } from '@/lib/podcasts';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 type PodcastEditDialogProps = {
   podcast: Podcast | null;
@@ -25,6 +26,7 @@ function formDataFromPodcast(podcast: Podcast) {
 }
 
 export default function PodcastEditDialog({ podcast, open, onClose, onSave }: PodcastEditDialogProps) {
+  const { t } = useLanguage();
   const [values, setValues] = useState({ title: '', description: '', duration: '', author: '', episodeNumber: '', season: '', keywords: '', videoKey: '', explicit: false });
   const [saving, setSaving] = useState(false);
 
@@ -77,12 +79,12 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
       <div className="brutal-dialog__panel">
         <form onSubmit={handleSubmit}>
           <h2 className="brutal-dialog__title" id="podcast-edit-title">
-            Edit episode
+            {t('podcast.editEpisode')}
           </h2>
 
           <div className="form-grid">
             <label className="form-field">
-              <span>Title</span>
+              <span>{t('podcastForm.title')}</span>
               <input
                 type="text"
                 name="title"
@@ -94,7 +96,7 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
             </label>
 
             <label className="form-field form-field--wide">
-              <span>Description</span>
+              <span>{t('podcastForm.description')}</span>
               <textarea
                 name="description"
                 rows={3}
@@ -105,7 +107,7 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
             </label>
 
             <label className="form-field">
-              <span>Duration</span>
+              <span>{t('podcastForm.duration')}</span>
               <input
                 type="text"
                 name="duration"
@@ -117,7 +119,7 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
             </label>
 
             <label className="form-field">
-              <span>Author</span>
+              <span>{t('podcastForm.author')}</span>
               <input
                 type="text"
                 name="author"
@@ -127,18 +129,18 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
             </label>
 
             <label className="form-field form-field--wide">
-              <span>Keywords</span>
+              <span>{t('podcastForm.keywords')}</span>
               <input
                 type="text"
                 name="keywords"
                 value={values.keywords}
                 onChange={(event) => setValues({ ...values, keywords: event.target.value })}
-                placeholder="Separate keywords with commas"
+                placeholder={t('podcastForm.keywordsHint')}
               />
             </label>
 
             <label className="form-field">
-              <span>Episode number</span>
+              <span>{t('podcastForm.episodeNumber')}</span>
               <input
                 type="number"
                 name="episodeNumber"
@@ -148,7 +150,7 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
             </label>
 
             <label className="form-field">
-              <span>Season</span>
+              <span>{t('podcastForm.season')}</span>
               <input
                 type="number"
                 name="season"
@@ -158,7 +160,7 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
             </label>
 
             <label className="form-field form-field--wide">
-              <span>Video key in R2</span>
+              <span>{t('podcastForm.videoKey')}</span>
               <input
                 type="text"
                 name="videoKey"
@@ -175,11 +177,11 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 14 }}>
             <label className="brutal-btn">
-              Replace audio
+              {t('podcastForm.replaceAudio')}
               <input hidden type="file" name="audio" accept="audio/*" />
             </label>
             <label className="brutal-btn">
-              Replace cover
+              {t('podcastForm.replaceCover')}
               <input hidden type="file" name="image" accept="image/jpeg,image/png,image/webp" />
             </label>
           </div>
@@ -190,15 +192,15 @@ export default function PodcastEditDialog({ podcast, open, onClose, onSave }: Po
               checked={values.explicit}
               onChange={(event) => setValues({ ...values, explicit: event.target.checked })}
             />{' '}
-            Explicit content
+            {t('podcastForm.explicit')}
           </label>
 
           <div className="brutal-dialog__actions">
             <button type="button" className="brutal-btn" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </button>
             <button type="submit" className="brutal-btn brutal-btn--ink" disabled={saving}>
-              {saving ? 'Saving…' : 'Save'}
+              {saving ? t('podcastForm.saving') : t('common.save')}
             </button>
           </div>
         </form>

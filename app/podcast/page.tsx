@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Podcast } from '@/lib/podcasts';
 import PodcastEditDialog from '@/components/PodcastEditDialog';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 function uploadKey(): string {
   return new URLSearchParams(window.location.search).get('authKey') || sessionStorage.getItem('upload_auth') || '';
 }
 
 export default function PodcastPage() {
+  const { t } = useLanguage();
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -41,7 +43,7 @@ export default function PodcastPage() {
   };
 
   const remove = async (podcast: Podcast) => {
-    if (!window.confirm(`Delete “${podcast.metadata.title}”?`)) return;
+    if (!window.confirm(t('podcast.deleteConfirm'))) return;
     const response = await fetch(`/api/podcasts/${podcast.id}`, {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
@@ -56,7 +58,7 @@ export default function PodcastPage() {
 
   const save = async (formData: FormData) => {
     const response = await fetch(`/api/podcasts/${editing?.id}`, { method: 'PATCH', body: formData });
-    if (!response.ok) throw new Error('Could not update this episode');
+    if (!response.ok) throw new Error(t('podcast.updateFailed'));
     await refresh();
   };
 
@@ -65,9 +67,9 @@ export default function PodcastPage() {
       <header className="brutal-card brutal-card--yellow">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 18, justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div style={{ minWidth: 0 }}>
-            <p className="brutal-kicker">Podcast</p>
-            <h1 className="profile-hero__name">Podcast</h1>
-            <p className="brutal-text">Episodes from Ashes Space — audio, video and show notes, straight from the feed.</p>
+            <p className="brutal-kicker">{t('podcast.title')}</p>
+            <h1 className="profile-hero__name">{t('podcast.title')}</h1>
+            <p className="brutal-text">{t('podcast.episodesTagline')}</p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
             <a className="brutal-btn" href="/podcast/rss" target="_blank" rel="noreferrer">
@@ -75,7 +77,7 @@ export default function PodcastPage() {
             </a>
             {isAdmin ? (
               <Link className="brutal-btn brutal-btn--ink" href="/podcast/upload">
-                Upload
+                {t('podcast.upload')}
               </Link>
             ) : null}
           </div>
@@ -84,17 +86,17 @@ export default function PodcastPage() {
 
       {error ? (
         <div className="profile-callout" role="alert">
-          <span className="brutal-kicker">Error</span>
+          <span className="brutal-kicker">{t('common.error')}</span>
           <span>{error}</span>
         </div>
       ) : null}
 
-      {loading ? <p className="brutal-kicker">Loading episodes…</p> : null}
+      {loading ? <p className="brutal-kicker">{t('podcast.loading')}</p> : null}
 
       {!loading && !error && podcasts.length === 0 ? (
         <div className="podcast-empty">
-          <p className="brutal-kicker">Empty feed</p>
-          <p className="brutal-text">No episodes have been published yet.</p>
+          <p className="brutal-kicker">{t('podcast.emptyTitle')}</p>
+          <p className="brutal-text">{t('podcast.emptyBody')}</p>
         </div>
       ) : null}
 
@@ -129,16 +131,16 @@ export default function PodcastPage() {
             ) : null}
 
             <audio className="podcast-media" controls preload="none" src={podcast.metadata.audioUrl}>
-              Audio playback is not supported by this browser.
+              {t('podcast.audioUnsupported')}
             </audio>
 
             {isAdmin ? (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'flex-end', marginTop: 14 }}>
-                <button type="button" className="brutal-btn" aria-label="Edit episode" onClick={() => setEditing(podcast)}>
-                  Edit
+                <button type="button" className="brutal-btn" aria-label={t('podcast.editEpisode')} onClick={() => setEditing(podcast)}>
+                  {t('podcast.edit')}
                 </button>
-                <button type="button" className="brutal-btn" aria-label="Delete episode" onClick={() => void remove(podcast)}>
-                  Delete
+                <button type="button" className="brutal-btn" aria-label={t('podcast.deleteEpisode')} onClick={() => void remove(podcast)}>
+                  {t('podcast.delete')}
                 </button>
               </div>
             ) : null}

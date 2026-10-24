@@ -2,8 +2,10 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function PodcastUploadPage() {
+  const { t } = useLanguage();
   const [authKey, setAuthKey] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -23,7 +25,7 @@ export default function PodcastUploadPage() {
       body: JSON.stringify({ key: authKey }),
     });
     if (!response.ok) {
-      setMessage('Invalid upload key');
+      setMessage(t('podcast.invalidKey'));
       return;
     }
     sessionStorage.setItem('upload_auth', authKey);
@@ -41,11 +43,11 @@ export default function PodcastUploadPage() {
     try {
       const response = await fetch('/api/podcasts', { method: 'POST', body: formData });
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Upload failed');
+      if (!response.ok) throw new Error(result.error || t('podcast.uploadFailed'));
       formElement.reset();
-      setMessage('Episode uploaded successfully.');
+      setMessage(t('podcast.uploadedOk'));
     } catch (cause) {
-      setMessage(cause instanceof Error ? cause.message : 'Upload failed');
+      setMessage(cause instanceof Error ? cause.message : t('podcast.uploadFailed'));
     } finally {
       setBusy(false);
     }
@@ -55,14 +57,14 @@ export default function PodcastUploadPage() {
     return (
       <main className="profile-shell">
         <header className="brutal-card brutal-card--yellow">
-          <p className="brutal-kicker">Podcast · admin</p>
-          <h1 className="profile-hero__name">Podcast upload</h1>
-          <p className="brutal-text">Paste the upload key to unlock the episode form.</p>
+          <p className="brutal-kicker">{t('podcast.adminKicker')}</p>
+          <h1 className="profile-hero__name">{t('podcastForm.kicker')}</h1>
+          <p className="brutal-text">{t('podcastForm.unlockHint')}</p>
         </header>
 
         {message ? (
           <div className="profile-callout" role="alert">
-            <span className="brutal-kicker">Error</span>
+            <span className="brutal-kicker">{t('common.error')}</span>
             <span>{message}</span>
           </div>
         ) : null}
@@ -70,13 +72,13 @@ export default function PodcastUploadPage() {
         <form className="brutal-card profile-section" onSubmit={authenticate}>
           <div className="form-grid">
             <label className="form-field form-field--wide">
-              <span>Upload key</span>
+              <span>{t('podcastForm.uploadKey')}</span>
               <input type="password" value={authKey} onChange={(event) => setAuthKey(event.target.value)} required />
             </label>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 18 }}>
             <button type="submit" className="brutal-btn brutal-btn--ink">
-              Authenticate
+              {t('podcastForm.authenticate')}
             </button>
           </div>
         </form>
@@ -87,12 +89,12 @@ export default function PodcastUploadPage() {
   return (
     <main className="profile-shell">
       <header className="brutal-card brutal-card--yellow">
-        <p className="brutal-kicker">Podcast · admin</p>
-        <h1 className="profile-hero__name">Upload episode</h1>
-        <p className="brutal-text">Audio lands in R2, metadata lands in the episode feed.</p>
+        <p className="brutal-kicker">{t('podcast.adminKicker')}</p>
+        <h1 className="profile-hero__name">{t('podcastForm.submit')}</h1>
+        <p className="brutal-text">{t('podcastForm.tagline')}</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 18 }}>
           <Link className="brutal-btn" href="/podcast">
-            ← Back to episodes
+            {t('podcast.backToEpisodes')}
           </Link>
         </div>
       </header>
@@ -102,7 +104,7 @@ export default function PodcastUploadPage() {
           className={`profile-callout${message.includes('successfully') ? ' profile-callout--bottom' : ''}`}
           role={message.includes('successfully') ? 'status' : 'alert'}
         >
-          <span className="brutal-kicker">{message.includes('successfully') ? 'Done' : 'Error'}</span>
+          <span className="brutal-kicker">{message.includes('successfully') ? 'Done' : t('common.error')}</span>
           <span>{message}</span>
         </div>
       ) : null}
@@ -110,67 +112,67 @@ export default function PodcastUploadPage() {
       <form className="brutal-card profile-section" onSubmit={upload}>
         <div className="form-grid">
           <label className="form-field">
-            <span>Title</span>
+            <span>{t('podcastForm.title')}</span>
             <input type="text" name="title" required />
           </label>
 
           <label className="form-field form-field--wide">
-            <span>Description</span>
+            <span>{t('podcastForm.description')}</span>
             <textarea name="description" rows={3} required />
           </label>
 
           <label className="form-field">
-            <span>Duration</span>
+            <span>{t('podcastForm.duration')}</span>
             <input type="text" name="duration" placeholder="45:30" required />
           </label>
 
           <label className="form-field">
-            <span>Author</span>
+            <span>{t('podcastForm.author')}</span>
             <input type="text" name="author" />
           </label>
 
           <label className="form-field">
-            <span>Episode number</span>
+            <span>{t('podcastForm.episodeNumber')}</span>
             <input type="number" name="episodeNumber" />
           </label>
 
           <label className="form-field">
-            <span>Season</span>
+            <span>{t('podcastForm.season')}</span>
             <input type="number" name="season" />
           </label>
 
           <label className="form-field form-field--wide">
-            <span>Keywords</span>
-            <input type="text" name="keywords" placeholder="Separate keywords with commas" />
+            <span>{t('podcastForm.keywords')}</span>
+            <input type="text" name="keywords" placeholder={t('podcastForm.keywordsHint')} />
           </label>
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 18 }}>
           <label className="brutal-btn">
-            Choose audio file
+            {t('podcastForm.chooseAudio')}
             <input hidden type="file" name="audio" accept="audio/*" required />
           </label>
           <label className="brutal-btn">
-            Choose cover image
+            {t('podcastForm.chooseCover')}
             <input hidden type="file" name="image" accept="image/jpeg,image/png,image/webp" />
           </label>
         </div>
 
         <label className="form-field form-field--wide" style={{ marginTop: 18 }}>
-          <span>Video key in R2</span>
+          <span>{t('podcastForm.videoKey')}</span>
           <input type="text" name="videoKey" placeholder="S01E01.mp4" />
         </label>
         <small style={{ display: 'block', marginTop: 6, opacity: 0.7 }}>
-          Optional. An object that already exists in the PODCASTS bucket.
+          {t('podcastForm.videoKeyHint')}
         </small>
 
         <label className="brutal-checkbox" style={{ marginTop: 16 }}>
-          <input type="checkbox" name="explicit" value="true" /> Explicit content
+          <input type="checkbox" name="explicit" value="true" /> {t('podcastForm.explicit')}
         </label>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 22 }}>
           <button type="submit" className="brutal-btn brutal-btn--ink" disabled={busy}>
-            {busy ? 'Uploading…' : 'Upload episode'}
+            {busy ? t('podcastForm.uploading') : t('podcastForm.submit')}
           </button>
         </div>
       </form>

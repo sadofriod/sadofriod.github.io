@@ -34,8 +34,14 @@ export default function PostList({ posts }: PostListProps) {
       else groups.set(key, [post]);
     }
 
+    // Order of preference: the visitor's language, then English, then whatever
+    // the group has (zh-only posts stay visible for ja/ko/es readers).
     return Array.from(groups.values()).map(
-      (group) => group.find((post) => post.lang === locale) ?? group.find((post) => post.isPrimary) ?? group[0]
+      (group) =>
+        group.find((post) => post.lang === locale) ??
+        group.find((post) => post.lang === 'en') ??
+        group.find((post) => post.isPrimary) ??
+        group[0]
     );
   }, [posts, locale]);
 

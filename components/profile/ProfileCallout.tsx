@@ -1,22 +1,29 @@
+'use client';
+
 import Link from 'next/link';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 type ProfileCalloutProps = {
   variant: 'top' | 'bottom';
 };
 
 /**
- * Server Component. Pure CSS, zero client JS.
- * Links the long-form retrospective back to the short profile narrative and
- * gives every article a way out to the identity pages.
+ * Client Component. Links the long-form retrospective back to the short profile
+ * narrative and gives every article a way out to the identity pages.
+ *
+ * Copy goes through useLanguage() so the static export keeps rendering the
+ * default locale and the client swaps it after hydration.
  */
 export default function ProfileCallout({ variant }: ProfileCalloutProps) {
+  const { t } = useLanguage();
+
   if (variant === 'top') {
     return (
       <aside className="profile-callout">
-        <span className="brutal-kicker">Full version</span>
+        <span className="brutal-kicker">{t('callout.fullVersion')}</span>
         <span>
-          This is the full version of the story. If you want the short one first, read the{' '}
-          <Link href="/about">About page</Link>.
+          {t('callout.fullStoryLead')}{' '}
+          <Link href="/about">{t('callout.aboutPage')}</Link>.
         </span>
       </aside>
     );
@@ -24,13 +31,13 @@ export default function ProfileCallout({ variant }: ProfileCalloutProps) {
 
   return (
     <aside className="profile-callout profile-callout--bottom">
-      <span className="brutal-kicker">Keep going</span>
+      <span className="brutal-kicker">{t('callout.keepGoing')}</span>
       <span>
-        Want to know what I am working on now? <Link href="/about">About</Link>
+        {t('callout.wantToKnow')} <Link href="/about">{t('callout.about')}</Link>
         {' · '}
-        <Link href="/photography">Photography</Link>
+        <Link href="/photography">{t('callout.photography')}</Link>
         {' · '}
-        <Link href="/blog">All writing</Link>
+        <Link href="/blog">{t('callout.allWriting')}</Link>
       </span>
     </aside>
   );

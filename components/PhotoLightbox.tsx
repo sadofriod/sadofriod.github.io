@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect } from 'react';
 import type { Photo } from '@/lib/photos';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 type PhotoLightboxProps = {
   photos: Photo[];
@@ -11,6 +12,7 @@ type PhotoLightboxProps = {
 };
 
 export default function PhotoLightbox({ photos, index, onClose, onNavigate }: PhotoLightboxProps) {
+  const { t } = useLanguage();
   const photo = index !== null ? photos[index] : undefined;
 
   const step = useCallback(
@@ -55,22 +57,22 @@ export default function PhotoLightbox({ photos, index, onClose, onNavigate }: Ph
         <img src={`${photo.preview}?w=2000`} alt={photo.title || ''} />
         <figcaption className="photo-lightbox__bar">
           <span>
-            {photo.title || 'Untitled'}
+            {photo.title || t('lightbox.untitled')}
             {photo.takenOn ? ` · ${photo.takenOn}` : ''}
             {photo.width && photo.height ? ` · ${photo.width}×${photo.height}` : ''}
           </span>
           <span className="photo-lightbox__actions">
-            <button type="button" onClick={() => step(-1)} aria-label="Previous photo">
+            <button type="button" onClick={() => step(-1)} aria-label={t('lightbox.previous')}>
               ←
             </button>
-            <button type="button" onClick={() => step(1)} aria-label="Next photo">
+            <button type="button" onClick={() => step(1)} aria-label={t('lightbox.next')}>
               →
             </button>
             <a href={photo.original} download>
-              Download original
+              {t('lightbox.download')}
             </a>
             <button type="button" onClick={onClose}>
-              Close
+              {t('lightbox.close')}
             </button>
           </span>
         </figcaption>

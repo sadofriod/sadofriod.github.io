@@ -8,6 +8,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CodeIcon from '@mui/icons-material/Code';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import katex from 'katex';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import T from '@/components/T';
 
 const MathContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
@@ -56,6 +58,7 @@ interface MathBlockProps {
 }
 
 export default function MathBlock({ math, className, displayMode = true }: MathBlockProps) {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [showSource, setShowSource] = useState(false);
   const theme = useTheme();
@@ -93,7 +96,7 @@ export default function MathBlock({ math, className, displayMode = true }: MathB
             letterSpacing: '0.5px',
           }}
         >
-          LaTeX Math
+          {t('math.latexLabel')}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Tooltip title={showSource ? 'Show Math' : 'Show LaTeX Code'}>
@@ -110,11 +113,11 @@ export default function MathBlock({ math, className, displayMode = true }: MathB
             </ActionButton>
           </Tooltip>
 
-          <Tooltip title={copied ? 'Copied!' : 'Copy LaTeX'}>
+          <Tooltip title={copied ? <T k="common.copied" /> : <T k="math.copyLatexShort" />}>
             <ActionButton 
               size="small" 
               onClick={handleCopy}
-              aria-label="Copy LaTeX code"
+              aria-label={t('math.copyLatex')}
             >
               {copied ? (
                 <CheckIcon sx={{ fontSize: '1.1rem', color: theme.palette.success.main }} />

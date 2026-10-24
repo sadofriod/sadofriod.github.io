@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface ShareButtonProps {
   title: string;
@@ -22,6 +23,7 @@ const menuItemStyle: CSSProperties = {
 };
 
 const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
+  const { t } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const [showWeChatDialog, setShowWeChatDialog] = useState(false);
@@ -115,12 +117,12 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
         type="button"
         className="brutal-btn"
         onClick={handleClick}
-        title="Share this post"
+        title={t('article.sharePost')}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         style={{ cursor: 'pointer' }}
       >
-        Share
+        {t('article.share')}
       </button>
 
       {menuOpen && (
@@ -145,7 +147,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             onMouseEnter={(event) => { event.currentTarget.style.background = 'var(--yellow)'; }}
             onMouseLeave={(event) => { event.currentTarget.style.background = 'transparent'; }}
           >
-            Share on Twitter
+            {t('article.shareTwitter')}
           </button>
           <button
             type="button"
@@ -155,7 +157,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             onMouseEnter={(event) => { event.currentTarget.style.background = 'var(--yellow)'; }}
             onMouseLeave={(event) => { event.currentTarget.style.background = 'transparent'; }}
           >
-            Share on Facebook
+            {t('article.shareFacebook')}
           </button>
           <button
             type="button"
@@ -165,7 +167,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             onMouseEnter={(event) => { event.currentTarget.style.background = 'var(--yellow)'; }}
             onMouseLeave={(event) => { event.currentTarget.style.background = 'transparent'; }}
           >
-            Share on LinkedIn
+            {t('article.shareLinkedIn')}
           </button>
           <button
             type="button"
@@ -175,7 +177,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             onMouseEnter={(event) => { event.currentTarget.style.background = 'var(--yellow)'; }}
             onMouseLeave={(event) => { event.currentTarget.style.background = 'transparent'; }}
           >
-            Share to WeChat
+            {t('article.shareWeChat')}
           </button>
           <button
             type="button"
@@ -185,7 +187,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             onMouseEnter={(event) => { event.currentTarget.style.background = 'var(--yellow)'; }}
             onMouseLeave={(event) => { event.currentTarget.style.background = 'transparent'; }}
           >
-            Copy link
+            {t('article.copyLink')}
           </button>
         </div>
       )}
@@ -196,22 +198,22 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
           className="brutal-dialog"
           role="dialog"
           aria-modal="true"
-          aria-label="Share to WeChat"
+          aria-label={t('article.shareWeChat')}
           onClick={() => setShowWeChatDialog(false)}
         >
           <div
             className="brutal-dialog__panel"
             onClick={(event) => event.stopPropagation()}
           >
-            <h2 className="brutal-dialog__title">Share to WeChat</h2>
+            <h2 className="brutal-dialog__title">{t('article.shareWeChat')}</h2>
             <div style={{ textAlign: 'center', padding: '8px 0' }}>
               <img
                 src={generateQRCodeUrl(url)}
-                alt="QR Code for WeChat sharing"
+                alt={t('article.qrTitle')}
                 style={{ maxWidth: '180px', width: '100%', height: 'auto', border: '2px solid var(--ink)' }}
               />
               <p style={{ margin: '16px 0 0', fontSize: '0.85rem', opacity: 0.75 }}>
-                Scan this QR code with WeChat to share
+                {t('article.qrHint')}
               </p>
               <p style={{ margin: '8px 0 0', fontWeight: 700, fontSize: '0.9rem' }}>
                 {title}
@@ -219,7 +221,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             </div>
             <div className="brutal-dialog__actions">
               <button type="button" className="brutal-btn" onClick={handleCopyLink} style={{ cursor: 'pointer' }}>
-                Copy Link
+                {t('article.copyLink')}
               </button>
               <button
                 type="button"
@@ -227,7 +229,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
                 onClick={() => setShowWeChatDialog(false)}
                 style={{ cursor: 'pointer' }}
               >
-                Close
+                {t('common.close')}
               </button>
             </div>
           </div>
@@ -252,7 +254,7 @@ const ShareButton: React.FC<ShareButtonProps> = ({ title, url, text }) => {
             fontSize: '0.85rem',
           }}
         >
-          Link copied to clipboard!
+          {t('article.copied')}
         </div>
       )}
     </div>

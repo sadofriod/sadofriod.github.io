@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 interface TOCItem {
   text: string;
@@ -11,6 +12,7 @@ interface TOCProps {
 }
 
 export default function TOC({ content }: TOCProps) {
+  const { t } = useLanguage();
   const [tocItems, setTocItems] = useState<TOCItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -105,7 +107,7 @@ export default function TOC({ content }: TOCProps) {
   if (tocItems.length === 0) return null;
 
   return (
-    <nav data-toc-container="true" aria-label="Table of contents">
+    <nav data-toc-container="true" aria-label={t('article.toc')}>
       {tocItems.map((item, index) => {
         const itemId = generateHeadingId(item.text);
         // Chinese headings slug to "" (the id regex only keeps \w), so an
