@@ -4,13 +4,13 @@
   "main": "worker.js",
   "compatibility_date": "2026-10-09",
   // Cloudflare Access gate for /photography/upload, /podcast/upload and /api/admin/*.
-  // Both must be set for Access to take over; without them the legacy UPLOAD_AUTH_KEY
-  // path stays active. Fill these in after creating the Access application (see
-  // CLOUDFLARE_DEPLOYMENT.md), then `wrangler deploy`.
-  // "vars": {
-  //   "ACCESS_TEAM_DOMAIN": "<team>.cloudflareaccess.com",
-  //   "ACCESS_AUD": "<application audience tag>"
-  // },
+  // The AUD below is the audience tag of the "blog admin" Access application; both values
+  // must be present for Access to take over, otherwise the legacy UPLOAD_AUTH_KEY path
+  // stays active. See CLOUDFLARE_DEPLOYMENT.md.
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "ssh-ashes.cloudflareaccess.com",
+    "ACCESS_AUD": "00ccd58cb8be64385e15690089c23882b43ffe7a23471e64afa10f73320510c2"
+  },
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./out",
