@@ -1,9 +1,9 @@
 name: Deploy Cloudflare Worker
 
+# Production deploys happen on exactly one event: a push to master, i.e. when a
+# pull request is merged. workflow_dispatch exists for an intentional re-deploy
+# and is guarded below so it cannot ship a feature branch.
 on:
-  # every pull request gets the build check (the deploy step is gated below);
-  # stacked PRs target a feature branch, not master, and still need CI.
-  pull_request:
   push:
     branches:
       - master
@@ -18,7 +18,11 @@ concurrency:
 
 jobs:
   deploy:
+    # Belt and braces: `push.branches` already limits this, but a manual dispatch
+    # can be started from any ref, and a feature branch must never reach production.
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -37,11 +41,22 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate post index
+        # lib/generated/post-index.json is gitignored; tsc needs it to resolve types.
+        run: node scripts/generate-post-index.js
+
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit
+
+      - name: Store and route tests
+        run: |
+          pnpm test:db
+          pnpm test:routes
+
       - name: Build static site
         run: pnpm run build
 
       - name: Deploy Worker
-        if: github.event_name != 'pull_request'
         run: pnpm exec wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

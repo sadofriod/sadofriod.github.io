@@ -1,0 +1,57 @@
+name: CI
+
+# Build-and-test only. Deployment lives in deploy-cloudflare.yml and never runs
+# from a pull request: production is touched only by a push to master.
+on:
+  # Pull requests only: a plain branch push with no PR would run the same jobs
+  # twice, and master is covered by the deploy workflow's gates.
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# PR runs of different branches must not queue behind each other; only the
+# production deploy is serialised (see deploy-cloudflare.yml).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate post index
+        # lib/generated/post-index.json is gitignored; tsc needs it to resolve types.
+        run: node scripts/generate-post-index.js
+
+      - name: Typecheck
+        run: pnpm exec tsc --noEmit
+
+      - name: Store and route tests
+        run: |
+          pnpm test:db
+          pnpm test:routes
+
+      - name: Build static site
+        run: pnpm run build
+
+      - name: Worker bundle check
+        run: pnpm exec wrangler deploy --dry-run --outdir .wrangler/dry-run
