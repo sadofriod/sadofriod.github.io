@@ -934,8 +934,10 @@ html body {
 }
 
 @media (max-width: 760px) {
+  /* Width-driven columns instead of a fixed count: the browser keeps at least two
+     columns down to ~320 px while still packing a third or fourth on wider phones. */
   .photo-grid {
-    columns: 2;
+    columns: 168px;
     column-gap: 12px;
   }
 
@@ -946,7 +948,9 @@ html body {
 
 @media (max-width: 480px) {
   .photo-grid {
-    columns: 1;
+    /* 130 px + 10 px gutter still yields two columns on a 320 px screen. */
+    columns: 130px;
+    column-gap: 10px;
   }
 }
 

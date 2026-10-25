@@ -80,6 +80,9 @@ export default function PhotographyPage() {
         <p className="profile-hero__tagline">
           {t('photography.tagline')}
         </p>
+        <div className="profile-hero__actions">
+          <Link className="brutal-btn" href="/photography/verify">{t('watermark.title')}</Link>
+        </div>
         {isAdmin ? (
           <div className="profile-hero__actions">
             <Link className="brutal-btn brutal-btn--ink" href="/photography/upload">

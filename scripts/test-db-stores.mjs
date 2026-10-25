@@ -182,6 +182,7 @@ const photoA = await photoStore.insertPhoto(db, {
   iso: 400,
   focalLength: 35,
   metadataSource: 'exif',
+  watermarkId: '1234567890abcdef',
 });
 check('photo record has no r2 key', !('originalKey' in photoA), JSON.stringify(Object.keys(photoA)));
 check('preview url shape', photoA.preview === '/photos/p/photo-a');
@@ -190,6 +191,8 @@ check('tags come back as an array', JSON.stringify(photoA.tags) === '["fog"]');
 check('metadata location fields round-trip', photoA.location?.label === 'Hangzhou, Zhejiang, China' && photoA.location.latitude === 30.2741);
 check('metadata camera fields round-trip', photoA.camera?.model === 'NIKON Z 6' && photoA.camera.fNumber === 2.8);
 check('metadata source round-trips', photoA.metadataSource === 'exif');
+check('watermark id is public when present', photoA.watermarkId === '1234567890abcdef');
+check('watermark lookup returns public photo', (await photoStore.findPhotoByWatermark(db, '1234567890abcdef'))?.id === 'photo-a');
 
 await photoStore.insertPhoto(db, {
   id: 'photo-b',
@@ -210,6 +213,7 @@ await photoStore.insertPhoto(db, {
 });
 const photoB = await photoStore.getPhoto(db, 'photo-b');
 check('photo without metadata has no empty optional objects', !('location' in photoB) && !('camera' in photoB) && !('metadataSource' in photoB));
+check('photo without watermark has no watermark id', !('watermarkId' in photoB));
 
 const all = await photoStore.listPhotos(db);
 check('unpublished photos are hidden by default', all.length === 1, `got ${all.length}`);

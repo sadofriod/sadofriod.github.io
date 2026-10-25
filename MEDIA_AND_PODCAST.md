@@ -15,7 +15,7 @@ browser ──▶ Worker (worker.js)
 ```
 
 Schema: `migrations/0001_podcasts_and_photos.sql`, `0002_podcast_video.sql`, and
-`0003_photo_metadata.sql`. SQL lives in `lib/photoStore.js` and `lib/podcastStore.js`, and is
+`0003_photo_metadata.sql`, and `0004_photo_watermark.sql`. SQL lives in `lib/photoStore.js` and `lib/podcastStore.js`, and is
 exercised against an in-process SQLite by `node scripts/test-db-stores.mjs` (32 assertions) and
 `node scripts/test-worker-routes.mjs` (45 assertions, including metadata persistence and geocode-cache
 coverage). The hand-written EXIF parser has 15 fixture assertions in `node scripts/test-photo-metadata.mjs`.
@@ -112,6 +112,28 @@ back to BigDataCloud when the selected provider is unavailable.
 curl -s 'https://blog.ashesborn.cloud/api/photo-geocode?lat=30.2741&lon=120.1551&lang=en'
 curl -s 'https://blog.ashesborn.cloud/api/photos'
 ```
+
+## Watermark
+
+Each uploaded preview contains an invisible 88-bit DCT payload: an 8-byte ID derived from the first
+2 MB of the original file plus `ashesborn-photo`, a CRC-16/CCITT checksum, and a version byte. The
+watermark is applied to the 1600 px WebP preview only; the downloadable original remains byte-for-byte
+untouched. At the measured strength the prototype reached 37.1 dB PSNR and survived WebP/JPEG
+re-encoding and rescaling.
+
+Existing photos can be backfilled after configuring `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` (the default bucket is `ashesborn-photos`):
+
+```bash
+node --experimental-strip-types scripts/watermark-backfill.mjs --local
+node --experimental-strip-types scripts/watermark-backfill.mjs --remote --dry-run
+```
+
+The backfill keeps prior preview objects and updates D1 to a versioned preview key. Verify an image
+from the command line with `node --experimental-strip-types scripts/watermark-verify.mjs photo.webp`,
+or use the public browser verifier at `/photography/verify`. A valid ID can also be looked up at
+`/api/photos?watermark=<16-hex-id>`. The watermark is robust to re-encoding and rescaling, but does
+not survive heavy cropping or deliberate watermark removal.
 
 ## Verifying a deployment
 
