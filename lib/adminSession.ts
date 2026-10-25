@@ -2,7 +2,8 @@
  * Client-side view of "who is allowed to admin this site".
  *
  * With Cloudflare Access configured, the Worker validates the Access JWT that the edge
- * injects, so the browser never handles a secret: the pages just ask /api/whoami.
+ * injects, so the browser never handles a secret: the pages ask the protected session
+ * endpoint first, with /api/whoami retained as a fallback.
  * Without Access they fall back to the legacy UPLOAD_AUTH_KEY kept in sessionStorage.
  */
 
@@ -12,6 +13,8 @@ export type AdminSession = {
   /** The current request carried a valid Access identity. */
   authenticated: boolean;
   email: string | null;
+  /** Which Access credential authenticated this request, when available. */
+  source?: 'header' | 'cookie' | null;
   /** No Access configured: the legacy key form is the only way in. */
   keyRequired: boolean;
 };
@@ -24,14 +27,17 @@ export const anonymousSession: AdminSession = {
 };
 
 export async function fetchAdminSession(): Promise<AdminSession> {
-  try {
-    const response = await fetch('/api/whoami', { cache: 'no-store' });
-    if (!response.ok) return anonymousSession;
-    const payload = (await response.json()) as Partial<AdminSession>;
-    return { ...anonymousSession, ...payload };
-  } catch {
-    return anonymousSession;
+  for (const endpoint of ['/api/admin/session', '/api/whoami']) {
+    try {
+      const response = await fetch(endpoint, { cache: 'no-store' });
+      if (!response.ok || !/\bapplication\/(?:[a-z0-9.+-]*\+)?json\b/i.test(response.headers.get('content-type') || '')) continue;
+      const payload = (await response.json()) as Partial<AdminSession>;
+      return { ...anonymousSession, ...payload };
+    } catch {
+      // Access may redirect a stale session to its HTML login page; try the fallback.
+    }
   }
+  return anonymousSession;
 }
 
 /** Legacy key stored by the upload pages; empty string when never entered. */

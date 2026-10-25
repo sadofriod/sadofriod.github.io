@@ -10,6 +10,7 @@
  */
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { DatabaseSync } from 'node:sqlite';
+import { webcrypto as crypto } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -28,6 +29,11 @@ for (const file of (await readdir(path.join(root, 'lib'))).filter((name) => name
 
 const photoRouter = await import(path.join(libWork, 'photoRouter.mjs'));
 const podcastRouter = await import(path.join(libWork, 'podcastRouter.mjs'));
+const workerSource = (await readFile(path.join(root, 'worker.js'), 'utf8'))
+  .replace("import slugRedirects from './lib/generated/slug-redirects.json';", 'const slugRedirects = {};')
+  .replace(/from '\.\/lib\/([A-Za-z0-9_.-]+)\.js'/g, "from './$1.mjs'");
+await writeFile(path.join(libWork, 'worker.mjs'), workerSource);
+const worker = (await import(path.join(libWork, 'worker.mjs'))).default;
 
 // --- in-memory R2 ------------------------------------------------------------
 class FakeBucket {
@@ -364,6 +370,42 @@ check('Access configured: a bogus JWT is rejected', jwtRejected.status === 401, 
 
 const publicList = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'GET' });
 check('GET /api/photos stays public with Access configured', publicList.status === 200, String(publicList.status));
+
+const encoder = new TextEncoder();
+const b64url = (bytes) => Buffer.from(bytes).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const json64 = (value) => b64url(encoder.encode(JSON.stringify(value)));
+const pair = await crypto.subtle.generateKey(
+  { name: 'RSASSA-PKCS1-v1_5', modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: 'SHA-256' },
+  true,
+  ['sign', 'verify']
+);
+const publicJwk = { ...(await crypto.subtle.exportKey('jwk', pair.publicKey)), kid: 'route-test-key', alg: 'RS256', use: 'sig' };
+const routeAud = accessEnv.ACCESS_AUD;
+const now = Math.floor(Date.now() / 1000);
+const jwtHeader = json64({ alg: 'RS256', kid: publicJwk.kid, typ: 'JWT' });
+const jwtPayload = json64({ aud: routeAud, email: 'admin@example.com', sub: 'route-test-user', exp: now + 600 });
+const unsignedJwt = `${jwtHeader}.${jwtPayload}`;
+const signature = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', pair.privateKey, encoder.encode(unsignedJwt));
+const routeJwt = `${unsignedJwt}.${b64url(new Uint8Array(signature))}`;
+globalThis.fetch = async (input) => {
+  if (!String(input).endsWith('/cdn-cgi/access/certs')) throw new Error(`unexpected network call in tests: ${String(input)}`);
+  return Response.json({ keys: [publicJwk] });
+};
+const sessionEnv = { ...accessEnv, ASSETS: { fetch: async () => new Response('not found', { status: 404 }) } };
+for (const endpoint of ['/api/whoami', '/api/admin/session']) {
+  const authenticated = await worker.fetch(
+    new Request(`https://blog.ashesborn.cloud${endpoint}`, { headers: { cookie: `CF_Authorization=${routeJwt}` } }),
+    sessionEnv,
+    {}
+  );
+  const authenticatedBody = await authenticated.json();
+  check(`GET ${endpoint} accepts cookie identity`, authenticated.status === 200 && authenticatedBody.authenticated === true && authenticatedBody.source === 'cookie' && authenticatedBody.email === 'admin@example.com', JSON.stringify(authenticatedBody));
+  check(`GET ${endpoint} disables caching`, authenticated.headers.get('cache-control') === 'no-store');
+
+  const anonymous = await worker.fetch(new Request(`https://blog.ashesborn.cloud${endpoint}`), sessionEnv, {});
+  const anonymousBody = await anonymous.json();
+  check(`GET ${endpoint} without credentials is anonymous`, anonymousBody.authenticated === false && anonymousBody.source === null);
+}
 globalThis.fetch = realFetch;
 
 await rm(libWork, { recursive: true, force: true });

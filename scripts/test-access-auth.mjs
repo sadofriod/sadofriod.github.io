@@ -44,6 +44,9 @@ const request = (jwt) => new Request('https://blog.ashesborn.cloud/api/photos', 
   method: 'POST',
   headers: jwt ? { 'Cf-Access-Jwt-Assertion': jwt } : {},
 });
+const cookieRequest = (cookie, headers = {}) => new Request('https://blog.ashesborn.cloud/api/whoami', {
+  headers: { ...(cookie ? { cookie } : {}), ...headers },
+});
 
 const results = [];
 const check = async (name, fn) => {
@@ -69,6 +72,37 @@ await check('certs are cached', async () => {
 
 await check('no header -> anonymous', async () => {
   assert.equal(await accessIdentity(request(null), env), null);
+});
+
+await check('valid CF_Authorization cookie -> cookie identity', async () => {
+  const identity = await accessIdentity(cookieRequest(`CF_Authorization=${await token()}`), env);
+  assert.equal(identity.email, 'justlikeashes@gmail.com');
+  assert.equal(identity.sub, 'user-1');
+  assert.equal(identity.source, 'cookie');
+});
+
+await check('valid header wins over broken cookie', async () => {
+  const identity = await accessIdentity(
+    cookieRequest('CF_Authorization=broken-cookie', { 'Cf-Access-Jwt-Assertion': await token() }),
+    env
+  );
+  assert.equal(identity.email, 'justlikeashes@gmail.com');
+  assert.equal(identity.source, 'header');
+});
+
+await check('broken cookie without header -> anonymous', async () => {
+  assert.equal(await accessIdentity(cookieRequest('CF_Authorization=broken-cookie'), env), null);
+});
+
+await check('split CF_Authorization cookie -> cookie identity', async () => {
+  const jwt = await token();
+  const splitAt = Math.floor(jwt.length / 2);
+  const identity = await accessIdentity(
+    cookieRequest(`CF_Authorization_1=${jwt.slice(splitAt)}; CF_Authorization_0=${jwt.slice(0, splitAt)}`),
+    env
+  );
+  assert.equal(identity.source, 'cookie');
+  assert.equal(identity.email, 'justlikeashes@gmail.com');
 });
 
 await check('unconfigured env -> anonymous', async () => {
