@@ -4,9 +4,26 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { fetchAdminSession, anonymousSession, type AdminSession } from '@/lib/adminSession';
-import { metadataToFormFields, parsePhotoMetadata, summarizeMetadata } from '@/lib/photoMetadata';
+import { metadataToFormFields, parsePhotoMetadata, type PhotoMetadata } from '@/lib/photoMetadata';
 
 const PREVIEW_MAX_EDGE = 1600;
+const PICK_LIMIT = 30;
+
+type UploadStatus = 'reading' | 'resolving' | 'ready' | 'uploading' | 'done' | 'error';
+type ResolvedPlace = { label?: string | null; city?: string | null; region?: string | null; country?: string | null };
+type UploadItem = {
+  id: string;
+  file: File;
+  thumbUrl: string;
+  meta: PhotoMetadata | null;
+  date: string;
+  place: ResolvedPlace | null;
+  camera: string;
+  collection: string;
+  coordinates: { latitude?: number; longitude?: number; altitude?: number };
+  status: UploadStatus;
+  message: string;
+};
 
 /** Downscale in the browser so /photos/p/:id can serve a ~200 KB WebP. */
 async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
@@ -22,106 +39,117 @@ async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.82));
 }
 
+function mapConcurrent<T>(items: T[], concurrency: number, task: (item: T) => Promise<void>) {
+  let next = 0;
+  return Promise.all(Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+    while (next < items.length) {
+      const index = next++;
+      await task(items[index]);
+    }
+  }));
+}
+
 export default function PhotoUploadPage() {
   const { t, locale } = useLanguage();
   const [authKey, setAuthKey] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const [preview, setPreview] = useState('');
   const [session, setSession] = useState<AdminSession>(anonymousSession);
-  const [formState, setFormState] = useState<Record<string, string>>({ collection: 'street' });
-  const [metadataChips, setMetadataChips] = useState<string[]>([]);
-  const [metadataDetected, setMetadataDetected] = useState(false);
-  const [placeStatus, setPlaceStatus] = useState<'idle' | 'resolving' | 'unavailable'>('idle');
-  const touched = useRef(new Set<string>());
-  const geocodeController = useRef<AbortController | null>(null);
+  const [queue, setQueue] = useState<UploadItem[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [tooMany, setTooMany] = useState(false);
+  const [summary, setSummary] = useState<{ done: number; failed: number } | null>(null);
+  const [error, setError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const queueRef = useRef<UploadItem[]>([]);
 
-  const updateField = (name: string, value: string) => {
-    touched.current.add(name);
-    setFormState((current) => ({ ...current, [name]: value }));
+  const updateQueue = (updater: (items: UploadItem[]) => UploadItem[]) => {
+    const next = updater(queueRef.current);
+    queueRef.current = next;
+    setQueue(next);
   };
 
   useEffect(() => {
-    const key =
-      new URLSearchParams(window.location.search).get('authKey') || sessionStorage.getItem('upload_auth') || '';
+    const key = new URLSearchParams(window.location.search).get('authKey') || sessionStorage.getItem('upload_auth') || '';
     setAuthKey(key);
     fetchAdminSession().then(setSession);
+    return () => queueRef.current.forEach((item) => URL.revokeObjectURL(item.thumbUrl));
   }, []);
 
   const onPick = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    setPreview(file ? URL.createObjectURL(file) : '');
-    geocodeController.current?.abort();
-    setPlaceStatus('idle');
-    setMetadataChips([]);
-    setMetadataDetected(false);
-    touched.current.clear();
-    setFormState({ collection: 'street' });
-    if (!file) return;
-    try {
-      const metadata = parsePhotoMetadata(new Uint8Array(await file.slice(0, 2 * 1024 * 1024).arrayBuffer()));
-      if (!metadata) return;
-      const fields = metadataToFormFields(metadata);
-      setMetadataDetected(true);
-      setMetadataChips(summarizeMetadata(metadata));
-      setFormState((current) => {
-        const next = { ...current };
-        for (const [name, value] of Object.entries(fields)) if (!touched.current.has(name)) next[name] = value;
-        return next;
-      });
-      const coordinates = {
-        latitude: metadata.latitude === undefined ? '' : String(metadata.latitude),
-        longitude: metadata.longitude === undefined ? '' : String(metadata.longitude),
-        altitude: metadata.altitude === undefined ? '' : String(metadata.altitude),
-      };
-      setFormState((current) => ({
-        ...current,
-        ...Object.fromEntries(Object.entries(coordinates).filter(([name]) => !touched.current.has(name))),
-        ...(metadata.cameraMake ? { cameraMake: metadata.cameraMake } : {}),
-        ...(metadata.cameraModel ? { cameraModel: metadata.cameraModel } : {}),
-        ...(metadata.lens ? { lens: metadata.lens } : {}),
-        ...(metadata.fNumber !== undefined ? { fNumber: String(metadata.fNumber) } : {}),
-        ...(metadata.exposureTime ? { exposureTime: metadata.exposureTime } : {}),
-        ...(metadata.iso !== undefined ? { iso: String(metadata.iso) } : {}),
-        ...(metadata.focalLength !== undefined ? { focalLength: String(metadata.focalLength) } : {}),
-        metadataSource: 'exif',
-      }));
-      if (metadata.latitude !== undefined && metadata.longitude !== undefined && !touched.current.has('location')) {
-        const controller = new AbortController();
-        geocodeController.current = controller;
-        setPlaceStatus('resolving');
-        try {
-          const query = new URLSearchParams({ lat: String(metadata.latitude), lon: String(metadata.longitude), lang: locale });
-          const response = await fetch(`/api/photo-geocode?${query}`, { signal: controller.signal });
-          if (!response.ok) throw new Error('geocode unavailable');
-          const place = (await response.json()) as { label?: string | null; city?: string | null; region?: string | null; country?: string | null };
-          if (!controller.signal.aborted) {
-            setFormState((current) => ({
-              ...current,
-              ...(!touched.current.has('location') && !current.location ? { location: place.label || '' } : {}),
-              ...(!touched.current.has('city') && place.city ? { city: place.city } : {}),
-              ...(!touched.current.has('region') && place.region ? { region: place.region } : {}),
-              ...(!touched.current.has('country') && place.country ? { country: place.country } : {}),
-            }));
-            setPlaceStatus(place.label ? 'idle' : 'unavailable');
-          }
-        } catch {
-          if (!controller.signal.aborted) setPlaceStatus('unavailable');
-        }
-      }
-    } catch {
-      // Unsupported or malformed metadata keeps the manual upload path available.
+    const selected = Array.from(event.target.files || []);
+    event.target.value = '';
+    if (!selected.length) {
+      if (queueRef.current.length === 0) setError(t('photoForm.pickFirst'));
+      return;
     }
+
+    setError('');
+    setSummary(null);
+    setTooMany(selected.length > PICK_LIMIT);
+    const picked = selected.slice(0, PICK_LIMIT);
+    const items: UploadItem[] = picked.map((file) => ({
+      id: crypto.randomUUID(), file, thumbUrl: URL.createObjectURL(file), meta: null,
+      date: '', place: null, camera: '', collection: 'undated', coordinates: {}, status: 'reading', message: '',
+    }));
+    updateQueue((current) => {
+      current.forEach((item) => URL.revokeObjectURL(item.thumbUrl));
+      return items;
+    });
+
+    await mapConcurrent(items, 3, async (item) => {
+      try {
+        const meta = parsePhotoMetadata(new Uint8Array(await item.file.slice(0, 2 * 1024 * 1024).arrayBuffer()));
+        const takenOn = meta?.takenAt || '';
+        const camera = meta ? [meta.cameraMake, meta.cameraModel].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim() : '';
+        const coordinates = {
+          ...(meta?.latitude !== undefined ? { latitude: meta.latitude } : {}),
+          ...(meta?.longitude !== undefined ? { longitude: meta.longitude } : {}),
+          ...(meta?.altitude !== undefined ? { altitude: meta.altitude } : {}),
+        };
+        updateQueue((current) => current.map((entry) => entry.id === item.id ? {
+          ...entry, meta, date: takenOn, camera,
+          collection: takenOn ? takenOn.slice(0, 7) : 'undated', coordinates,
+          status: meta?.latitude !== undefined && meta.longitude !== undefined ? 'resolving' : 'ready',
+        } : entry));
+      } catch {
+        updateQueue((current) => current.map((entry) => entry.id === item.id ? { ...entry, status: 'ready' } : entry));
+      }
+    });
+
+    const latest = queueRef.current;
+    const locations = new Map<string, UploadItem[]>();
+    for (const item of latest) {
+      const { latitude, longitude } = item.coordinates;
+      if (latitude === undefined || longitude === undefined) continue;
+      const key = `${latitude.toFixed(3)},${longitude.toFixed(3)}`;
+      locations.set(key, [...(locations.get(key) || []), item]);
+    }
+
+    let previousRequest = 0;
+    for (const [key, members] of Array.from(locations.entries())) {
+      const elapsed = Date.now() - previousRequest;
+      if (previousRequest && elapsed < 1100) await new Promise((resolve) => setTimeout(resolve, 1100 - elapsed));
+      const [latitude, longitude] = key.split(',');
+      let place: ResolvedPlace | null = null;
+      try {
+        const query = new URLSearchParams({ lat: latitude, lon: longitude, lang: locale });
+        const response = await fetch(`/api/photo-geocode?${query}`);
+        if (!response.ok) throw new Error('geocode unavailable');
+        place = await response.json() as ResolvedPlace;
+      } catch {
+        place = null;
+      }
+      previousRequest = Date.now();
+      const memberIds = new Set(members.map((member: UploadItem) => member.id));
+      updateQueue((current) => current.map((entry) => memberIds.has(entry.id)
+        ? { ...entry, place, status: 'ready' }
+        : entry));
+    }
+    updateQueue((current) => current.map((entry) => entry.status === 'resolving' ? { ...entry, status: 'ready' } : entry));
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const file = data.get('file');
-
-    if (!(file instanceof File) || file.size === 0) {
+    if (queueRef.current.length === 0) {
       setError(t('photoForm.pickFirst'));
       return;
     }
@@ -132,42 +160,63 @@ export default function PhotoUploadPage() {
 
     setBusy(true);
     setError('');
-    setMessage('');
-
-    try {
-      if (!session.access) data.set('authKey', authKey);
-
-      // Dimensions and the gallery preview both come from the browser, so the
-      // Worker never decodes an image and the gallery never serves a 12 MB original.
+    setSummary(null);
+    let done = 0;
+    let failed = 0;
+    const items = queueRef.current;
+    await mapConcurrent(items, 2, async (item) => {
+      if (!queueRef.current.some((entry) => entry.id === item.id)) return;
+      updateQueue((current) => current.map((entry) => entry.id === item.id ? { ...entry, status: 'uploading', message: '' } : entry));
       try {
-        const bitmap = await createImageBitmap(file);
+        const data = new FormData();
+        data.set('file', item.file);
+        data.set('title', '');
+        for (const [name, value] of Object.entries(metadataToFormFields(item.meta || { keywords: [] }))) data.set(name, value);
+        const place = item.place;
+        const locationLabel = place?.label || [place?.city, place?.region, place?.country].filter(Boolean).join(', ');
+        if (locationLabel) data.set('location', locationLabel);
+        if (place?.city) data.set('city', place.city);
+        if (place?.region) data.set('region', place.region);
+        if (place?.country) data.set('country', place.country);
+        if (item.coordinates.latitude !== undefined) data.set('latitude', String(item.coordinates.latitude));
+        if (item.coordinates.longitude !== undefined) data.set('longitude', String(item.coordinates.longitude));
+        if (item.coordinates.altitude !== undefined) data.set('altitude', String(item.coordinates.altitude));
+        data.set('takenOn', item.date);
+        data.set('collection', item.collection);
+        data.set('metadataSource', 'exif');
+        if (!session.access) data.set('authKey', authKey);
+
+        const bitmap = await createImageBitmap(item.file);
         data.set('width', String(bitmap.width));
         data.set('height', String(bitmap.height));
-
-        const preview = await renderPreview(bitmap);
-        if (preview) data.set('preview', preview, 'preview.webp');
-      } catch {
-        // Non-fatal: the row records 0×0 and /photos/p/:id falls back to the original.
+        try {
+          const preview = await renderPreview(bitmap);
+          if (preview) data.set('preview', preview, 'preview.webp');
+        } finally {
+          bitmap.close();
+        }
+        const response = await fetch('/api/admin/photos', { method: 'POST', body: data });
+        if (!response.ok) {
+          const payload = await response.json().catch(() => ({})) as { error?: string };
+          throw new Error(payload.error || `${t('photoForm.uploadFailed')} (${response.status})`);
+        }
+        done += 1;
+        updateQueue((current) => current.map((entry) => entry.id === item.id ? { ...entry, status: 'done', message: '' } : entry));
+      } catch (cause) {
+        failed += 1;
+        const itemMessage = cause instanceof Error ? cause.message : t('photoForm.uploadFailed');
+        updateQueue((current) => current.map((entry) => entry.id === item.id ? { ...entry, status: 'error', message: itemMessage } : entry));
       }
-
-      const response = await fetch('/api/admin/photos', { method: 'POST', body: data });
-      if (!response.ok) {
-        const payload = (await response.json().catch(() => ({}))) as { error?: string };
-        throw new Error(payload.error || `${t('photoForm.uploadFailed')} (${response.status})`);
-      }
-
-      form.reset();
-      setPreview('');
-      setMessage(t('photoForm.uploaded'));
-      setFormState({ collection: 'street' });
-      setMetadataChips([]);
-      setMetadataDetected(false);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : t('photoForm.uploadFailed'));
-    } finally {
-      setBusy(false);
-    }
+    });
+    setSummary({ done, failed });
+    setBusy(false);
   };
+
+  const removeItem = (id: string) => updateQueue((current) => {
+    const removed = current.find((item) => item.id === id);
+    if (removed) URL.revokeObjectURL(removed.thumbUrl);
+    return current.filter((item) => item.id !== id);
+  });
 
   // Access decides who gets here; asking for a key on top of it would only confuse.
   if (session.access && !session.authenticated) {
@@ -192,92 +241,64 @@ export default function PhotoUploadPage() {
       <header className="brutal-card brutal-card--yellow">
         <p className="brutal-kicker">{t('photography.adminKicker')}</p>
         <h1 className="profile-hero__name">{t('photography.uploadKicker')}</h1>
-        <p className="profile-hero__tagline">
-          {t('photography.uploadTagline')}
-        </p>
+        <p className="profile-hero__tagline">{t('photography.uploadTagline')}</p>
         <div className="profile-hero__actions">
-          <Link className="brutal-btn" href="/photography">
-            {t('photography.backToGallery')}
-          </Link>
+          <Link className="brutal-btn" href="/photography">{t('photography.backToGallery')}</Link>
         </div>
       </header>
 
-      {error ? (
-        <div className="profile-callout" role="alert">
-          <span className="brutal-kicker">{t('common.error')}</span>
-          <span>{error}</span>
-        </div>
-      ) : null}
-
-      {message ? (
-        <div className="profile-callout profile-callout--bottom" role="status">
-          <span className="brutal-kicker">{t('common.done')}</span>
-          <span>{message}</span>
-        </div>
-      ) : null}
+      {error ? <div className="profile-callout" role="alert"><span>{error}</span></div> : null}
+      {tooMany ? <p className="photo-metadata-note" role="status">{t('photoForm.tooMany')}</p> : null}
+      {summary ? <p className="photo-metadata-note" role="status">{t('photoForm.uploadSummary', { done: String(summary.done), failed: String(summary.failed) })}</p> : null}
 
       <form className="brutal-card profile-section" onSubmit={onSubmit}>
-        <div className="form-grid">
-          <label className="form-field">
-            <span>{t('photoForm.file')}</span>
-            <input type="file" name="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onPick} required />
-          </label>
-          {metadataDetected ? <p className="photo-metadata-note">{t('photoForm.metadataDetected')}{metadataChips.length ? ` · ${metadataChips.join(' · ')}` : ''}</p> : null}
-          {!metadataDetected && preview ? <p className="photo-metadata-note">{t('photoForm.metadataNone')}</p> : null}
-
-          <label className="form-field">
-            <span>{t('photoForm.title')}</span>
-            <input type="text" name="title" value={formState.title || ''} onChange={(event) => updateField('title', event.target.value)} placeholder={t('photoForm.titlePlaceholder')} maxLength={120} />
-          </label>
-
-          <label className="form-field">
-            <span>{t('photoForm.collection')}</span>
-            <input type="text" name="collection" value={formState.collection || ''} onChange={(event) => updateField('collection', event.target.value)} placeholder={t('photoForm.collectionPlaceholder')} maxLength={40} />
-          </label>
-
-          <label className="form-field">
-            <span>{t('photoForm.takenOn')}</span>
-            <input type="date" name="takenOn" value={formState.takenOn || ''} onChange={(event) => updateField('takenOn', event.target.value)} />
-          </label>
-
-          <label className="form-field">
-            <span>{t('photoForm.tags')}</span>
-            <input type="text" name="tags" value={formState.tags || ''} onChange={(event) => updateField('tags', event.target.value)} placeholder="film, 35mm" maxLength={120} />
-          </label>
-
-          <label className="form-field">
-            <span>{t('photoForm.location')}</span>
-            <input type="text" name="location" value={formState.location || ''} onChange={(event) => updateField('location', event.target.value)} placeholder={t('photoForm.locationPlaceholder')} maxLength={160} />
-          </label>
-
-          <label className="form-field">
-            <span>{t('photoForm.sortOrder')}</span>
-            <input type="number" name="sortOrder" defaultValue={0} step={1} />
-          </label>
-
-          <label className="form-field form-field--wide">
-            <span>{t('photoForm.description')}</span>
-            <textarea name="description" rows={3} maxLength={600} placeholder={t('photoForm.descriptionPlaceholder')} />
-          </label>
+        <div className="upload-picker">
+          <input
+            ref={inputRef}
+            className="upload-picker__input"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/avif"
+            multiple
+            disabled={busy || queue.some((item) => item.status === 'reading' || item.status === 'resolving')}
+            onChange={onPick}
+            aria-label={t('photoForm.file')}
+          />
+          <button className="brutal-btn" type="button" disabled={busy || queue.some((item) => item.status === 'reading' || item.status === 'resolving')} onClick={() => inputRef.current?.click()}>
+            {t('photoForm.chooseFiles')}
+          </button>
         </div>
 
-        {placeStatus === 'resolving' ? <p className="photo-metadata-note" role="status">{t('photoForm.resolvingPlace')}</p> : null}
-        {placeStatus === 'unavailable' ? <p className="photo-metadata-note" role="status">{t('photoForm.placeUnavailable')}</p> : null}
-
-        {['latitude', 'longitude', 'altitude', 'city', 'region', 'country', 'cameraMake', 'cameraModel', 'lens', 'fNumber', 'exposureTime', 'iso', 'focalLength', 'metadataSource'].map((name) => (
-          <input key={name} type="hidden" name={name} value={formState[name] || ''} />
-        ))}
-
-        {preview ? (
-          <div className="form-preview">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview} alt={t('photoForm.preview')} />
+        {queue.length ? (
+          <div className="upload-queue" aria-live="polite">
+            {queue.map((item) => {
+              const coordinateLabel = item.coordinates.latitude !== undefined && item.coordinates.longitude !== undefined
+                ? `${item.coordinates.latitude}, ${item.coordinates.longitude}`
+                : '';
+              const facts = [item.date || t('photoForm.untitledCollection'), item.place?.label || item.place?.city || coordinateLabel, item.camera]
+                .filter(Boolean).join(' · ');
+              const statusKey: Record<UploadStatus, string> = {
+                reading: 'photoForm.statusReading', resolving: 'photoForm.resolvingPlace', ready: 'photoForm.statusReady',
+                uploading: 'photoForm.statusUploading', done: 'photoForm.statusDone', error: 'photoForm.statusError',
+              };
+              return (
+                <div className="upload-queue__row" key={item.id}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={item.thumbUrl} alt="" />
+                  <div className="upload-queue__details">
+                    <span className="upload-queue__facts">{facts || t('photoForm.queueEmpty')}</span>
+                    <span className={`upload-queue__status upload-queue__status--${item.status}`}>{t(statusKey[item.status])}</span>
+                    {item.message ? <span className="upload-queue__message" role="alert">{item.message}</span> : null}
+                  </div>
+                  <button type="button" aria-label={t('photoForm.remove')} disabled={item.status === 'uploading'} onClick={() => removeItem(item.id)}>×</button>
+                </div>
+              );
+            })}
           </div>
-        ) : null}
+        ) : <p className="photo-metadata-note">{t('photoForm.queueEmpty')}</p>}
 
         <div className="profile-hero__actions">
-          <button className="brutal-btn brutal-btn--ink" type="submit" disabled={busy}>
-            {busy ? t('photoForm.uploading') : t('photoForm.submit')}
+          <button className="brutal-btn brutal-btn--ink" type="submit" disabled={queue.length === 0 || busy || queue.some((item) => item.status === 'reading' || item.status === 'resolving')}>
+            {busy ? t('photoForm.uploading') : t('photoForm.uploadAll', { count: String(queue.length) })}
           </button>
         </div>
       </form>

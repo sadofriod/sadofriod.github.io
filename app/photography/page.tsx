@@ -12,6 +12,7 @@ export default function PhotographyPage() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [collections, setCollections] = useState<PhotoCollection[]>([]);
   const [collection, setCollection] = useState('all');
+  const [place, setPlace] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -54,9 +55,21 @@ export default function PhotographyPage() {
     };
   }, []);
 
+  const places = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const photo of photos) {
+      const name = photo.location?.city || photo.location?.label;
+      if (name) counts.set(name, (counts.get(name) || 0) + 1);
+    }
+    return Array.from(counts.entries()).sort(([nameA, countA], [nameB, countB]) => countB - countA || nameA.localeCompare(nameB));
+  }, [photos]);
+
   const visible = useMemo(
-    () => (collection === 'all' ? photos : photos.filter((photo) => photo.collection === collection)),
-    [photos, collection]
+    () => photos.filter((photo) =>
+      (collection === 'all' || photo.collection === collection) &&
+      (place === 'all' || (photo.location?.city || photo.location?.label) === place)
+    ),
+    [photos, collection, place]
   );
 
   return (
@@ -98,6 +111,17 @@ export default function PhotographyPage() {
         ))}
       </div>
 
+      <div className="photo-toolbar photo-toolbar--places" aria-label={t('photography.byPlace')}>
+        <button type="button" className="photo-chip" aria-pressed={place === 'all'} onClick={() => setPlace('all')}>
+          {t('photography.allPlaces')} ({photos.length})
+        </button>
+        {places.map(([name, count]) => (
+          <button key={name} type="button" className="photo-chip" aria-pressed={place === name} onClick={() => setPlace(name)}>
+            {name} ({count})
+          </button>
+        ))}
+      </div>
+
       {error ? (
         <div className="profile-callout" role="alert">
           <span className="brutal-kicker">{t('photography.gallery')}</span>
@@ -124,7 +148,7 @@ export default function PhotographyPage() {
             type="button"
             className="photo-tile"
             onClick={() => setOpenIndex(index)}
-            aria-label={t('photography.openTitle', { title: photo.title || t('photography.untitled') })}
+            aria-label={t('photography.openTitle', { title: photo.title || photo.location?.city || photo.takenOn || t('photography.untitled') })}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -133,11 +157,13 @@ export default function PhotographyPage() {
               loading="lazy"
               width={photo.width || undefined}
               height={photo.height || undefined}
+              style={{ aspectRatio: photo.aspect ? String(photo.aspect) : undefined }}
             />
             <span className="photo-tile__caption">
-              <span>{photo.title || t('photography.untitled')}</span>
+              <span>{photo.title || photo.location?.city || photo.takenOn || t('photography.untitled')}</span>
               <span className="bento__count">{photo.collection}</span>
-              {photo.location?.city || photo.location?.label ? (
+              {(photo.location?.city || photo.location?.label) &&
+              (photo.title || photo.location?.city || photo.takenOn || t('photography.untitled')) !== (photo.location?.city || photo.location?.label) ? (
                 <span className="photo-tile__place">{photo.location.city || photo.location.label}</span>
               ) : null}
             </span>
