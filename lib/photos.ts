@@ -13,6 +13,25 @@ export type Photo = {
   /** Worker download URL: `/photos/o/<id>`. */
   original: string;
   tags: string[];
+  location?: {
+    label?: string;
+    city?: string;
+    region?: string;
+    country?: string;
+    latitude?: number;
+    longitude?: number;
+    altitude?: number;
+  };
+  camera?: {
+    make?: string;
+    model?: string;
+    lens?: string;
+    fNumber?: number;
+    exposureTime?: string;
+    iso?: number;
+    focalLength?: number;
+  };
+  metadataSource?: 'exif' | 'manual';
 };
 
 export type PhotoCollection = {

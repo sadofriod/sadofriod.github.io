@@ -167,11 +167,29 @@ const photoA = await photoStore.insertPhoto(db, {
   tags: ['fog'],
   published: true,
   sortOrder: 1,
+  locationLabel: 'Hangzhou, Zhejiang, China',
+  city: 'Hangzhou',
+  region: 'Zhejiang',
+  country: 'China',
+  latitude: 30.2741,
+  longitude: 120.1551,
+  altitude: 8,
+  cameraMake: 'NIKON CORPORATION',
+  cameraModel: 'NIKON Z 6',
+  lens: 'NIKKOR Z 24-70mm f/2.8 S',
+  fNumber: 2.8,
+  exposureTime: '1/250',
+  iso: 400,
+  focalLength: 35,
+  metadataSource: 'exif',
 });
 check('photo record has no r2 key', !('originalKey' in photoA), JSON.stringify(Object.keys(photoA)));
 check('preview url shape', photoA.preview === '/photos/p/photo-a');
 check('aspect computed', photoA.aspect === 1.3333, String(photoA.aspect));
 check('tags come back as an array', JSON.stringify(photoA.tags) === '["fog"]');
+check('metadata location fields round-trip', photoA.location?.label === 'Hangzhou, Zhejiang, China' && photoA.location.latitude === 30.2741);
+check('metadata camera fields round-trip', photoA.camera?.model === 'NIKON Z 6' && photoA.camera.fNumber === 2.8);
+check('metadata source round-trips', photoA.metadataSource === 'exif');
 
 await photoStore.insertPhoto(db, {
   id: 'photo-b',
@@ -190,6 +208,8 @@ await photoStore.insertPhoto(db, {
   published: false,
   sortOrder: 0,
 });
+const photoB = await photoStore.getPhoto(db, 'photo-b');
+check('photo without metadata has no empty optional objects', !('location' in photoB) && !('camera' in photoB) && !('metadataSource' in photoB));
 
 const all = await photoStore.listPhotos(db);
 check('unpublished photos are hidden by default', all.length === 1, `got ${all.length}`);
@@ -210,6 +230,13 @@ check(
 const gone = await photoStore.removePhoto(db, 'photo-a');
 check('photo delete returns r2 key', gone.originalKey === 'photos/originals/a/fog.jpg');
 check('photo delete also returns the preview key', gone.previewKey === 'photos/previews/a.webp');
+
+await photoStore.putGeocodeCache(db, '30.274,120.155', {
+  label: 'Hangzhou, Zhejiang, China', city: 'Hangzhou', region: 'Zhejiang', country: 'China', provider: 'nominatim',
+  createdAt: '2026-05-01T00:00:00.000Z',
+});
+const cachedPlace = await photoStore.getGeocodeCache(db, '30.274,120.155');
+check('geocode cache SQL stores and reads the full record', cachedPlace?.label === 'Hangzhou, Zhejiang, China' && cachedPlace.provider === 'nominatim');
 
 const tables = db.sqlite.prepare("select name from sqlite_master where type = 'table' order by name").all();
 console.log('\ntables:', tables.map((row) => row.name).join(', '));

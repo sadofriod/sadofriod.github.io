@@ -653,6 +653,7 @@ html body {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 9px 12px;
   border-top: 2px solid var(--ink);
@@ -729,6 +730,34 @@ html body {
 .photo-lightbox__actions a:hover {
   background: var(--paper);
   color: var(--ink);
+}
+
+.photo-tile__place {
+  color: var(--muted, #777);
+  font-family: var(--brutal-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex: 0 0 100%;
+  order: 1;
+}
+
+.photo-metadata-note {
+  margin: 0;
+  color: var(--muted, #777);
+  font-family: var(--brutal-mono);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  grid-column: 1 / -1;
+}
+
+.photo-lightbox__meta {
+  color: rgba(255, 255, 255, 0.72);
+  font-family: var(--brutal-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
 /* ---------- upload form ---------- */

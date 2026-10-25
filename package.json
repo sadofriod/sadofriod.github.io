@@ -16,7 +16,8 @@
     "test:routes": "node scripts/test-worker-routes.mjs",
     "friends:collect": "node scripts/friends-collect.mjs",
     "db:migrate:local": "wrangler d1 migrations apply ashesborn-blog --local",
-    "test:auth": "node scripts/test-access-auth.mjs"
+    "test:auth": "node scripts/test-access-auth.mjs",
+    "test:metadata": "node --experimental-strip-types scripts/test-photo-metadata.mjs"
   },
   "keywords": [],
   "author": "",

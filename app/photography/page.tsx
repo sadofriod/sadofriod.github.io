@@ -137,6 +137,9 @@ export default function PhotographyPage() {
             <span className="photo-tile__caption">
               <span>{photo.title || t('photography.untitled')}</span>
               <span className="bento__count">{photo.collection}</span>
+              {photo.location?.city || photo.location?.label ? (
+                <span className="photo-tile__place">{photo.location.city || photo.location.label}</span>
+              ) : null}
             </span>
           </button>
         ))}

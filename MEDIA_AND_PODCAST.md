@@ -14,9 +14,11 @@ browser ──▶ Worker (worker.js)
               └─ everything else       → static assets from out/ (the Next.js export)
 ```
 
-Schema: `migrations/0001_podcasts_and_photos.sql`. SQL lives in `lib/photoStore.js` and
-`lib/podcastStore.js`, and is exercised against an in-process SQLite by `pnpm test:db`
-(20 assertions) and `pnpm test:routes` (28 assertions, the real routers + an in-memory R2).
+Schema: `migrations/0001_podcasts_and_photos.sql`, `0002_podcast_video.sql`, and
+`0003_photo_metadata.sql`. SQL lives in `lib/photoStore.js` and `lib/podcastStore.js`, and is
+exercised against an in-process SQLite by `node scripts/test-db-stores.mjs` (32 assertions) and
+`node scripts/test-worker-routes.mjs` (45 assertions, including metadata persistence and geocode-cache
+coverage). The hand-written EXIF parser has 15 fixture assertions in `node scripts/test-photo-metadata.mjs`.
 
 ## Already provisioned
 
@@ -83,6 +85,24 @@ something a request should carry; put the file in R2 and reference it.
   so the gallery never serves a 12 MB original and **no image-optimisation product is needed**.
 - Episode: `/podcast?authKey=<UPLOAD_AUTH_KEY>` → *Upload*.
 - RSS: `/podcast/rss` (iTunes tags, ordered by `published_on desc`).
+
+## Photo metadata
+
+The upload page parses JPEG, PNG, and WebP EXIF in the browser, pre-filling capture date, GPS,
+camera/lens/exposure details, and EXIF keywords. GPS coordinates are reverse-geocoded by the Worker;
+the editable place label and metadata are stored in the new `photos` columns from
+`migrations/0003_photo_metadata.sql`. Reverse-geocode responses are cached in `photo_geocodes`, keyed
+to rounded coordinates and refreshed after 90 days. Set `GEOCODE_PROVIDER` to `nominatim` (default),
+`bigdatacloud`, or `off` for local/offline use.
+
+Nominatim requires a descriptive User-Agent and must not be queried repeatedly for the same location;
+the D1 cache limits traffic and follows the OpenStreetMap Nominatim usage policy. The Worker falls
+back to BigDataCloud when the selected provider is unavailable.
+
+```bash
+curl -s 'https://blog.ashesborn.cloud/api/photo-geocode?lat=30.2741&lon=120.1551&lang=en'
+curl -s 'https://blog.ashesborn.cloud/api/photos'
+```
 
 ## Verifying a deployment
 
