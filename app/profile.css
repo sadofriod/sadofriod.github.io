@@ -762,6 +762,16 @@ html body {
   text-transform: uppercase;
 }
 
+.upload-notes {
+  display: grid;
+  gap: 6px;
+  margin: 18px 0 0;
+}
+
+.upload-notes .photo-metadata-note {
+  margin: 0;
+}
+
 .upload-picker__input {
   position: absolute;
   width: 1px;
@@ -787,7 +797,7 @@ html body {
 
 .upload-queue__row {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) auto;
+  grid-template-columns: 88px minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 14px;
   border: var(--brutal-border);
@@ -830,6 +840,10 @@ html body {
   color: #a32626;
 }
 
+.upload-queue__status--retrying {
+  color: #9a6200;
+}
+
 .upload-queue__row > button {
   min-width: 36px;
   min-height: 36px;
@@ -848,7 +862,7 @@ html body {
 
 @media (max-width: 540px) {
   .upload-queue__row {
-    grid-template-columns: 64px minmax(0, 1fr) auto;
+    grid-template-columns: 64px minmax(0, 1fr) auto auto;
     gap: 9px;
   }
 

@@ -50,6 +50,7 @@ jobs:
 
       - name: Store and route tests
         run: |
+          pnpm test:upload
           pnpm test:metadata
           pnpm test:db
           pnpm test:routes

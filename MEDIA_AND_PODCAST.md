@@ -85,6 +85,12 @@ something a request should carry; put the file in R2 and reference it.
   capture metadata automatically assigns each photo to its `YYYY-MM` collection (`undated` when
   no date is present). The page downscales to a 1600 px WebP in the browser and posts both files,
   so the gallery never serves a 12 MB original and **no image-optimisation product is needed**.
+  Each frame gets up to three upload attempts with exponential backoff and jitter; HTTP `Retry-After`
+  is honoured for rate limits. The pending file-level queue, including parsed metadata and resolved
+  place, is saved in IndexedDB and restored after reload. A stopped batch resumes from its unfinished
+  frames when you press Upload again. Each file is one multipart POST (up to 30 MB); byte-range
+  resumption within a file is not supported and would require a chunked-upload Worker endpoint and
+  R2 multipart state.
 - Episode: `/podcast?authKey=<UPLOAD_AUTH_KEY>` → *Upload*.
 - RSS: `/podcast/rss` (iTunes tags, ordered by `published_on desc`).
 
