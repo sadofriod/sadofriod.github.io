@@ -44,6 +44,25 @@ export default function PhotoLightbox({ photos, index, onClose, onNavigate }: Ph
 
   if (!photo) return null;
 
+  const camera = photo.camera;
+  const cameraMake = camera?.make?.replace(/\s+(corporation|corp\.?|inc\.?|co\.?|ltd\.?)$/i, '').trim();
+  const cameraModel = camera?.model?.trim();
+  const cameraName = cameraModel && cameraMake && cameraModel.toLowerCase().startsWith(cameraMake.toLowerCase() + ' ')
+    ? cameraModel
+    : [cameraMake, cameraModel].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+  const exposure = [
+    camera?.fNumber ? `f/${camera.fNumber}` : '',
+    camera?.exposureTime ? `${camera.exposureTime}s` : '',
+    camera?.iso ? `ISO ${camera.iso}` : '',
+    camera?.focalLength ? `${camera.focalLength}mm` : '',
+  ].filter(Boolean).join(' · ');
+  const metaLine = [
+    photo.takenOn,
+    photo.location?.label ? `${t('lightbox.place')}: ${photo.location.label}` : '',
+    cameraName ? `${t('lightbox.camera')}: ${cameraName}` : '',
+    exposure ? `${t('lightbox.exposure')}: ${exposure}` : '',
+  ].filter(Boolean);
+
   return (
     <div
       className="photo-lightbox"
@@ -58,7 +77,6 @@ export default function PhotoLightbox({ photos, index, onClose, onNavigate }: Ph
         <figcaption className="photo-lightbox__bar">
           <span>
             {photo.title || t('lightbox.untitled')}
-            {photo.takenOn ? ` · ${photo.takenOn}` : ''}
             {photo.width && photo.height ? ` · ${photo.width}×${photo.height}` : ''}
           </span>
           <span className="photo-lightbox__actions">
@@ -76,6 +94,7 @@ export default function PhotoLightbox({ photos, index, onClose, onNavigate }: Ph
             </button>
           </span>
         </figcaption>
+        {metaLine.length ? <div className="photo-lightbox__meta">{metaLine.join(' · ')}</div> : null}
       </figure>
     </div>
   );

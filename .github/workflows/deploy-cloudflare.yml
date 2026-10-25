@@ -50,12 +50,22 @@ jobs:
 
       - name: Store and route tests
         run: |
+          pnpm test:metadata
           pnpm test:db
           pnpm test:routes
           pnpm test:auth
 
       - name: Build static site
         run: pnpm run build
+
+      # Schema first, code second: the Worker writes the metadata columns from
+      # 0003, so deploying before the migration would break uploads. The command is
+      # idempotent — D1 records applied migrations and skips them.
+      - name: Apply D1 migrations
+        run: pnpm exec wrangler d1 migrations apply ashesborn-blog --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Deploy Worker
         run: pnpm exec wrangler deploy

@@ -149,6 +149,20 @@ uploadForm.set('takenOn', '2026-02-02');
 uploadForm.set('width', '1600');
 uploadForm.set('height', '1000');
 uploadForm.set('tags', 'film, 35mm');
+uploadForm.set('location', 'Hangzhou, Zhejiang, China');
+uploadForm.set('city', 'Hangzhou');
+uploadForm.set('region', 'Zhejiang');
+uploadForm.set('country', 'China');
+uploadForm.set('latitude', '30.2741');
+uploadForm.set('longitude', '120.1551');
+uploadForm.set('cameraMake', 'NIKON');
+uploadForm.set('cameraModel', 'NIKON Z 6');
+uploadForm.set('lens', 'NIKKOR Z 24-70mm f/2.8 S');
+uploadForm.set('fNumber', '2.8');
+uploadForm.set('exposureTime', '1/250');
+uploadForm.set('iso', '400');
+uploadForm.set('focalLength', '35');
+uploadForm.set('metadataSource', 'exif');
 uploadForm.set('authKey', UPLOAD_KEY);
 
 const created = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'POST', body: uploadForm });
@@ -157,6 +171,7 @@ check('POST /api/photos → 201', created.status === 201, String(created.status)
 const photo = createdBody.photo ?? {};
 check('upload returns preview + original urls', photo.preview === `/photos/p/${photo.id}` && photo.original === `/photos/o/${photo.id}`);
 check('tags parsed from the comma list', JSON.stringify(photo.tags) === '["film","35mm"]', JSON.stringify(photo.tags));
+check('upload includes nested location and camera metadata', photo.location?.label === 'Hangzhou, Zhejiang, China' && photo.location?.latitude === 30.2741 && photo.camera?.model === 'NIKON Z 6');
 check('original stored in R2', [...photos.objects.keys()].some((key) => key.startsWith(`photos/originals/${photo.id}/`)));
 check('preview stored in R2', photos.objects.has(`photos/previews/${photo.id}.webp`));
 
@@ -169,6 +184,38 @@ const listed = await (await call(photoRouter.handlePhotoRequest, '/api/photos', 
 check('GET /api/photos lists it', listed.length === 1 && listed[0].id === photo.id);
 check('list does not leak R2 keys', !('originalKey' in listed[0]));
 check('list keeps tags an array', Array.isArray(listed[0].tags) && listed[0].tags.length === 2);
+check('list preserves nested photo metadata', listed[0].location?.label === photo.location.label && listed[0].camera?.model === photo.camera.model);
+const directPhoto = await (await call(photoRouter.handlePhotoRequest, `/api/photos/${photo.id}`, { method: 'GET' })).json();
+check('GET /api/photos/:id returns nested metadata', directPhoto.location?.label === photo.location.label && directPhoto.camera?.model === photo.camera.model);
+
+const withoutMetadata = new FormData();
+withoutMetadata.set('file', new File([png], 'plain.png', { type: 'image/png' }));
+withoutMetadata.set('title', 'Plain');
+withoutMetadata.set('authKey', UPLOAD_KEY);
+const plainCreated = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'POST', body: withoutMetadata });
+const plainPhoto = (await plainCreated.json()).photo;
+check('photo without metadata has no optional nested objects', !('location' in plainPhoto) && !('camera' in plainPhoto), JSON.stringify(plainPhoto));
+await call(photoRouter.handlePhotoRequest, `/api/photos/${plainPhoto.id}`, {
+  method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ authKey: UPLOAD_KEY }),
+});
+
+const missingGeocode = await call(photoRouter.handlePhotoRequest, '/api/photo-geocode', { method: 'GET' });
+check('GET /api/photo-geocode without params → 400', missingGeocode.status === 400);
+const geocodeOffEnv = { ...env, GEOCODE_PROVIDER: 'off' };
+const geocodeOff = await photoRouter.handlePhotoRequest(new Request('https://blog.ashesborn.cloud/api/photo-geocode?lat=30&lon=120'), geocodeOffEnv);
+const geocodeOffBody = await geocodeOff.json();
+check('GEOCODE_PROVIDER=off → 200 + null label', geocodeOff.status === 200 && geocodeOffBody.label === null);
+
+let geocodeCalls = 0;
+const geocodeFetch = async () => {
+  geocodeCalls += 1;
+  return Response.json({ address: { city: 'Hangzhou', state: 'Zhejiang', country: 'China' } });
+};
+const { reverseGeocode } = await import(path.join(libWork, 'photoGeocode.mjs'));
+const geocodeEnv = { GEOCODE_PROVIDER: 'nominatim' };
+const geocodeFirst = await reverseGeocode(30.2741, 120.1551, { env: geocodeEnv, db: DB, lang: 'en', fetchImpl: geocodeFetch });
+const geocodeSecond = await reverseGeocode(30.2741, 120.1551, { env: geocodeEnv, db: DB, lang: 'en', fetchImpl: geocodeFetch });
+check('geocode cache returns the label and avoids a second request', geocodeFirst.label === 'Hangzhou, Zhejiang, China' && geocodeSecond.label === geocodeFirst.label && geocodeCalls === 1, `calls ${geocodeCalls}`);
 
 const preview = await call(photoRouter.handlePhotoRequest, `/photos/p/${photo.id}?w=800`, { method: 'GET' });
 check('preview serves the stored WebP', preview.headers.get('x-photo-source') === 'stored-preview', String(preview.headers.get('x-photo-source')));

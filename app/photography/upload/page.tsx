@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { fetchAdminSession, anonymousSession, type AdminSession } from '@/lib/adminSession';
+import { metadataToFormFields, parsePhotoMetadata, summarizeMetadata } from '@/lib/photoMetadata';
 
 const PREVIEW_MAX_EDGE = 1600;
 
@@ -22,13 +23,24 @@ async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
 }
 
 export default function PhotoUploadPage() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [authKey, setAuthKey] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [preview, setPreview] = useState('');
   const [session, setSession] = useState<AdminSession>(anonymousSession);
+  const [formState, setFormState] = useState<Record<string, string>>({ collection: 'street' });
+  const [metadataChips, setMetadataChips] = useState<string[]>([]);
+  const [metadataDetected, setMetadataDetected] = useState(false);
+  const [placeStatus, setPlaceStatus] = useState<'idle' | 'resolving' | 'unavailable'>('idle');
+  const touched = useRef(new Set<string>());
+  const geocodeController = useRef<AbortController | null>(null);
+
+  const updateField = (name: string, value: string) => {
+    touched.current.add(name);
+    setFormState((current) => ({ ...current, [name]: value }));
+  };
 
   useEffect(() => {
     const key =
@@ -37,9 +49,70 @@ export default function PhotoUploadPage() {
     fetchAdminSession().then(setSession);
   }, []);
 
-  const onPick = (event: ChangeEvent<HTMLInputElement>) => {
+  const onPick = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setPreview(file ? URL.createObjectURL(file) : '');
+    geocodeController.current?.abort();
+    setPlaceStatus('idle');
+    setMetadataChips([]);
+    setMetadataDetected(false);
+    touched.current.clear();
+    setFormState({ collection: 'street' });
+    if (!file) return;
+    try {
+      const metadata = parsePhotoMetadata(new Uint8Array(await file.slice(0, 2 * 1024 * 1024).arrayBuffer()));
+      if (!metadata) return;
+      const fields = metadataToFormFields(metadata);
+      setMetadataDetected(true);
+      setMetadataChips(summarizeMetadata(metadata));
+      setFormState((current) => {
+        const next = { ...current };
+        for (const [name, value] of Object.entries(fields)) if (!touched.current.has(name)) next[name] = value;
+        return next;
+      });
+      const coordinates = {
+        latitude: metadata.latitude === undefined ? '' : String(metadata.latitude),
+        longitude: metadata.longitude === undefined ? '' : String(metadata.longitude),
+        altitude: metadata.altitude === undefined ? '' : String(metadata.altitude),
+      };
+      setFormState((current) => ({
+        ...current,
+        ...Object.fromEntries(Object.entries(coordinates).filter(([name]) => !touched.current.has(name))),
+        ...(metadata.cameraMake ? { cameraMake: metadata.cameraMake } : {}),
+        ...(metadata.cameraModel ? { cameraModel: metadata.cameraModel } : {}),
+        ...(metadata.lens ? { lens: metadata.lens } : {}),
+        ...(metadata.fNumber !== undefined ? { fNumber: String(metadata.fNumber) } : {}),
+        ...(metadata.exposureTime ? { exposureTime: metadata.exposureTime } : {}),
+        ...(metadata.iso !== undefined ? { iso: String(metadata.iso) } : {}),
+        ...(metadata.focalLength !== undefined ? { focalLength: String(metadata.focalLength) } : {}),
+        metadataSource: 'exif',
+      }));
+      if (metadata.latitude !== undefined && metadata.longitude !== undefined && !touched.current.has('location')) {
+        const controller = new AbortController();
+        geocodeController.current = controller;
+        setPlaceStatus('resolving');
+        try {
+          const query = new URLSearchParams({ lat: String(metadata.latitude), lon: String(metadata.longitude), lang: locale });
+          const response = await fetch(`/api/photo-geocode?${query}`, { signal: controller.signal });
+          if (!response.ok) throw new Error('geocode unavailable');
+          const place = (await response.json()) as { label?: string | null; city?: string | null; region?: string | null; country?: string | null };
+          if (!controller.signal.aborted) {
+            setFormState((current) => ({
+              ...current,
+              ...(!touched.current.has('location') && !current.location ? { location: place.label || '' } : {}),
+              ...(!touched.current.has('city') && place.city ? { city: place.city } : {}),
+              ...(!touched.current.has('region') && place.region ? { region: place.region } : {}),
+              ...(!touched.current.has('country') && place.country ? { country: place.country } : {}),
+            }));
+            setPlaceStatus(place.label ? 'idle' : 'unavailable');
+          }
+        } catch {
+          if (!controller.signal.aborted) setPlaceStatus('unavailable');
+        }
+      }
+    } catch {
+      // Unsupported or malformed metadata keeps the manual upload path available.
+    }
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -49,7 +122,7 @@ export default function PhotoUploadPage() {
     const file = data.get('file');
 
     if (!(file instanceof File) || file.size === 0) {
-      setError('Pick an image first.');
+      setError(t('photoForm.pickFirst'));
       return;
     }
     if (!session.access && !authKey) {
@@ -85,7 +158,10 @@ export default function PhotoUploadPage() {
 
       form.reset();
       setPreview('');
-      setMessage('Uploaded — it is live in the gallery now.');
+      setMessage(t('photoForm.uploaded'));
+      setFormState({ collection: 'street' });
+      setMetadataChips([]);
+      setMetadataDetected(false);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t('photoForm.uploadFailed'));
     } finally {
@@ -141,25 +217,32 @@ export default function PhotoUploadPage() {
             <span>{t('photoForm.file')}</span>
             <input type="file" name="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onPick} required />
           </label>
+          {metadataDetected ? <p className="photo-metadata-note">{t('photoForm.metadataDetected')}{metadataChips.length ? ` · ${metadataChips.join(' · ')}` : ''}</p> : null}
+          {!metadataDetected && preview ? <p className="photo-metadata-note">{t('photoForm.metadataNone')}</p> : null}
 
           <label className="form-field">
             <span>{t('photoForm.title')}</span>
-            <input type="text" name="title" placeholder={t('photoForm.titlePlaceholder')} maxLength={120} />
+            <input type="text" name="title" value={formState.title || ''} onChange={(event) => updateField('title', event.target.value)} placeholder={t('photoForm.titlePlaceholder')} maxLength={120} />
           </label>
 
           <label className="form-field">
             <span>{t('photoForm.collection')}</span>
-            <input type="text" name="collection" placeholder={t('photoForm.collectionPlaceholder')} maxLength={40} defaultValue="street" />
+            <input type="text" name="collection" value={formState.collection || ''} onChange={(event) => updateField('collection', event.target.value)} placeholder={t('photoForm.collectionPlaceholder')} maxLength={40} />
           </label>
 
           <label className="form-field">
             <span>{t('photoForm.takenOn')}</span>
-            <input type="date" name="takenOn" />
+            <input type="date" name="takenOn" value={formState.takenOn || ''} onChange={(event) => updateField('takenOn', event.target.value)} />
           </label>
 
           <label className="form-field">
             <span>{t('photoForm.tags')}</span>
-            <input type="text" name="tags" placeholder="film, 35mm" maxLength={120} />
+            <input type="text" name="tags" value={formState.tags || ''} onChange={(event) => updateField('tags', event.target.value)} placeholder="film, 35mm" maxLength={120} />
+          </label>
+
+          <label className="form-field">
+            <span>{t('photoForm.location')}</span>
+            <input type="text" name="location" value={formState.location || ''} onChange={(event) => updateField('location', event.target.value)} placeholder={t('photoForm.locationPlaceholder')} maxLength={160} />
           </label>
 
           <label className="form-field">
@@ -172,6 +255,13 @@ export default function PhotoUploadPage() {
             <textarea name="description" rows={3} maxLength={600} placeholder={t('photoForm.descriptionPlaceholder')} />
           </label>
         </div>
+
+        {placeStatus === 'resolving' ? <p className="photo-metadata-note" role="status">{t('photoForm.resolvingPlace')}</p> : null}
+        {placeStatus === 'unavailable' ? <p className="photo-metadata-note" role="status">{t('photoForm.placeUnavailable')}</p> : null}
+
+        {['latitude', 'longitude', 'altitude', 'city', 'region', 'country', 'cameraMake', 'cameraModel', 'lens', 'fNumber', 'exposureTime', 'iso', 'focalLength', 'metadataSource'].map((name) => (
+          <input key={name} type="hidden" name={name} value={formState[name] || ''} />
+        ))}
 
         {preview ? (
           <div className="form-preview">
