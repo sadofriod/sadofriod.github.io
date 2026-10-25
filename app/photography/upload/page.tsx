@@ -7,9 +7,17 @@ import { fetchAdminSession, anonymousSession, type AdminSession } from '@/lib/ad
 import { metadataToFormFields, parsePhotoMetadata, type PhotoMetadata } from '@/lib/photoMetadata';
 import { deleteItem, listItems, saveItem, type PersistedItem } from '@/lib/uploadQueueStore';
 import { backoffDelay, classifyFailure, isRetryableStatus, MAX_ATTEMPTS } from '@/lib/uploadRetry';
+import { buildPayload, embedWatermark } from '@/lib/watermark';
 
 const PREVIEW_MAX_EDGE = 1600;
 const PICK_LIMIT = 30;
+let watermarkWarningShown = false;
+
+function warnWatermarkOnce(message: string, error: unknown) {
+  if (watermarkWarningShown) return;
+  watermarkWarningShown = true;
+  console.warn(message, error);
+}
 
 type UploadStatus = 'reading' | 'resolving' | 'ready' | 'uploading' | 'retrying' | 'done' | 'error';
 type ResolvedPlace = { label?: string | null; city?: string | null; region?: string | null; country?: string | null };
@@ -26,10 +34,11 @@ type UploadItem = {
   status: UploadStatus;
   message: string;
   attempt?: number;
+  watermarkId?: string;
 };
 
 /** Downscale in the browser so /photos/p/:id can serve a ~200 KB WebP. */
-async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
+async function renderPreview(bitmap: ImageBitmap, watermarkId?: string): Promise<{ blob: Blob | null; watermarked: boolean }> {
   const scale = Math.min(1, PREVIEW_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
   const width = Math.max(1, Math.round(bitmap.width * scale));
   const height = Math.max(1, Math.round(bitmap.height * scale));
@@ -37,9 +46,31 @@ async function renderPreview(bitmap: ImageBitmap): Promise<Blob | null> {
   canvas.width = width;
   canvas.height = height;
   const context = canvas.getContext('2d');
-  if (!context) return null;
+  if (!context) return { blob: null, watermarked: false };
   context.drawImage(bitmap, 0, 0, width, height);
-  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.82));
+  let watermarked = false;
+  try {
+    if (!watermarkId) throw new Error('Watermark id is unavailable');
+    const image = context.getImageData(0, 0, width, height);
+    const idBytes = new Uint8Array(watermarkId.match(/.{2}/g)!.map((part) => Number.parseInt(part, 16)));
+    embedWatermark(image.data, width, height, 4, buildPayload(idBytes));
+    context.putImageData(image, 0, 0);
+    watermarked = true;
+  } catch (error) {
+    warnWatermarkOnce('Photo preview watermarking failed; uploading without a watermark.', error);
+  }
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.82));
+  return { blob, watermarked };
+}
+
+async function watermarkIdFor(file: File): Promise<string> {
+  const source = new Uint8Array(await file.slice(0, 2 * 1024 * 1024).arrayBuffer());
+  const suffix = new TextEncoder().encode('ashesborn-photo');
+  const bytes = new Uint8Array(source.length + suffix.length);
+  bytes.set(source);
+  bytes.set(suffix, source.length);
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+  return Array.from(digest.subarray(0, 8), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function mapConcurrent<T>(items: T[], concurrency: number, task: (item: T) => Promise<void>) {
@@ -100,6 +131,7 @@ export default function PhotoUploadPage() {
             camera: saved.camera,
             collection: saved.collection,
             coordinates: saved.coordinates,
+            watermarkId: saved.watermarkId,
             status: 'ready',
             message: '',
           });
@@ -144,6 +176,7 @@ export default function PhotoUploadPage() {
     camera: item.camera,
     collection: item.collection,
     coordinates: item.coordinates,
+    watermarkId: item.watermarkId,
     savedAt: Date.now(),
   });
 
@@ -175,6 +208,12 @@ export default function PhotoUploadPage() {
 
     await mapConcurrent(items, 3, async (item) => {
       try {
+        let watermarkId: string | undefined;
+        try {
+          watermarkId = await watermarkIdFor(item.file);
+        } catch (cause) {
+          warnWatermarkOnce('Could not compute a photo watermark id; uploading previews without a watermark.', cause);
+        }
         const meta = parsePhotoMetadata(new Uint8Array(await item.file.slice(0, 2 * 1024 * 1024).arrayBuffer()));
         const takenOn = meta?.takenAt || '';
         const camera = meta ? [meta.cameraMake, meta.cameraModel].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim() : '';
@@ -184,13 +223,13 @@ export default function PhotoUploadPage() {
           ...(meta?.altitude !== undefined ? { altitude: meta.altitude } : {}),
         };
         const parsedItem = {
-          ...item, meta, date: takenOn, camera,
+          ...item, watermarkId, meta, date: takenOn, camera,
           collection: takenOn ? takenOn.slice(0, 7) : 'undated', coordinates,
           status: (meta?.latitude !== undefined && meta.longitude !== undefined ? 'resolving' : 'ready') as UploadStatus,
         };
         void saveItem(persistedItem(parsedItem));
         updateQueue((current) => current.map((entry) => entry.id === item.id ? {
-          ...entry, meta, date: takenOn, camera,
+          ...entry, watermarkId: parsedItem.watermarkId, meta, date: takenOn, camera,
           collection: takenOn ? takenOn.slice(0, 7) : 'undated', coordinates,
           status: meta?.latitude !== undefined && meta.longitude !== undefined ? 'resolving' : 'ready',
         } : entry));
@@ -267,8 +306,23 @@ export default function PhotoUploadPage() {
           ...entry, status: attempt === 1 ? 'uploading' : 'retrying', message: '', attempt,
         } : entry));
         try {
+          let watermarkId = item.watermarkId || queueRef.current.find((entry) => entry.id === item.id)?.watermarkId;
+          if (!watermarkId) {
+            try {
+              watermarkId = await watermarkIdFor(item.file);
+              const updated = queueRef.current.find((entry) => entry.id === item.id);
+              if (updated) {
+                const withId = { ...updated, watermarkId };
+                updateQueue((current) => current.map((entry) => entry.id === item.id ? withId : entry));
+                void saveItem(persistedItem(withId));
+              }
+            } catch (cause) {
+              warnWatermarkOnce('Could not compute a photo watermark id; uploading previews without a watermark.', cause);
+            }
+          }
           const data = new FormData();
           data.set('file', item.file);
+          if (watermarkId) data.set('watermarkId', watermarkId);
           data.set('title', '');
           for (const [name, value] of Object.entries(metadataToFormFields(item.meta || { keywords: [] }))) data.set(name, value);
           const place = item.place;
@@ -289,8 +343,9 @@ export default function PhotoUploadPage() {
           data.set('width', String(bitmap.width));
           data.set('height', String(bitmap.height));
           try {
-            const preview = await renderPreview(bitmap);
-            if (preview) data.set('preview', preview, 'preview.webp');
+            const preview = await renderPreview(bitmap, watermarkId);
+            if (preview.blob) data.set('preview', preview.blob, 'preview.webp');
+            if (!preview.watermarked) data.delete('watermarkId');
           } finally {
             bitmap.close();
           }

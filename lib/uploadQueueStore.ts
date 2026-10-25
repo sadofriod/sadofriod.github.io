@@ -20,6 +20,7 @@ export type PersistedItem = {
   camera: string;
   collection: string;
   coordinates: { latitude?: number; longitude?: number; altitude?: number };
+  watermarkId?: string;
   uploadedId?: string;
   savedAt: number;
 };

@@ -169,6 +169,7 @@ uploadForm.set('exposureTime', '1/250');
 uploadForm.set('iso', '400');
 uploadForm.set('focalLength', '35');
 uploadForm.set('metadataSource', 'exif');
+uploadForm.set('watermarkId', '1234567890abcdef');
 uploadForm.set('authKey', UPLOAD_KEY);
 
 const created = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'POST', body: uploadForm });
@@ -178,6 +179,7 @@ const photo = createdBody.photo ?? {};
 check('upload returns preview + original urls', photo.preview === `/photos/p/${photo.id}` && photo.original === `/photos/o/${photo.id}`);
 check('tags parsed from the comma list', JSON.stringify(photo.tags) === '["film","35mm"]', JSON.stringify(photo.tags));
 check('upload includes nested location and camera metadata', photo.location?.label === 'Hangzhou, Zhejiang, China' && photo.location?.latitude === 30.2741 && photo.camera?.model === 'NIKON Z 6');
+check('upload persists the valid watermark id', photo.watermarkId === '1234567890abcdef');
 check('original stored in R2', [...photos.objects.keys()].some((key) => key.startsWith(`photos/originals/${photo.id}/`)));
 check('preview stored in R2', photos.objects.has(`photos/previews/${photo.id}.webp`));
 
@@ -191,9 +193,23 @@ check('GET /api/photos lists it', listed.length === 1 && listed[0].id === photo.
 check('list does not leak R2 keys', !('originalKey' in listed[0]));
 check('list keeps tags an array', Array.isArray(listed[0].tags) && listed[0].tags.length === 2);
 check('list preserves nested photo metadata', listed[0].location?.label === photo.location.label && listed[0].camera?.model === photo.camera.model);
+check('list exposes the saved watermark id', listed[0].watermarkId === '1234567890abcdef');
 check('GET /api/photos round-trips month collection and full metadata', listed[0].collection === '2024-05' && listed[0].takenOn === '2026-02-02' && listed[0].width === 1600 && listed[0].height === 1000 && listed[0].tags.join(',') === 'film,35mm' && listed[0].metadataSource === 'exif' && listed[0].location?.label === 'Hangzhou, Zhejiang, China' && listed[0].location?.city === 'Hangzhou' && listed[0].location?.region === 'Zhejiang' && listed[0].location?.country === 'China' && listed[0].location?.latitude === 30.2741 && listed[0].location?.longitude === 120.1551 && listed[0].camera?.make === 'NIKON' && listed[0].camera?.model === 'NIKON Z 6' && listed[0].camera?.lens === 'NIKKOR Z 24-70mm f/2.8 S' && listed[0].camera?.fNumber === 2.8 && listed[0].camera?.exposureTime === '1/250' && listed[0].camera?.iso === 400 && listed[0].camera?.focalLength === 35);
 const directPhoto = await (await call(photoRouter.handlePhotoRequest, `/api/photos/${photo.id}`, { method: 'GET' })).json();
 check('GET /api/photos/:id returns nested metadata', directPhoto.location?.label === photo.location.label && directPhoto.camera?.model === photo.camera.model);
+const watermarkLookup = await call(photoRouter.handlePhotoRequest, '/api/photos?watermark=1234567890abcdef', { method: 'GET' });
+check('GET /api/photos?watermark finds the photo', watermarkLookup.status === 200 && (await watermarkLookup.json()).id === photo.id);
+const missingWatermark = await call(photoRouter.handlePhotoRequest, '/api/photos?watermark=0000000000000000', { method: 'GET' });
+check('missing watermark returns the expected 404', missingWatermark.status === 404 && (await missingWatermark.json()).error === 'Photo not found');
+const invalidWatermarkForm = new FormData();
+invalidWatermarkForm.set('file', new File([png], 'invalid-watermark.png', { type: 'image/png' }));
+invalidWatermarkForm.set('watermarkId', 'ABCDEF0123456789');
+invalidWatermarkForm.set('authKey', UPLOAD_KEY);
+const invalidWatermarkPhoto = (await (await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'POST', body: invalidWatermarkForm })).json()).photo;
+check('uppercase malformed upload watermark is not persisted', invalidWatermarkPhoto.watermarkId === undefined);
+await call(photoRouter.handlePhotoRequest, `/api/photos/${invalidWatermarkPhoto.id}`, {
+  method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ authKey: UPLOAD_KEY }),
+});
 
 const withoutMetadata = new FormData();
 withoutMetadata.set('file', new File([png], 'plain.png', { type: 'image/png' }));

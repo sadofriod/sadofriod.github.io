@@ -32,6 +32,7 @@ export type Photo = {
     focalLength?: number;
   };
   metadataSource?: 'exif' | 'manual';
+  watermarkId?: string;
 };
 
 export type PhotoCollection = {
