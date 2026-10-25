@@ -176,7 +176,12 @@ export default function PhotoUploadPage() {
         <header className="brutal-card brutal-card--yellow">
           <p className="brutal-kicker">{t('photography.adminKicker')}</p>
           <h1 className="profile-hero__name">{t('photography.uploadKicker')}</h1>
-          <p className="brutal-text">{t('admin.accessRequired')}</p>
+          <p className="brutal-text">{t('admin.sessionExpired')}</p>
+          <div className="profile-hero__actions">
+            <button className="brutal-btn brutal-btn--ink" type="button" onClick={() => window.location.reload()}>
+              {t('admin.reauthenticate')}
+            </button>
+          </div>
         </header>
       </main>
     );

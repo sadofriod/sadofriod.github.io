@@ -12,15 +12,16 @@ export default {
       return Response.redirect(new URL(redirect, url), 308);
     }
 
-    // Who am I: the admin pages use this to decide whether to show the upload form,
-    // the Access identity, or the legacy key prompt.
-    if (url.pathname === '/api/whoami' && request.method === 'GET') {
+    // Both URLs return the same session payload. /api/admin/session is covered by
+    // the Access application prefix so the edge injects its JWT assertion there.
+    if ((url.pathname === '/api/whoami' || url.pathname === '/api/admin/session') && request.method === 'GET') {
       const access = accessConfigured(env);
       const identity = await accessIdentity(request, env);
       return Response.json(
         {
           access,
           email: identity ? identity.email : null,
+          source: identity ? identity.source : null,
           authenticated: Boolean(identity),
           keyRequired: !access,
         },

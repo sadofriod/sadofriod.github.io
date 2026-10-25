@@ -70,7 +70,12 @@ export default function PodcastUploadPage() {
         <header className="brutal-card brutal-card--yellow">
           <p className="brutal-kicker">{t('podcast.adminKicker')}</p>
           <h1 className="profile-hero__name">{t('podcastForm.kicker')}</h1>
-          <p className="brutal-text">{t('admin.accessRequired')}</p>
+          <p className="brutal-text">{t('admin.sessionExpired')}</p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 18 }}>
+            <button className="brutal-btn brutal-btn--ink" type="button" onClick={() => window.location.reload()}>
+              {t('admin.reauthenticate')}
+            </button>
+          </div>
         </header>
       </main>
     );

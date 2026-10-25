@@ -1622,6 +1622,20 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: "이 페이지는 Cloudflare Access로 보호됩니다. 새로고침해서 로그인하세요.",
     es: "Cloudflare Access protege esta página. Recarga para iniciar sesión.",
   },
+  "admin.sessionExpired": {
+    en: "Your Cloudflare Access session may have expired. Reload to check your sign-in.",
+    zh: "你的 Cloudflare Access 会话可能已过期。请重新加载并检查登录状态。",
+    ja: "Cloudflare Access のセッションが期限切れの可能性があります。再読み込みしてログイン状態を確認してください。",
+    ko: "Cloudflare Access 세션이 만료되었을 수 있습니다. 새로고침하여 로그인 상태를 확인하세요.",
+    es: "Es posible que tu sesión de Cloudflare Access haya caducado. Recarga para comprobar el inicio de sesión.",
+  },
+  "admin.reauthenticate": {
+    en: "Sign in again",
+    zh: "重新登录",
+    ja: "再度ログイン",
+    ko: "다시 로그인",
+    es: "Iniciar sesión de nuevo",
+  },
 };
 
 export function getTranslation(key: string, locale: Locale = 'en'): string {
