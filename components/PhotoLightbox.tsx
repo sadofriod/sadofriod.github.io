@@ -89,6 +89,9 @@ export default function PhotoLightbox({ photos, index, onClose, onNavigate }: Ph
             <a href={photo.original} download>
               {t('lightbox.download')}
             </a>
+            <a href={`/photography/${photo.id}`}>
+              {t('lightbox.page')}
+            </a>
             <button type="button" onClick={onClose}>
               {t('lightbox.close')}
             </button>

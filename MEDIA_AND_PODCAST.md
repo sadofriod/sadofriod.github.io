@@ -108,6 +108,14 @@ Nominatim requires a descriptive User-Agent and must not be queried repeatedly f
 the D1 cache limits traffic and follows the OpenStreetMap Nominatim usage policy. The Worker falls
 back to BigDataCloud when the selected provider is unavailable.
 
+## Image SEO
+
+Published photos have stable page URLs at `/photography/<photo-uuid>`. The Worker renders each page
+as plain HTML with complete canonical/social metadata and `ImageObject` JSON-LD, and adds an
+`ImageGallery` JSON-LD block to `/photography`. `/sitemap-photos.xml` lists published photo pages
+and their images for image search discovery. Photo pages are intentionally JS-free, so their image,
+metadata, and share previews remain available to crawlers and visitors with JavaScript disabled.
+
 ```bash
 curl -s 'https://blog.ashesborn.cloud/api/photo-geocode?lat=30.2741&lon=120.1551&lang=en'
 curl -s 'https://blog.ashesborn.cloud/api/photos'

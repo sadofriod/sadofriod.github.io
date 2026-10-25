@@ -637,6 +637,8 @@ html body {
   overflow: hidden;
   text-align: left;
   transition: transform 0.14s ease, box-shadow 0.14s ease;
+  color: inherit;
+  text-decoration: none;
 }
 
 .photo-tile:hover {

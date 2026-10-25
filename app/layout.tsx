@@ -10,8 +10,23 @@ import Script from 'next/script';
 import './profile.css';
 
 export const metadata: Metadata = {
-  title: 'Ashes Space',
-  description: 'A comprehensive resource for Ashes of the Singularity: Escalation',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud'),
+  title: {
+    default: 'Ashes Born — GraphRAG, TypeScript and photography',
+    template: '%s — Ashes Born',
+  },
+  description: 'Technical notes on GraphRAG, TypeScript and frontend architecture, alongside a photography gallery and podcast.',
+  authors: [{ name: 'Ashes Born' }],
+  creator: 'Ashes Born',
+  openGraph: {
+    type: 'website',
+    siteName: 'Ashes Born',
+    locale: 'en_US',
+  },
+  twitter: { card: 'summary_large_image' },
+  // No site-wide canonical here: a layout-level `alternates.canonical` is inherited by every
+  // child route, which pointed /photography and /podcast at the homepage.
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

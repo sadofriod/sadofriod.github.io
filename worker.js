@@ -2,6 +2,7 @@ import slugRedirects from './lib/generated/slug-redirects.json';
 import { handlePodcastRequest } from './lib/podcastRouter.js';
 import { handlePhotoRequest } from './lib/photoRouter.js';
 import { accessConfigured, accessIdentity } from './lib/accessAuth.js';
+import { handlePhotoSeoRequest } from './lib/photoSeo.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -28,6 +29,9 @@ export default {
         { headers: { 'cache-control': 'no-store' } }
       );
     }
+
+    const photoSeoResponse = await handlePhotoSeoRequest(request, env);
+    if (photoSeoResponse) return photoSeoResponse;
 
     const photoResponse = await handlePhotoRequest(request, env, ctx);
     if (photoResponse) return photoResponse;
