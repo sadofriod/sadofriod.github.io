@@ -150,7 +150,7 @@ const uploadForm = new FormData();
 uploadForm.set('file', new File([png], 'fog.png', { type: 'image/png' }));
 uploadForm.set('preview', new File([new Uint8Array([1, 2, 3, 4, 5])], 'preview.webp', { type: 'image/webp' }));
 uploadForm.set('title', 'Fog');
-uploadForm.set('collection', 'street');
+uploadForm.set('collection', '2024-05');
 uploadForm.set('takenOn', '2026-02-02');
 uploadForm.set('width', '1600');
 uploadForm.set('height', '1000');
@@ -191,6 +191,7 @@ check('GET /api/photos lists it', listed.length === 1 && listed[0].id === photo.
 check('list does not leak R2 keys', !('originalKey' in listed[0]));
 check('list keeps tags an array', Array.isArray(listed[0].tags) && listed[0].tags.length === 2);
 check('list preserves nested photo metadata', listed[0].location?.label === photo.location.label && listed[0].camera?.model === photo.camera.model);
+check('GET /api/photos round-trips month collection and full metadata', listed[0].collection === '2024-05' && listed[0].takenOn === '2026-02-02' && listed[0].width === 1600 && listed[0].height === 1000 && listed[0].tags.join(',') === 'film,35mm' && listed[0].metadataSource === 'exif' && listed[0].location?.label === 'Hangzhou, Zhejiang, China' && listed[0].location?.city === 'Hangzhou' && listed[0].location?.region === 'Zhejiang' && listed[0].location?.country === 'China' && listed[0].location?.latitude === 30.2741 && listed[0].location?.longitude === 120.1551 && listed[0].camera?.make === 'NIKON' && listed[0].camera?.model === 'NIKON Z 6' && listed[0].camera?.lens === 'NIKKOR Z 24-70mm f/2.8 S' && listed[0].camera?.fNumber === 2.8 && listed[0].camera?.exposureTime === '1/250' && listed[0].camera?.iso === 400 && listed[0].camera?.focalLength === 35);
 const directPhoto = await (await call(photoRouter.handlePhotoRequest, `/api/photos/${photo.id}`, { method: 'GET' })).json();
 check('GET /api/photos/:id returns nested metadata', directPhoto.location?.label === photo.location.label && directPhoto.camera?.model === photo.camera.model);
 
@@ -204,6 +205,29 @@ check('photo without metadata has no optional nested objects', !('location' in p
 await call(photoRouter.handlePhotoRequest, `/api/photos/${plainPhoto.id}`, {
   method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ authKey: UPLOAD_KEY }),
 });
+
+const emptyTitleForm = new FormData();
+emptyTitleForm.set('file', new File([png], 'filename-must-not-be-title.png', { type: 'image/png' }));
+emptyTitleForm.set('title', '');
+emptyTitleForm.set('collection', '2024-05');
+emptyTitleForm.set('authKey', UPLOAD_KEY);
+const emptyTitleResponse = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'POST', body: emptyTitleForm });
+const emptyTitlePhoto = (await emptyTitleResponse.json()).photo;
+check('explicitly empty title stays empty', emptyTitleResponse.status === 201 && emptyTitlePhoto.title === '', JSON.stringify(emptyTitlePhoto));
+
+const legacyTitleForm = new FormData();
+legacyTitleForm.set('file', new File([png], 'legacy-photo.png', { type: 'image/png' }));
+legacyTitleForm.set('authKey', UPLOAD_KEY);
+const legacyTitleResponse = await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'POST', body: legacyTitleForm });
+const legacyTitlePhoto = (await legacyTitleResponse.json()).photo;
+check('missing title keeps the filename stem fallback', legacyTitleResponse.status === 201 && legacyTitlePhoto.title === 'legacy-photo', JSON.stringify(legacyTitlePhoto));
+const uploadedTitles = await (await call(photoRouter.handlePhotoRequest, '/api/photos', { method: 'GET' })).json();
+check('GET /api/photos retains an explicitly empty title', uploadedTitles.some((entry) => entry.id === emptyTitlePhoto.id && entry.title === ''));
+for (const entry of [emptyTitlePhoto, legacyTitlePhoto]) {
+  await call(photoRouter.handlePhotoRequest, `/api/photos/${entry.id}`, {
+    method: 'DELETE', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ authKey: UPLOAD_KEY }),
+  });
+}
 
 const missingGeocode = await call(photoRouter.handlePhotoRequest, '/api/photo-geocode', { method: 'GET' });
 check('GET /api/photo-geocode without params → 400', missingGeocode.status === 400);
@@ -231,7 +255,7 @@ const original = await call(photoRouter.handlePhotoRequest, `/photos/o/${photo.i
 check('original downloads as an attachment', (original.headers.get('content-disposition') ?? '').startsWith('attachment;'), String(original.headers.get('content-disposition')));
 
 const collections = await (await call(photoRouter.handlePhotoRequest, '/api/photo-collections', { method: 'GET' })).json();
-check('collections counted', collections[0]?.collection === 'street' && collections[0]?.count === 1, JSON.stringify(collections));
+check('collections counted', collections[0]?.collection === '2024-05' && collections[0]?.count === 1, JSON.stringify(collections));
 
 const filtered = await (await call(photoRouter.handlePhotoRequest, '/api/photos?collection=interior', { method: 'GET' })).json();
 check('collection filter excludes other collections', filtered.length === 0);

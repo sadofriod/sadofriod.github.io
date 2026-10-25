@@ -76,7 +76,7 @@ export default function PhotoLightbox({ photos, index, onClose, onNavigate }: Ph
         <img src={`${photo.preview}?w=2000`} alt={photo.title || ''} />
         <figcaption className="photo-lightbox__bar">
           <span>
-            {photo.title || t('lightbox.untitled')}
+            {photo.title || photo.location?.city || photo.takenOn || t('lightbox.untitled')}
             {photo.width && photo.height ? ` · ${photo.width}×${photo.height}` : ''}
           </span>
           <span className="photo-lightbox__actions">

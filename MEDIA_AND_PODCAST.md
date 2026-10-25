@@ -81,16 +81,19 @@ something a request should carry; put the file in R2 and reference it.
 ## Uploading
 
 - Photo: `/photography/upload?authKey=<UPLOAD_AUTH_KEY>` (key kept in `sessionStorage`, like the
-  podcast admin flow). The page downscales to a 1600 px WebP in the browser and posts both files,
+  podcast admin flow). Select multiple images and upload them without entering manual fields;
+  capture metadata automatically assigns each photo to its `YYYY-MM` collection (`undated` when
+  no date is present). The page downscales to a 1600 px WebP in the browser and posts both files,
   so the gallery never serves a 12 MB original and **no image-optimisation product is needed**.
 - Episode: `/podcast?authKey=<UPLOAD_AUTH_KEY>` → *Upload*.
 - RSS: `/podcast/rss` (iTunes tags, ordered by `published_on desc`).
 
 ## Photo metadata
 
-The upload page parses JPEG, PNG, and WebP EXIF in the browser, pre-filling capture date, GPS,
-camera/lens/exposure details, and EXIF keywords. GPS coordinates are reverse-geocoded by the Worker;
-the editable place label and metadata are stored in the new `photos` columns from
+The upload page parses JPEG, PNG, and WebP EXIF in the browser for capture date, GPS,
+camera/lens/exposure details, and keywords. GPS coordinates are reverse-geocoded; new coordinates in
+a batch are resolved serially at least one second apart, and repeated rounded coordinates reuse the
+same lookup. Place details and metadata are stored in the `photos` columns from
 `migrations/0003_photo_metadata.sql`. Reverse-geocode responses are cached in `photo_geocodes`, keyed
 to rounded coordinates and refreshed after 90 days. Set `GEOCODE_PROVIDER` to `nominatim` (default),
 `bigdatacloud`, or `off` for local/offline use.
