@@ -373,5 +373,41 @@
       "collectedAt": "2026-10-23"
     },
     "status": "published"
+  },
+  {
+    "id": "ashesborn-company",
+    "name": "Ashes Born · 公司主页",
+    "url": "https://ashesborn.cloud",
+    "blurb": "Ashes Born Trade and Services Limited 的公司主页：TypeScript GraphRAG 引擎、每条结论带页码出处的研报情报服务（Evidence Brief），以及开源作品与案例索引。",
+    "tags": [
+      "graphrag",
+      "consulting",
+      "hong-kong"
+    ],
+    "lang": "en",
+    "group": "friends",
+    "source": {
+      "platform": "manual",
+      "collectedAt": "2026-10-24"
+    },
+    "status": "published"
+  },
+  {
+    "id": "webmscore-converter",
+    "name": "WebMScore Converter · 乐谱格式互转",
+    "url": "https://webmscore.ashesborn.cloud",
+    "blurb": "浏览器内的乐谱格式互转工具：MSCZ / MusicXML 进，PDF、MIDI、音频或 PNG 出，基于 MuseScore 的 WebAssembly 构建，转换全程在本地完成。",
+    "tags": [
+      "tool",
+      "music",
+      "webassembly"
+    ],
+    "lang": "zh",
+    "group": "friends",
+    "source": {
+      "platform": "manual",
+      "collectedAt": "2026-10-24"
+    },
+    "status": "published"
   }
 ]
