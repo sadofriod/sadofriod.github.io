@@ -8,6 +8,7 @@ import { profile, type SocialIcon } from '@/data/profile';
 export const metadata: Metadata = {
   title: 'Ashes Born — Independent engineer building GraphRAG systems',
   description: profile.seo.aboutDescription,
+  alternates: { canonical: '/' },
 };
 
 function socialIcon(icon: SocialIcon) {

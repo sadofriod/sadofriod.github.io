@@ -146,18 +146,22 @@ export default function PhotographyPage() {
 
       <div className="photo-grid">
         {visible.map((photo, index) => (
-          <button
+          <a
             key={photo.id}
-            type="button"
+            href={`/photography/${photo.id}`}
             className="photo-tile"
-            onClick={() => setOpenIndex(index)}
+            onClick={(event) => {
+              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              event.preventDefault();
+              setOpenIndex(index);
+            }}
             aria-label={t('photography.openTitle', { title: photo.title || photo.location?.city || photo.takenOn || t('photography.untitled') })}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewUrl(photo, 800)}
-              alt={photo.title || ''}
-              loading="lazy"
+              alt={photo.title || [photo.location?.city || photo.location?.label, photo.takenOn].filter(Boolean).join(' · ') || 'Untitled photo'}
+              {...(index === 0 ? { fetchPriority: 'high' as const } : { loading: 'lazy' as const })}
               width={photo.width || undefined}
               height={photo.height || undefined}
               style={{ aspectRatio: photo.aspect ? String(photo.aspect) : undefined }}
@@ -170,7 +174,7 @@ export default function PhotographyPage() {
                 <span className="photo-tile__place">{photo.location.city || photo.location.label}</span>
               ) : null}
             </span>
-          </button>
+          </a>
         ))}
       </div>
 

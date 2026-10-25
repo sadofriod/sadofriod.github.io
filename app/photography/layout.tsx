@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Photography — Ashes Born',
+  title: 'Photography',
   description: 'Frames from places and light worth going back to.',
+  alternates: { canonical: '/photography' },
 };
 
-export default function PhotographyLayout({ children }: { children: React.ReactNode }) {
+export default function PhotographyLayout({ children }: { children: ReactNode }) {
   return children;
 }

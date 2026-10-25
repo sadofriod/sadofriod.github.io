@@ -18,6 +18,7 @@
     "db:migrate:local": "wrangler d1 migrations apply ashesborn-blog --local",
     "test:auth": "node scripts/test-access-auth.mjs",
     "test:metadata": "node --experimental-strip-types scripts/test-photo-metadata.mjs",
+    "test:seo": "node --experimental-strip-types scripts/test-photo-seo.mjs",
     "test:upload": "node --experimental-strip-types scripts/test-upload-retry.mjs",
     "test:watermark": "node --experimental-strip-types scripts/test-watermark.mjs"
   },

@@ -966,6 +966,13 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: "원본 다운로드",
     es: "Descargar original",
   },
+  "lightbox.page": {
+    en: "View as page",
+    zh: "以页面形式查看",
+    ja: "ページで見る",
+    ko: "페이지로 보기",
+    es: "Ver como página",
+  },
   "lightbox.close": {
     en: "Close",
     zh: "关闭",

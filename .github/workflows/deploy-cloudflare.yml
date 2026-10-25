@@ -53,6 +53,7 @@ jobs:
           pnpm test:upload
           pnpm test:watermark
           pnpm test:metadata
+          pnpm test:seo
           pnpm test:db
           pnpm test:routes
           pnpm test:auth

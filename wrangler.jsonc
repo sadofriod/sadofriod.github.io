@@ -16,7 +16,7 @@
     "directory": "./out",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/blog/*", "/api/*", "/podcast/rss", "/podcast-media/*", "/photos/*"]
+    "run_worker_first": ["/blog/*", "/api/*", "/podcast/rss", "/podcast-media/*", "/photos/*", "/photography", "/photography/*", "/sitemap-photos.xml"]
   },
   "routes": [
     {
