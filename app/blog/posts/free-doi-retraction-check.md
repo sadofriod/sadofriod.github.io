@@ -82,7 +82,7 @@ The paid calls go through x402 on Base, which means a program can pay per call w
 - The public graph is a **neighbourhood sample**, not the scholarly record. 12 seeds, up to 60 citing works each.
 - Retraction dates come from whichever source recorded them; `null` means "this source did not date it", not "unknown retraction".
 - 572 status rows is small. It is a deliberate starting subset, and the snapshot ID travels with every response so you can tell when an answer ages.
-- The MCP server at `mcp.ashesborn.cloud/mcp` now answers `initialize` and `tools/list` anonymously and exposes three read-only tools — `integrity_paper_status`, `retraction_propagation`, `integrity_evidence_audit` — so a client can call them without a key. Indexing and the corpus-query tools still need a credential.
+- The MCP server at `mcp.ashesborn.cloud/mcp` answers `initialize` and `tools/list` anonymously and exposes one **free** read-only tool, `integrity_paper_status` — a client can call it with no key. The propagation (`$0.02`) and evidence-audit (`$0.10`) tools answer `payment_required` to an anonymous session: they are the paid product, and the free tool is deliberately not a copy of them. Indexing and the corpus-query tools still need a credential.
 
 ## Try one
 
