@@ -67,3 +67,6 @@ public/worker-*.js.map
 
 # workerd crash dumps
 core
+
+# vercel link artifacts (never commit project ids)
+/.vercel
