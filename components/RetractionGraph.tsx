@@ -224,7 +224,10 @@ export default function RetractionGraph() {
       ctx.stroke();
       ctx.fillStyle = dim ? 'rgba(17,17,17,0.35)' : '#111';
       ctx.font = '600 10px ui-monospace, SFMono-Regular, Menlo, monospace';
-      const label = `DOI ${index + 1} · ${seed.citers} citers`;
+      // Just the marker: the citer count lives in the hover tooltip and is already
+      // encoded by the sector width, and a 6-character label cannot collide with
+      // its 11 neighbours at any canvas width (the old ~110px label could).
+      const label = `DOI ${index + 1}`;
       ctx.fillText(label, position.x - ctx.measureText(label).width / 2, position.y - 14);
     });
   }, [computed, payload, size, activeSeed]);
@@ -291,7 +294,9 @@ export default function RetractionGraph() {
           <div>{hover.node.t || hover.node.i}</div>
           <div style={{ opacity: 0.7 }}>
             {hover.node.y ? `${hover.node.y} · ` : ''}
-            {hover.node.k === 's' ? 'retracted seed' : `citer of ${hover.seeds.map((s) => `DOI ${s + 1}`).join(', ')}`}
+            {hover.node.k === 's'
+              ? `retracted seed · ${payload?.seeds[hover.seeds[0]]?.citers ?? '?'} citers`
+              : `citer of ${hover.seeds.map((s) => `DOI ${s + 1}`).join(', ')}`}
           </div>
         </div>
       )}
