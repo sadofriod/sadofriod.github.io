@@ -226,5 +226,13 @@
   "article-fad2e7b42b3d": {
     "en": "smooth-cubic-bezier-curve",
     "zh": "article-fad2e7b42b3d"
+  },
+  "x402-integration-http-and-mcp-zh": {
+    "zh": "x402-integration-http-and-mcp-zh",
+    "en": "x402-integration-http-and-mcp"
+  },
+  "x402-integration-http-and-mcp": {
+    "zh": "x402-integration-http-and-mcp-zh",
+    "en": "x402-integration-http-and-mcp"
   }
 }

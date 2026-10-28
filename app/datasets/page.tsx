@@ -241,6 +241,14 @@ export default function DatasetsPage() {
           <li>
             Sessions expire; re-<code>initialize</code> rather than reusing a stale <code>mcp-session-id</code>.
           </li>
+          <li>
+            The wire format for the paid calls, including the 402 challenge and the EIP-3009 authorization, is
+            documented in{' '}
+            <Link className="brutal-link" href="/blog/x402-integration-http-and-mcp">
+              x402 integration over HTTP and MCP
+            </Link>
+            .
+          </li>
         </ol>
       </section>
 
