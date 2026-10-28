@@ -82,7 +82,7 @@ GET https://pay.ashesborn.cloud/api/v1/judge/paper?doi=10.1016/S0140-6736(97)110
 - 公开图谱是**邻域样本**，不是整个学术记录：12 个种子，每个最多 60 篇引用作品。
 - 撤稿日期来自记录它的那个来源；`null` 的意思是"该来源没有给出日期"，不是"撤稿日期未知"。
 - 572 条状态记录很小。这是一个刻意选择的起始子集，而快照 ID 会随每次返回一起走，所以你能判断一个答案什么时候开始过时。
-- `mcp.ashesborn.cloud/mcp` 目前需要凭证，MCP 客户端还不能匿名连接。上面那个 HTTP 查询是不需要凭证的那部分。
+- `mcp.ashesborn.cloud/mcp` 已经可以匿名 `initialize` 与 `tools/list`，开放三个只读工具（`integrity_paper_status`、`retraction_propagation`、`integrity_evidence_audit`），客户端不需要 key 就能调。索引与语料查询仍需凭证。
 
 ## 试一个
 
