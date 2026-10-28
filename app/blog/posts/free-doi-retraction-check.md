@@ -1,46 +1,86 @@
 ---
-title: 'A free way to check whether any DOI is retracted — with the receipts'
+title: 'GraphRAG Retraction Judgment in TypeScript: Source Tiers, Abstention, and 20 DOIs Measured'
 date: '2026-10-28'
-excerpt: 'Retraction status is scattered across Crossref, Retraction Watch and index-level flags that disagree. We published the merged graph under CC0 and opened a per-DOI lookup that answers in ~1.6 seconds with every source named. Here are the measured numbers, the three answers people misread, and how to call it.'
-description: 'Free per-DOI retraction lookup backed by a CC0 citation and retraction graph: 98,868 papers, 144,814 citation edges, 572 status rows, 20 DOIs measured, median 1,595 ms, three sources per verdict.'
-tags: ['GraphRAG', 'research-integrity', 'dataset', 'MCP', 'TypeScript']
+excerpt: 'A retraction lookup built on a citation graph: three source assertions per paper, two tiers, four possible verdicts, and the numbers from twenty DOIs run against the endpoint. Includes why an empty status list is a different answer from "not retracted".'
+description: 'How graphrag-ts derives a retraction verdict from three sources with source tiers, why the schema keeps each assertion in its own row, the four verdict outcomes including abstention, and a 20-DOI measurement with latency and source agreement.'
+tags: ['GraphRAG', 'TypeScript', 'PostgreSQL', 'research-integrity', 'dataset']
 categories: GraphRAG
-keywords: 'DOI retraction check, free retraction API, retraction watch data, Crossref update-to, citation graph dataset, research integrity tool, CC0 dataset, GraphRAG judgment'
+keywords: 'GraphRAG retraction, DOI retraction status, source tier, Crossref update-to, Retraction Watch, OpenAlex, abstention, GraphRAG TypeScript'
 lang: en
 translationKey: free-doi-retraction-check
 ---
 
-An agent that cites a retracted paper does not announce it. It writes a confident paragraph with a DOI at the end, and the DOI happens to be the 1998 Wakefield paper or the 2020 hydroxychloroquine preprint-era trial — both retracted, both still cited by thousands of works.
+Retraction status is not one field in one database. A work can carry an OpenAlex flag, a Crossref
+`update-to` relation and a Retraction Watch notice, and the three can disagree. An agent citing such
+a work emits a DOI and nothing else, so the disagreement never reaches the reader.
 
-The information to catch that exists, but it is fragmented across three places that do not agree with each other:
+This post describes how `graphrag-ts` turns those rows into a verdict, and what the endpoint returned
+for twenty DOIs. The numbers come from one run on 2026-10-28 against a single snapshot.
 
-- **Crossref** records an update relation (`update-to`) when a publisher issues a retraction notice.
-- **Retraction Watch** maintains the notice-level record, with dates.
-- **OpenAlex** carries an index-derived retraction flag on the work itself.
+## 1. What the graph holds
 
-Any one of them alone gives false negatives. So we merged all three into one graph, published it under CC0, and put a free lookup in front of it. This post is the receipt: what the data contains, what the endpoint actually returns, and the numbers from a benchmark you can rerun.
+Snapshot `ri-20261025-1526`, published under CC0:
 
-## What is published
+| Table | Rows | Columns of interest |
+| --- | --- | --- |
+| `papers` | 98,868 | `paper_id` (OpenAlex), `doi`, `title`, `publication_year`, `openalex_is_retracted` |
+| `cites` | 144,814 | `citing_id`, `cited_id`, `cited_doi`, `source_tier`, `source_uri` |
+| `retraction_status` | 572 | `paper_id`, `source`, `source_tier`, `is_retracted`, `retraction_date` |
 
-The dataset is `ashesborn6/integrity-citation-retraction-graph` on Hugging Face, snapshot `ri-20261025-1526`:
+`paper_id` is stable across snapshots, which is what lets an incremental build compare two versions
+without re-extracting the unchanged part. `cites` is directed: `citing_id` cites `cited_id`.
+`cited_doi` is null when a reference carries no DOI, so a join on DOI alone loses edges.
 
-- **98,868 papers** — OpenAlex work IDs, DOI, title, year.
-- **144,814 citation edges** — `citing_id → cited_id`, with the source that supplied the edge.
-- **572 retraction status rows** — one row per *(paper, source)* assertion, each carrying a source tier.
+The public export is a neighbourhood sample: twelve retracted seeds, the works that cite them, and
+those works' reference lists. 781 works cite at least one seed across 788 edges, and six cite two or
+more.
 
-That last design decision is the whole point. A retraction is not one boolean from one authority; it is a set of assertions that can disagree, and the schema keeps them separate instead of collapsing them into a single `is_retracted` column a downstream reader cannot audit. Tier **A** means a registry that records retractions directly (Crossref `update-to`, Retraction Watch); tier **C** means an index-derived flag (OpenAlex).
+## 2. Why each assertion is a row
 
-Reason and nature free text from Retraction Watch is deliberately excluded. A retraction is a bibliographic event; carrying the publisher's prose about it turns a lookup into an accusation.
+`retraction_status` holds one row per `(paper, source)` pair. A single boolean column would be
+smaller, and would also discard the two things a consumer needs: which source asserted it, and when
+that source dated it. Tier A means a registry that records retractions directly (Crossref
+`update-to`, Retraction Watch); tier C means an index-derived flag (OpenAlex). A disagreement between
+an A row and a C row is information, and it survives into the response.
 
-## What the call returns
+Retraction Watch reason and nature free text is excluded from the release. A retraction is a
+bibliographic event; reproducing a publisher's prose about it turns a status lookup into an
+accusation the dataset cannot substantiate.
 
-```
-GET https://pay.ashesborn.cloud/api/v1/judge/paper?doi=10.1016/S0140-6736(97)11096-0
-```
+## 3. Deriving a verdict
+
+Four outcomes, evaluated in this order:
+
+1. `abstained`. The response carries `abstention_reason`, currently `paper_not_in_snapshot`. The paper
+   is outside the snapshot and the service declines to classify it.
+2. `no_status_rows`. The paper is in `papers`, but no source has a status row for it. This is absence
+   of evidence.
+3. `retracted`. At least one source asserts retraction. The response reports how many did, the tier
+   letters involved, and the earliest recorded date.
+4. `not_retracted`. Every covering source asserts the opposite.
+
+Cases 1 and 2 are the ones that get misread. `statuses: []` with `paper: null` is not a clean paper,
+and `statuses: []` with a paper present is not a clean paper either. A consumer that maps both to
+"clean" produces assurance it does not have.
+
+## 4. The interfaces
+
+| Interface | Cost | Returns |
+| --- | --- | --- |
+| `GET /api/v1/judge/paper?doi=` | free, no key | paper-level status rows and their tiers |
+| MCP `integrity_paper_status` | free, no key | the same payload over Streamable HTTP |
+| MCP `retraction_propagation` | $0.02 per call | verdict, confidence, retracted roots, coverage |
+| MCP `integrity_evidence_audit` | $0.10 per call | the above plus the evidence path and tier distribution |
+
+The free HTTP route returns `access-control-allow-origin: *`, so a browser can call it directly, which
+is what the dataset page does. The paid calls settle through x402 on Base, and the MCP server answers
+`initialize` and `tools/list` anonymously so a client can inspect the tool inventory before paying.
+
+The response carries the snapshot that produced it:
 
 ```json
 {
-  "paper": { "paper_id": "W2117847125", "doi": "10.1016/s0140-6736(97)11096-0", "year": 1998, "source_tier": "C" },
+  "paper": { "paper_id": "W2117847125", "doi": "10.1016/s0140-6736(97)11096-0", "year": 1998 },
   "statuses": [
     { "source": "openalex",         "source_tier": "C", "is_retracted": true, "retraction_date": null },
     { "source": "retraction_watch", "source_tier": "A", "is_retracted": true, "retraction_date": "2010-02-06" }
@@ -48,46 +88,69 @@ GET https://pay.ashesborn.cloud/api/v1/judge/paper?doi=10.1016/S0140-6736(97)110
 }
 ```
 
-No key, no account, `access-control-allow-origin: *`, so it works from a browser, a script, or a page like [the interactive lookup](/datasets). Nothing is generated by a model — the same DOI against the same snapshot returns the same bytes, which is the property that makes it usable inside an agent pipeline rather than beside one.
+## 5. Measuring twenty DOIs
 
-## The benchmark, and what it says
+Method: sixteen retracted DOIs taken from `retraction_status` (every DOI carrying a recorded
+retraction date), three controls expected not to be retracted, one deliberately invalid DOI. One GET
+per DOI, sequential, 350 ms apart, browser-style User-Agent, no retries counted as samples. Latency is
+wall-clock from request to parsed body, measured from a container reaching Cloudflare over the public
+internet.
 
-Twenty DOIs, one GET each, sequential, no retries: **20/20 HTTP 200**, median **1,595 ms**, slowest 5,318 ms (a cold start after idle), 16 retractions each confirmed by **three** sources. Full table, method and the shell loop to reproduce it are on the [benchmark page](/benchmark).
+| Measure | Result |
+| --- | --- |
+| HTTP 200 | 20 / 20 |
+| Median latency | 1,595 ms |
+| Mean / max | 1,965 ms / 5,318 ms |
+| Retracted | 16 |
+| Not retracted | 1 |
+| No status rows | 2 |
+| Abstained | 1 |
 
-The interesting part is not the latency. It is the three answer shapes that a naive `is_retracted ? "retracted" : "clean"` check gets wrong:
+All sixteen retracted DOIs were confirmed by three sources (OpenAlex tier C, Crossref tier A,
+Retraction Watch tier A). The engine reports its own time in `server-timing`; repeated calls returned
+`app;dur=6.1`, `6.4` and `3.9` ms with one outlier at `104.2` ms. The rest of the wall-clock time is
+network and TLS.
 
-1. **Abstained.** A DOI outside the snapshot returns `abstention_reason: "paper_not_in_snapshot"` and an empty status list. It declines to judge. Reporting that as “clean” is how a checker produces false assurance.
-2. **No status rows.** The paper is in the graph, no source asserts anything about it. Also not “clean” — it is absence of evidence, and it is a *different* verdict in our response than an abstention.
-3. **Source disagreement.** Tier A and tier C rows can conflict. A judgment that silently picks the tier-A row hides the conflict; ours reports it.
+## 6. Reading the numbers
 
-## The graph, rendered
+The 5,318 ms maximum was the first request after idle, so a cold start dominates it; the mean is
+inflated by that sample and the median is the figure to use for capacity planning.
 
-The published subset is a neighbourhood sample: 12 retracted seeds, the works that cite them, and those works' reference lists. In that sample, **781 distinct papers cite at least one retracted seed**, across 788 edges — and **6 papers cite two or more** of them. Those six are why this is a graph problem and not a lookup problem: a claim resting on two independently retracted foundations is a different risk from a claim resting on one, and you only see it by walking edges.
+The two controls that returned no status rows are the interesting part of the run. Both papers are in
+the graph, and neither has a source asserting anything about retraction. A checker that maps "no rows"
+to `retracted: false` would have reported two clean papers it cannot vouch for. The response keeps
+that outcome separate from the abstention case for this reason.
 
-You can hover the actual rendering on [the dataset walkthrough](/datasets/retraction-integrity) — 1,039 nodes, drawn client-side from a 115 KB payload with no charting library.
+The invalid DOI returned `abstention_reason: paper_not_in_snapshot`, an empty status list and HTTP
+200. No error code and no guess.
 
-## Free versus paid
+## 7. What this does not show
 
-Being explicit about the line, because it is the difference between a tool and a teaser:
+- **n = 20, one snapshot, one egress.** This measures one endpoint from one machine in one hour. It is
+  not throughput under load, and not a comparison with other services.
+- **Recall, not precision.** The sixteen retracted samples came from the status table, so the run
+  shows that known retractions are found. It says nothing about false positives on clean literature,
+  because the snapshot has no clean control group of comparable size.
+- **Status, not misconduct.** Reason text is excluded on purpose. "Retracted" here is a bibliographic
+  state.
+- **A neighbourhood sample is not the scholarly record.** Twelve seeds and their citers do not support
+  any statement about retraction rates in a field.
 
-- **Free:** paper-level retraction status per DOI, unlimited-ish, no key. This is the part that answers “is this paper retracted?”
-- **Paid, $0.02:** retraction *propagation* — given a paper, does its claim base include retracted work, how deep, with what per-source agreement and conflict flags.
-- **Paid, $0.10:** the full evidence audit — the path, the tiers, the deterministic explanation.
-- **Data:** CC0-1.0. Download it and build your own thing; a link back is appreciated, not required.
-
-The paid calls go through x402 on Base, which means a program can pay per call without a subscription, an API key, or a sales conversation. The judgment engine is deterministic: 0 LLM tokens per call.
-
-## Honest limits
-
-- The public graph is a **neighbourhood sample**, not the scholarly record. 12 seeds, up to 60 citing works each.
-- Retraction dates come from whichever source recorded them; `null` means "this source did not date it", not "unknown retraction".
-- 572 status rows is small. It is a deliberate starting subset, and the snapshot ID travels with every response so you can tell when an answer ages.
-- The MCP server at `mcp.ashesborn.cloud/mcp` answers `initialize` and `tools/list` anonymously and exposes one **free** read-only tool, `integrity_paper_status` — a client can call it with no key. The propagation (`$0.02`) and evidence-audit (`$0.10`) tools answer `payment_required` to an anonymous session: they are the paid product, and the free tool is deliberately not a copy of them. Indexing and the corpus-query tools still need a credential.
-
-## Try one
-
-Paste any DOI you already distrust into [the lookup](/datasets). If the response is useful to you, the same shape is available programmatically, and the data behind it is a single `curl` away:
+## 8. Reproducing the measurement
 
 ```bash
-curl -sL https://huggingface.co/datasets/ashesborn6/integrity-citation-retraction-graph/resolve/main/data/retraction_status.jsonl.gz | gunzip | head
+for doi in 10.1001/jama.293.14.1727 10.1038/nature14581 10.9999/not-in-snapshot; do
+  enc=$(python3 -c 'import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1],safe=""))' "$doi")
+  curl -s -o /tmp/out.json -w "%{http_code} %{time_total}s $doi\n" \
+    -A "Mozilla/5.0 (compatible; bench/1.0)" \
+    "https://pay.ashesborn.cloud/api/v1/judge/paper?doi=$enc"
+  python3 -m json.tool < /tmp/out.json | head -20
+  sleep 0.35
+done
 ```
+
+The dataset and loader scripts are on Hugging Face
+(`ashesborn6/integrity-citation-retraction-graph`). The citation neighbourhood rendered on
+`/datasets/retraction-integrity` is generated by `scripts/build-retraction-graph.mjs` in the blog
+repository, which recomputes seed selection from the three published JSONL files instead of shipping a
+hand-picked layout.
