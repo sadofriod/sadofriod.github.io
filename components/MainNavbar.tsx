@@ -12,6 +12,7 @@ export default function MainNavbar() {
   const navigationItems = [
     { label: t('nav.home'), href: '/' },
     { label: t('nav.blog'), href: '/blog' },
+    { label: t('nav.datasets'), href: '/datasets' },
     { label: t('nav.photography'), href: '/photography' },
     { label: t('nav.podcast'), href: '/podcast' },
     { label: t('nav.friends'), href: '/friends' },

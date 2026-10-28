@@ -61,6 +61,13 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: '친구 링크',
     es: 'Enlaces'
   },
+  'nav.datasets': {
+    en: 'Datasets',
+    zh: '数据集',
+    ja: 'データセット',
+    ko: '데이터셋',
+    es: 'Conjuntos'
+  },
   'blog.readMore': {
     en: 'Read More',
     zh: '阅读更多',

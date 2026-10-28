@@ -1,0 +1,616 @@
+{
+ "summary": {
+  "queried_at": "2026-10-28T06:19Z",
+  "n": 20,
+  "http_200": 20,
+  "in_snapshot": 19,
+  "retracted": 16,
+  "not_retracted": 1,
+  "no_status_rows": 2,
+  "abstained": 1,
+  "p50_ms": 1595,
+  "min_ms": 943,
+  "max_ms": 5318,
+  "mean_ms": 1965,
+  "endpoint": "https://pay.ashesborn.cloud/api/v1/judge/paper"
+ },
+ "rows": [
+  {
+   "doi": "10.1001/jama.293.14.1727",
+   "http": 200,
+   "ms": 2423,
+   "title": "RETRACTED: Super Bowls: Serving Bowl Size and Food Consumption",
+   "year": 2005,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2018-09-19",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2018-09-19"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2018-09-19"
+    }
+   ]
+  },
+  {
+   "doi": "10.1111/j.1365-2702.2011.03951.x",
+   "http": 200,
+   "ms": 1447,
+   "title": "Retracted: The impact of nurse short message services and telephone follow\u2010ups on diabetic",
+   "year": 2012,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2016-06-01",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2016-06-01"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2016-06-01"
+    }
+   ]
+  },
+  {
+   "doi": "10.1002/14651858.cd003041.pub2",
+   "http": 200,
+   "ms": 1526,
+   "title": "Smoking cessation for the secondary prevention of coronary heart disease",
+   "year": 2003,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2012-02-15",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2012-02-15"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2012-02-15"
+    }
+   ]
+  },
+  {
+   "doi": "10.4049/jimmunol.176.3.1534",
+   "http": 200,
+   "ms": 1415,
+   "title": "Pregnancy-Associated Exosomes and Their Modulation of T Cell Signaling",
+   "year": 2006,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2015-06-15",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2015-06-15"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2015-06-15"
+    }
+   ]
+  },
+  {
+   "doi": "10.1111/j.1442-2042.2009.02429.x",
+   "http": 200,
+   "ms": 3484,
+   "title": "THIS ARTICLE HAS BEEN RETRACTED Periurethral injection of autologous adipose\u2010derived stem ",
+   "year": 2009,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2010-10-01",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2010-10-01"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2010-10-01"
+    }
+   ]
+  },
+  {
+   "doi": "10.1182/blood-2008-01-133710",
+   "http": 200,
+   "ms": 3321,
+   "title": "Osteolineage niche cells initiate hematopoietic stem cell mobilization",
+   "year": 2008,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2012-02-16",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2012-02-16"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2012-02-16"
+    }
+   ]
+  },
+  {
+   "doi": "10.1182/blood.v98.9.2615",
+   "http": 200,
+   "ms": 943,
+   "title": "Purification and ex vivo expansion of postnatal human marrow mesodermal progenitor cells",
+   "year": 2001,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2009-03-05",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2009-03-05"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2009-03-05"
+    }
+   ]
+  },
+  {
+   "doi": "10.1083/jcb.200501040",
+   "http": 200,
+   "ms": 1509,
+   "title": "RETRACTED: FOXO1a acts as a selective tumor suppressor in alveolar rhabdomyosarcoma",
+   "year": 2005,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2007-05-07",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2007-05-07"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2007-05-07"
+    }
+   ]
+  },
+  {
+   "doi": "10.1056/nejmoa1101324",
+   "http": 200,
+   "ms": 1468,
+   "title": "RETRACTED: Evidence for Human Lung Stem Cells",
+   "year": 2011,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2018-10-17",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2018-10-17"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2018-10-17"
+    }
+   ]
+  },
+  {
+   "doi": "10.1038/nature02889",
+   "http": 200,
+   "ms": 1595,
+   "title": "Induction of DNA methylation and gene silencing by short interfering RNAs in human cells",
+   "year": 2004,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2006-06-29",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2006-06-29"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2006-06-29"
+    }
+   ]
+  },
+  {
+   "doi": "10.1111/j.1365-2044.1996.tb12557.x",
+   "http": 200,
+   "ms": 1365,
+   "title": "Retracted: The influence of volume therapy and pentoxifylline infusion on circulating adhe",
+   "year": 1996,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2021-01-14",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2021-01-14"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2021-01-14"
+    }
+   ]
+  },
+  {
+   "doi": "10.1038/srep08209",
+   "http": 200,
+   "ms": 1772,
+   "title": "RETRACTED ARTICLE: Angiotensin-converting enzyme 2/angiotensin-(1\u20137)/Mas axis prevents lip",
+   "year": 2015,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2026-02-23",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2026-02-23"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2026-02-23"
+    }
+   ]
+  },
+  {
+   "doi": "10.1016/j.molcel.2004.06.043",
+   "http": 200,
+   "ms": 1702,
+   "title": "RETRACTED: Methyl-CpG Binding Protein MBD1 Couples Histone H3 Methylation at Lysine 9 by S",
+   "year": 2004,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2019-03-07",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2019-03-07"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2019-03-07"
+    }
+   ]
+  },
+  {
+   "doi": "10.3892/ijmm.2015.2172",
+   "http": 200,
+   "ms": 1934,
+   "title": "Hedgehog signaling is involved in the BMP9-induced osteogenic differentiation of mesenchym",
+   "year": 2015,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2023-02-20",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2023-02-20"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2023-02-20"
+    }
+   ]
+  },
+  {
+   "doi": "10.1016/j.orgel.2005.03.010",
+   "http": 200,
+   "ms": 1866,
+   "title": "RETRACTED: Properties of organic light-emitting diodes by aluminum cathodes modification u",
+   "year": 2005,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2007-02-22",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2007-02-22"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2007-02-22"
+    }
+   ]
+  },
+  {
+   "doi": "10.1007/s001340050511",
+   "http": 200,
+   "ms": 2314,
+   "title": "RETRACTED ARTICLE: Volume therapy in the critically ill: is there a difference?",
+   "year": 1998,
+   "in_snapshot": true,
+   "verdict": "retracted",
+   "date": "2013-11-23",
+   "tiers": "A+C",
+   "confirmed": 3,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": true,
+     "d": null
+    },
+    {
+     "s": "crossref",
+     "t": "A",
+     "r": true,
+     "d": "2013-11-23"
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": true,
+     "d": "2013-11-23"
+    }
+   ]
+  },
+  {
+   "doi": "10.1038/nature14581",
+   "http": 200,
+   "ms": 5318,
+   "title": "Glypican-1 identifies cancer exosomes and detects early pancreatic cancer",
+   "year": 2015,
+   "in_snapshot": true,
+   "verdict": "not_retracted",
+   "date": "",
+   "tiers": "A+C",
+   "confirmed": 0,
+   "reason": "",
+   "sources": [
+    {
+     "s": "openalex",
+     "t": "C",
+     "r": false,
+     "d": null
+    },
+    {
+     "s": "retraction_watch",
+     "t": "A",
+     "r": false,
+     "d": null
+    }
+   ]
+  },
+  {
+   "doi": "10.1126/science.aac4716",
+   "http": 200,
+   "ms": 1373,
+   "title": "Estimating the reproducibility of psychological science",
+   "year": 2015,
+   "in_snapshot": true,
+   "verdict": "no_status_rows",
+   "date": "",
+   "tiers": "",
+   "confirmed": 0,
+   "reason": "",
+   "sources": []
+  },
+  {
+   "doi": "10.1056/NEJMoa2034577",
+   "http": 200,
+   "ms": 1570,
+   "title": "Safety and Efficacy of the BNT162b2 mRNA Covid-19 Vaccine",
+   "year": 2020,
+   "in_snapshot": true,
+   "verdict": "no_status_rows",
+   "date": "",
+   "tiers": "",
+   "confirmed": 0,
+   "reason": "",
+   "sources": []
+  },
+  {
+   "doi": "10.9999/fake-not-a-real-doi-42",
+   "http": 200,
+   "ms": 948,
+   "title": "",
+   "year": null,
+   "in_snapshot": false,
+   "verdict": "abstained",
+   "date": "",
+   "tiers": "",
+   "confirmed": 0,
+   "reason": "paper_not_in_snapshot",
+   "sources": []
+  }
+ ]
+}

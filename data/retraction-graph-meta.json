@@ -1,0 +1,112 @@
+{
+ "snapshot": "ri-20261025-1526",
+ "stats": {
+  "seed_count": 12,
+  "citer_count": 781,
+  "edge_count": 788,
+  "multi_citers": 6,
+  "dist": {
+   "1": 775,
+   "2": 5,
+   "3": 1
+  }
+ },
+ "seeds": [
+  {
+   "id": "W2158048826",
+   "doi": "10.1038/nature00870",
+   "title": "RETRACTED ARTICLE: Pluripotency of mesenchymal stem cells derived from adult marrow",
+   "year": 2002,
+   "retraction_date": "2024-06-17",
+   "citers": 122
+  },
+  {
+   "id": "W2075481535",
+   "doi": "10.1038/nature04533",
+   "title": "RETRACTED ARTICLE: A specific amyloid-β protein assembly in the brain impairs memory",
+   "year": 2006,
+   "retraction_date": null,
+   "citers": 62
+  },
+  {
+   "id": "W2166000498",
+   "doi": "10.1056/nejmoa1200303",
+   "title": "RETRACTED: Primary Prevention of Cardiovascular Disease with a Mediterranean Diet",
+   "year": 2013,
+   "retraction_date": null,
+   "citers": 62
+  },
+  {
+   "id": "W2117847125",
+   "doi": "10.1016/s0140-6736(97)11096-0",
+   "title": "RETRACTED: Ileal-lymphoid-nodular hyperplasia, non-specific colitis, and pervasive developmental disorder in children",
+   "year": 1998,
+   "retraction_date": null,
+   "citers": 61
+  },
+  {
+   "id": "W2135110328",
+   "doi": "10.1126/science.1097243",
+   "title": "Visfatin: A Protein Secreted by Visceral Fat That Mimics the Effects of Insulin",
+   "year": 2004,
+   "retraction_date": null,
+   "citers": 61
+  },
+  {
+   "id": "W1966242613",
+   "doi": "10.1111/j.1751-7176.2008.07572.x",
+   "title": "Retracted: Predictive Validity of a Medication Adherence Measure in an Outpatient Setting",
+   "year": 2008,
+   "retraction_date": null,
+   "citers": 60
+  },
+  {
+   "id": "W2035844407",
+   "doi": "10.1016/j.ygyno.2008.04.033",
+   "title": "RETRACTED: MicroRNA signatures of tumor-derived exosomes as diagnostic biomarkers of ovarian cancer",
+   "year": 2008,
+   "retraction_date": null,
+   "citers": 60
+  },
+  {
+   "id": "W2087388196",
+   "doi": "10.1016/j.pmatsci.2004.04.001",
+   "title": "RETRACTED: Recent progress in processing and properties of ZnO",
+   "year": 2004,
+   "retraction_date": null,
+   "citers": 60
+  },
+  {
+   "id": "W2108733083",
+   "doi": "10.1046/j.1365-313x.2003.01676.x",
+   "title": "Retracted: An enhanced transient expression system in plants based on suppression of gene silencing by the p19 protein of tomato bushy stunt virus",
+   "year": 2003,
+   "retraction_date": null,
+   "citers": 60
+  },
+  {
+   "id": "W2144590229",
+   "doi": "10.1155/2014/943162",
+   "title": "A Comprehensive Review on Metabolic Syndrome",
+   "year": 2014,
+   "retraction_date": null,
+   "citers": 60
+  },
+  {
+   "id": "W3010930696",
+   "doi": "10.1016/j.ijantimicag.2020.105949",
+   "title": "Hydroxychloroquine and azithromycin as a treatment of COVID-19: results of an open-label non-randomized clinical trial",
+   "year": 2020,
+   "retraction_date": null,
+   "citers": 60
+  },
+  {
+   "id": "W3120387768",
+   "doi": "10.1016/s0140-6736(20)32656-8",
+   "title": "RETRACTED: 6-month consequences of COVID-19 in patients discharged from hospital: a cohort study",
+   "year": 2021,
+   "retraction_date": null,
+   "citers": 60
+  }
+ ]
+}
