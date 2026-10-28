@@ -1,7 +1,7 @@
 ---
 title: 'x402 Integration over HTTP and MCP: Paying for a Deterministic Judgment'
 date: '2026-10-28'
-excerpt: 'The wire format of the paid judgment endpoint: what the 402 challenge contains, how the EIP-3009 authorization is built and signed, what the settlement receipt looks like, and the four error paths measured against the live service.'
+excerpt: 'The wire format of the paid judgment endpoint: what the 402 challenge contains, how the EIP-3009 authorization is built and signed, what the settlement receipt looks like, and the six error paths measured against the live service.'
 description: 'A step-by-step x402 v2 integration guide for a paid HTTP/MCP endpoint: PAYMENT-REQUIRED challenge fields, PAYMENT-SIGNATURE payload construction with viem, EIP-3009 nonce and validity window, PAYMENT-RESPONSE receipt, MCP payment_required shape, and the measured error codes.'
 tags: ['x402', 'MCP', 'TypeScript', 'payments', 'GraphRAG']
 categories: GraphRAG
@@ -231,14 +231,19 @@ The error paths, measured against the live endpoint:
 | Body missing `dataset_id` | 400 | `{"error":"invalid_request_body","expected":{…}}` |
 | `dataset_id` not in the catalogue | 404 | `{"error":"Unknown judgment dataset."}` |
 | `PAYMENT-SIGNATURE` not base64 | 400 | `{"error":"Payment header is not valid base64."}` |
-| Payload decodes but the authorization is bad | 400 | `{"error":"Payment payload is invalid."}` |
+| Header decodes but the payload fails the schema | 400 | `{"error":"Payment payload is invalid."}` |
+| Payload well formed, signature forged | 402 | `{"error":"invalid_exact_evm_payload_signature"}`, with a fresh challenge |
 
-The last row is the one to plan around. The specification defines specific reasons
-(`invalid_exact_evm_payload_signature`, `insufficient_funds`,
-`invalid_exact_evm_payload_authorization_valid_before`, and others) and a server is expected to
-surface them in `invalidReason`. This deployment currently collapses all of them into one message, so a
-client cannot tell "your clock is wrong" from "your wallet is empty" without probing. Treat a 400 on
-the payment path as retryable only after checking the authorization locally.
+The two 400s and the 402 are three different problems with three different fixes. A 400 means the
+client built something the server cannot parse: no money has been discussed yet, and resending the same
+bytes returns the same 400. The 402 with a reason is a payload the server did read and handed to the
+facilitator, which rejected it and said why. `invalid_exact_evm_payload_signature` is the forged
+signature above, where the authorization was not signed by the key behind `from`. The specification's
+other verification outcomes travel through the same field, `insufficient_funds` and
+`invalid_exact_evm_payload_authorization_valid_before` among them, so a client can fan out on the
+string instead of probing. One naming detail costs an hour if it is missed: the reason arrives under
+`error`, while the `invalidReason` field that x402 client libraries read is absent from this response,
+so a wrapper that only looks at `invalidReason` reports a wrong clock as a network failure.
 
 Ordering matters for idempotency: `Idempotency-Key` is accepted (it is in the CORS allow-list), so a
 retry that reuses the key does not double-charge if the first response was lost.

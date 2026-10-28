@@ -1,7 +1,7 @@
 ---
 title: 'x402 接入实践：在 HTTP 与 MCP 上为一次确定性判定付费'
 date: '2026-10-28'
-excerpt: '付费判定端点的线上格式：402 挑战里有什么、EIP-3009 授权怎么构造与签名、结算回执长什么样，以及对着线上服务实测的四条错误路径。'
+excerpt: '付费判定端点的线上格式：402 挑战里有什么、EIP-3009 授权怎么构造与签名、结算回执长什么样，以及对着线上服务实测的六条错误路径。'
 description: '面向付费 HTTP/MCP 端点的 x402 v2 接入指南：PAYMENT-REQUIRED 挑战字段、用 viem 构造 PAYMENT-SIGNATURE 载荷、EIP-3009 的 nonce 与有效期、PAYMENT-RESPONSE 回执、MCP 上的 payment_required 结构，以及实测的错误码。'
 tags: ['x402', 'MCP', 'TypeScript', 'payments', 'GraphRAG']
 categories: GraphRAG
@@ -219,12 +219,16 @@ payment-response: eyJzdWNjZXNzIjp0cnVlLCJ0cmFuc2FjdGlvbiI6IjB4…
 | body 缺 `dataset_id` | 400 | `{"error":"invalid_request_body","expected":{…}}` |
 | `dataset_id` 不在目录里 | 404 | `{"error":"Unknown judgment dataset."}` |
 | `PAYMENT-SIGNATURE` 不是 base64 | 400 | `{"error":"Payment header is not valid base64."}` |
-| 载荷能解码但授权不合法 | 400 | `{"error":"Payment payload is invalid."}` |
+| 头能解码但载荷过不了 schema | 400 | `{"error":"Payment payload is invalid."}` |
+| 载荷合法、签名伪造 | 402 | `{"error":"invalid_exact_evm_payload_signature"}`，并带一个新的挑战 |
 
-最后一行是规划时要考虑的那个。规范定义了具体原因（`invalid_exact_evm_payload_signature`、
-`insufficient_funds`、`invalid_exact_evm_payload_authorization_valid_before` 等），并期望服务端在
-`invalidReason` 里给出。本站目前把它们合并成一条消息，所以客户端无法区分"你的时钟不对"和"你的钱包没
-钱"。在支付路径上遇到 400，应先在本地复核授权，再决定是否重试。
+两个 400 与那个 402 是三种不同的问题，对应三种不同的修法。400 意味着客户端构造的东西服务端根本
+解析不了：这时候还没谈钱，重发同样的字节仍然得到 400。带原因的 402 是服务端读懂之后交给 facilitator、
+被拒并给出了理由。`invalid_exact_evm_payload_signature` 就是上面那个伪造签名，授权不是由 `from`
+对应的私钥签的。规范里的其余验证结论走同一个字段，例如 `insufficient_funds` 与
+`invalid_exact_evm_payload_authorization_valid_before`，客户端可以按字符串分支而不用靠探。有一个
+命名细节会白白耗掉一小时：原因放在 `error` 里，而 x402 客户端库读的 `invalidReason` 在这个响应里
+没有，所以只认 `invalidReason` 的封装会把"时钟不对"报成网络错误。
 
 幂等的顺序问题：`Idempotency-Key` 是被接受的（它在 CORS 允许头列表里），所以同一次重试复用同一个 key
 时，即使第一次响应丢了也不会重复扣费。
