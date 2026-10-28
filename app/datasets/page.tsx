@@ -192,9 +192,10 @@ export default function DatasetsPage() {
             <code style={{ fontFamily: 'var(--brutal-mono)', fontSize: 13 }}>https://mcp.ashesborn.cloud/mcp</code>
             <p style={{ margin: '4px 0 0' }}>
               MCP server (Streamable HTTP). <strong>Anonymous read tier:</strong>{' '}
-              <code>integrity_paper_status</code>, <code>retraction_propagation</code> and{' '}
-              <code>integrity_evidence_audit</code> answer without a credential, so a client can call them the moment
-              it connects. Indexing and the corpus-query tools need a credential.
+              <code>integrity_paper_status</code> answers with no credential, so a client can call it the moment it
+              connects. <code>retraction_propagation</code> ($0.02) and <code>integrity_evidence_audit</code> ($0.10)
+              are paid calls and return <code>payment_required</code> to an anonymous session; indexing and the
+              corpus-query tools need a credential.
             </p>
           </div>
         </div>
@@ -203,8 +204,9 @@ export default function DatasetsPage() {
       <section className="brutal-card brutal-card--mint">
         <h2 className="brutal-title" style={{ fontSize: 26, margin: '0 0 10px' }}>Connect an MCP client</h2>
         <p className="brutal-text" style={{ marginTop: 0 }}>
-          Points at the same snapshot the pages above use. No key, no OAuth dance for the three read-only tools; the
-          server answers <code>initialize</code> and <code>tools/list</code> anonymously.
+          Points at the same snapshot the pages above use. No key for the free status tool; the server answers{' '}
+          <code>initialize</code> and <code>tools/list</code> anonymously so a client can discover it first and decide
+          about the paid calls later.
         </p>
         <pre
           style={{
@@ -229,11 +231,12 @@ export default function DatasetsPage() {
         <ol className="brutal-text" style={{ paddingLeft: 20, margin: 0, lineHeight: 1.8 }}>
           <li>
             Call <code>integrity_paper_status</code> with <code>{'{"doi":"10.1016/S0140-6736(97)11096-0"}'}</code> — the
-            same shape the browser lookup returns.
+            same shape the browser lookup returns. Free, no key.
           </li>
           <li>
-            Call <code>retraction_propagation</code> when the question is whether a paper&apos;s claim base includes
-            retracted work, and <code>integrity_evidence_audit</code> when you want the evidence path and tiers.
+            <code>retraction_propagation</code> and <code>integrity_evidence_audit</code> answer{' '}
+            <code>payment_required</code> without a credential. Pay per call through{' '}
+            <code>POST https://pay.ashesborn.cloud/api/v1/judge</code> (x402 on Base) or bring a credential.
           </li>
           <li>
             Sessions expire; re-<code>initialize</code> rather than reusing a stale <code>mcp-session-id</code>.
