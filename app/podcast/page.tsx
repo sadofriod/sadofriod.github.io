@@ -82,11 +82,9 @@ export default function PodcastPage() {
             <a className="brutal-btn" href="/podcast/rss" target="_blank" rel="noreferrer">
               RSS
             </a>
-            {isAdmin ? (
-              <Link className="brutal-btn brutal-btn--ink" href="/podcast/upload">
-                {t('podcast.upload')}
-              </Link>
-            ) : null}
+            <Link className="brutal-btn brutal-btn--ink" href="/podcast/upload">
+              {t('podcast.upload')}
+            </Link>
           </div>
         </div>
       </header>

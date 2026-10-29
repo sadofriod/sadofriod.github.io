@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react';
 import PhotoLightbox from '@/components/PhotoLightbox';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { previewUrl, type Photo, type PhotoCollection } from '@/lib/photos';
-import { fetchAdminSession } from '@/lib/adminSession';
 
 export default function PhotographyPage() {
   const { t } = useLanguage();
@@ -16,14 +15,10 @@ export default function PhotographyPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const key = new URLSearchParams(window.location.search).get('authKey');
     if (key) sessionStorage.setItem('upload_auth', key);
-    fetchAdminSession().then((next) => {
-      setIsAdmin(next.authenticated || Boolean(key || sessionStorage.getItem('upload_auth')));
-    });
 
     let cancelled = false;
 
@@ -82,14 +77,8 @@ export default function PhotographyPage() {
         </p>
         <div className="profile-hero__actions">
           <Link className="brutal-btn" href="/photography/verify">{t('watermark.title')}</Link>
+          <Link className="brutal-btn brutal-btn--ink" href="/photography/upload">{t('photography.uploadCta')}</Link>
         </div>
-        {isAdmin ? (
-          <div className="profile-hero__actions">
-            <Link className="brutal-btn brutal-btn--ink" href="/photography/upload">
-              {t('photography.uploadCta')}
-            </Link>
-          </div>
-        ) : null}
       </header>
 
       <div className="photo-toolbar">
