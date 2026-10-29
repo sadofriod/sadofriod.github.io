@@ -43,6 +43,9 @@ export type Verdict = {
   confirmed: number;
   /** Plain-language reading of the response. Never stronger than the data. */
   reading: string;
+  /** i18n key for `reading`; the English `reading` stays for tests and non-React callers. */
+  readingKey: string;
+  readingParams?: Record<string, string>;
   reason?: string;
 };
 
@@ -75,6 +78,10 @@ export function summarize(data: JudgeResponse): Verdict {
         data.abstention_reason === 'paper_not_in_snapshot'
           ? 'This DOI is not in the current snapshot, so the service declines to judge it. It says nothing about whether the paper is retracted.'
           : 'The service declined to judge this paper and gave a reason.',
+      readingKey:
+        data.abstention_reason === 'paper_not_in_snapshot'
+          ? 'judge.readingNotInSnapshot'
+          : 'judge.readingAbstainedGeneric',
     };
   }
 
@@ -87,6 +94,7 @@ export function summarize(data: JudgeResponse): Verdict {
       confirmed: 0,
       reading:
         'The paper is in the snapshot, but no source has a retraction record for it. Treat this as “no evidence either way”, not as “clean”.',
+      readingKey: 'judge.readingNoRows',
     };
   }
 
@@ -103,6 +111,10 @@ export function summarize(data: JudgeResponse): Verdict {
       reading: `${retracted.length} of ${statuses.length} sources say this paper is retracted${
         dates.length ? `; the earliest recorded retraction date is ${dates[0]}` : ''
       }.`,
+      readingKey: dates.length ? 'judge.readingRetractedDated' : 'judge.readingRetracted',
+      readingParams: dates.length
+        ? { confirmed: String(retracted.length), total: String(statuses.length), date: dates[0] }
+        : { confirmed: String(retracted.length), total: String(statuses.length) },
     };
   }
 
@@ -112,6 +124,8 @@ export function summarize(data: JudgeResponse): Verdict {
     tiers,
     confirmed: 0,
     reading: `All ${statuses.length} sources that cover this paper report it as not retracted.`,
+    readingKey: 'judge.readingAllClear',
+    readingParams: { total: String(statuses.length) },
   };
 }
 
