@@ -409,5 +409,23 @@
       "collectedAt": "2026-10-24"
     },
     "status": "published"
+  },
+  {
+    "id": "yishuai-wang",
+    "name": "Yishuai · 作品、文字与日常",
+    "url": "https://yishuai.wang",
+    "blurb": "QuireKit 文档编辑器框架作者的个人站：自研排版引擎（分页、Markdown 兼容、中文输入法）的开发记录，以及关于独立博客、写作与产品取舍的思考。",
+    "tags": [
+      "document-editor",
+      "typescript",
+      "writing"
+    ],
+    "lang": "zh",
+    "group": "friends",
+    "source": {
+      "platform": "manual",
+      "collectedAt": "2026-10-31"
+    },
+    "status": "published"
   }
 ]
