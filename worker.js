@@ -3,6 +3,7 @@ import { handlePodcastRequest } from './lib/podcastRouter.js';
 import { handlePhotoRequest } from './lib/photoRouter.js';
 import { accessConfigured, accessIdentity } from './lib/accessAuth.js';
 import { handlePhotoSeoRequest } from './lib/photoSeo.js';
+import { handleWorkRequest } from './lib/workRouter.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -29,6 +30,9 @@ export default {
         { headers: { 'cache-control': 'no-store' } }
       );
     }
+
+    const workResponse = await handleWorkRequest(request, env);
+    if (workResponse) return workResponse;
 
     const photoSeoResponse = await handlePhotoSeoRequest(request, env);
     if (photoSeoResponse) return photoSeoResponse;
