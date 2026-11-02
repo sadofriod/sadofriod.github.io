@@ -1,14 +1,16 @@
 ---
-title: 'GraphRAG 撤稿判断（TypeScript）：来源层级、弃权语义与 20 个 DOI 实测'
+title: '怎么查一篇论文是否被撤稿：三个来源、两个层级、20 个 DOI 实测'
 date: '2026-10-28'
 excerpt: '基于引用图谱的撤稿查询：每篇论文三条来源断言、两个层级、四种可能的判定，以及 20 个 DOI 打到接口上的实测结果。包含"空状态列表"为什么不等于"未撤稿"。'
-description: 'graphrag-ts 如何把三个来源的行推导成撤稿判定、schema 为什么把每条断言单独成行、四种判定（含弃权）的定义，以及 20 个 DOI 的延迟与来源一致性实测。'
+description: '撤稿判定如何由三个来源的断言推导、弃权语义为什么必要，以及 20 个 DOI 的实测：中位 1,595 ms、16 篇已撤稿、2 篇无状态行。'
 tags: ['GraphRAG', 'TypeScript', 'PostgreSQL', 'research-integrity', 'dataset']
 categories: GraphRAG
-keywords: 'GraphRAG 撤稿判断, DOI 撤稿状态, 来源层级, Crossref update-to, Retraction Watch, OpenAlex, 弃权, GraphRAG TypeScript'
+keywords: '怎么查论文是否撤稿, 论文撤稿查询, 撤稿数据库, 撤稿观察, DOI 撤稿状态, Crossref update-to, 弃权, GraphRAG TypeScript'
 lang: zh
 translationKey: free-doi-retraction-check
 ---
+
+> **关键事实。** 一次 HTTP GET 就能回答某个 DOI 是否被撤稿 —— 免费、无需密钥、不调用模型。判定由逐条来源行推导：OpenAlex（C 层）、Crossref update-to（A 层）、Retraction Watch（A 层），快照 ri-20261025-1526 共 572 条断言、98,868 篇论文。2026-10-28 实测 20 个 DOI：20/20 返回 200，中位 1,595 ms，16 篇撤稿、1 篇未撤稿、2 篇无状态行、1 次弃权。缺少状态行就是缺少，不会被当成“未撤稿”。
 
 撤稿状态不是某个数据库里的一个字段。同一篇作品可以同时带 OpenAlex 的标记、Crossref 的
 `update-to` 关系、以及 Retraction Watch 的通知记录，三者可能互相矛盾。引用它的 Agent 只会吐出
@@ -139,3 +141,8 @@ done
 `/datasets/retraction-integrity` 上渲染的引用邻域由博客仓库的
 `scripts/build-retraction-graph.mjs` 生成，它从三份公开 JSONL 重新计算种子选择，而不是硬编码一份
 布局。
+
+## 相关
+
+- [免费 DOI 撤稿查询](https://ashesborn.cloud/datasets)
+- [撤稿判断基准（28 个可复核案例）](https://ashesborn.cloud/benchmark)

@@ -22,6 +22,10 @@ export function BlogPostJsonLd({
   dateModified = null,
   authorName,
   description,
+  keywords,
+  section,
+  lang,
+  imageUrl,
 }: {
   url: string;
   title: string;
@@ -30,6 +34,10 @@ export function BlogPostJsonLd({
   dateModified?: string | null;
   authorName: string;
   description: string;
+  keywords?: string;
+  section?: string;
+  lang?: string;
+  imageUrl?: string;
 }) {
   const data = {
     '@context': 'https://schema.org',
@@ -39,13 +47,28 @@ export function BlogPostJsonLd({
       '@id': url,
     },
     headline: title,
-    image: images,
+    image: images.length ? images : [imageUrl ?? 'https://blog.ashesborn.cloud/avatar.jpg'],
     datePublished,
     dateModified: dateModified || datePublished,
     author: {
       '@type': 'Person',
       name: authorName,
+      url: 'https://blog.ashesborn.cloud/about',
     },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Ashes Born',
+      url: 'https://ashesborn.cloud',
+      logo: { '@type': 'ImageObject', url: 'https://blog.ashesborn.cloud/avatar.jpg' },
+    },
+    isPartOf: {
+      '@type': 'Blog',
+      name: 'Ashes Born — engineering notes',
+      url: 'https://blog.ashesborn.cloud',
+    },
+    ...(keywords !== undefined ? { keywords } : {}),
+    ...(section !== undefined ? { articleSection: section } : {}),
+    inLanguage: lang === 'zh' ? 'zh-CN' : 'en',
     description,
   };
 

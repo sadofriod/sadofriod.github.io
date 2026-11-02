@@ -1,14 +1,16 @@
 ---
-title: 'GraphRAG-ts MCP trial: read one sourced answer first, then ask for access'
+title: 'GraphRAG MCP server trial: one sourced answer, then access'
 date: '2026-10-23'
 excerpt: 'A TypeScript + PostgreSQL GraphRAG MCP for agents. Read a cross-document answer with its source excerpts, then apply for a small hosted trial — no database or model service of your own.'
-description: 'Hosted trial of graphrag-ts MCP: a relationship question answered across four documents with source excerpts, plus how to apply, what the trial includes and what it does not.'
+description: 'A hosted graphrag-ts MCP trial: one cross-document answer with source excerpts, how to apply, what the trial includes, and what it does not.'
 tags: ['GraphRAG', 'MCP', 'TypeScript', 'PostgreSQL', 'Agent']
 categories: GraphRAG
-keywords: 'GraphRAG MCP, TypeScript GraphRAG, PostgreSQL pgvector, agent retrieval, source grounded answers, MCP trial'
+keywords: 'graphrag mcp server, graphrag mcp github, TypeScript GraphRAG, PostgreSQL pgvector, agent retrieval, MCP trial'
 lang: en
 translationKey: graphrag-mcp-trial
 ---
+
+> **Key facts.** A hosted GraphRAG MCP trial on a pre-indexed public corpus: one MCP client, read-only, 14 days, 30 local queries, bearer credential plus email allowlist. Nothing to install on your side — no PostgreSQL, no build, no model key. Access is granted manually, usually within one business day. No SLA, no private corpora, and no anonymous unlimited queries.
 
 Most retrieval problems I see in agent projects are not "we cannot find a document". They are
 "we can find three documents, and none of them says why the decision was made or which modules it
@@ -99,3 +101,8 @@ There is also an optional paid HTTP API (`POST /api/v1/query`) built on x402 for
 call instead of holding a key. It is in the repository and documented, but **not enabled on the
 hosted endpoint** while the trial is running; I am not selling it before anyone has used the free
 version twice.
+
+## Related
+
+- [graphrag-ts on GitHub](https://github.com/sadofriod/graphrag-ts) — MIT, self-host on Bun or Node
+- [Free DOI retraction lookup](https://ashesborn.cloud/datasets) — the same stack answering a different question

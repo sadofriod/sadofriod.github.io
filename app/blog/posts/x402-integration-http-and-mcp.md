@@ -2,13 +2,15 @@
 title: 'x402 Integration over HTTP and MCP: Paying for a Deterministic Judgment'
 date: '2026-10-28'
 excerpt: 'The wire format of the paid judgment endpoint: what the 402 challenge contains, how the EIP-3009 authorization is built and signed, what the settlement receipt looks like, and the four error paths measured against the live service.'
-description: 'A step-by-step x402 v2 integration guide for a paid HTTP/MCP endpoint: PAYMENT-REQUIRED challenge fields, PAYMENT-SIGNATURE payload construction with viem, EIP-3009 nonce and validity window, PAYMENT-RESPONSE receipt, MCP payment_required shape, and the measured error codes.'
+description: 'x402 v2 on a paid HTTP/MCP endpoint: PAYMENT-REQUIRED fields, PAYMENT-SIGNATURE with viem, EIP-3009 nonce, PAYMENT-RESPONSE, and four measured error paths.'
 tags: ['x402', 'MCP', 'TypeScript', 'payments', 'GraphRAG']
 categories: GraphRAG
-keywords: 'x402 integration, x402 v2, PAYMENT-SIGNATURE, PAYMENT-REQUIRED, EIP-3009, USDC Base, MCP payments, pay per call API, x402-fetch'
+keywords: 'x402 integration, x402 v2, x402 mcp server, x402 api, PAYMENT-SIGNATURE, PAYMENT-REQUIRED, EIP-3009, USDC Base, MCP payments, x402-fetch'
 lang: en
 translationKey: x402-integration
 ---
+
+> **Key facts.** The judgment endpoints charge per call over x402 v2 — USDC on Base, no API key, no account, no invoice. `retraction_propagation` is $0.02 (20000 atomic units), `integrity_evidence_audit` is $0.10 (100000). The 402 challenge arrives in the `PAYMENT-REQUIRED` header, the client answers with a signed EIP-3009 authorization in `PAYMENT-SIGNATURE`, and settlement returns in `PAYMENT-RESPONSE`. Sections 2, 3, 6 and 7 were executed against `pay.ashesborn.cloud` on 2026-10-28; the signing step was not.
 
 The judgment endpoints charge per call. The transport is x402 v2, which means the entire payment
 handshake happens inside HTTP headers: no API key, no account, no invoice. This post documents the
@@ -298,3 +300,5 @@ Two documents in the repository cover the parts this post does not:
   the runbook for hosting the paid API behind a Cloudflare Tunnel. It includes the failure this post
   does not cover: putting the paid hostname inside Cloudflare Access replaces `402 Payment Required`
   with an email login challenge, and no x402 client can pay through it.
+- [Free DOI retraction lookup and CC0 citation graph](https://ashesborn.cloud/datasets)
+- [The judgment benchmark](https://ashesborn.cloud/benchmark)

@@ -46,9 +46,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: metadata.title,
-    description: metadata.excerpt || metadata.title,
+    description: metadata.description || metadata.excerpt || metadata.title,
     keywords: metadata.keywords,
-    ...(languages ? { alternates: { canonical: `${site}/blog/${slug}`, languages } } : {}),
+    alternates: {
+      canonical: `${site}/blog/${slug}`,
+      ...(languages ? { languages } : {}),
+    },
+    openGraph: {
+      title: metadata.title,
+      description: metadata.description || metadata.excerpt || metadata.title,
+      url: `${site}/blog/${slug}`,
+      type: 'article',
+      publishedTime: metadata.date,
+      siteName: 'Ashes Born',
+      images: ['https://blog.ashesborn.cloud/avatar.jpg'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: metadata.title,
+      description: metadata.description || metadata.excerpt || metadata.title,
+    },
+    robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
   };
 }
 
@@ -109,6 +127,9 @@ export default async function BlogPost({ params }: PageProps) {
           datePublished={metadata.date}
           authorName={profile.name}
           description={metadata.excerpt || metadata.description || metadata.title}
+          keywords={metadata.keywords}
+          section={metadata.category}
+          lang={metadata.lang}
         />
 
         {isFullStory && <ProfileCallout variant="top" />}

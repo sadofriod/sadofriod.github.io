@@ -16,7 +16,7 @@
     "directory": "./out",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/blog/*", "/api/*", "/podcast/rss", "/podcast-media/*", "/photos/*", "/photography", "/photography/*", "/sitemap-photos.xml"]
+    "run_worker_first": ["/blog/*", "/api/*", "/podcast/rss", "/podcast-media/*", "/photos/*", "/photography", "/photography/*", "/sitemap-photos.xml", "/work/*"]
   },
   "routes": [
     {
@@ -32,6 +32,10 @@
     {
       "binding": "PHOTOS",
       "bucket_name": "ashesborn-photos"
+    },
+    {
+      "binding": "WORK",
+      "bucket_name": "ashesborn-work"
     }
   ],
   "d1_databases": [
