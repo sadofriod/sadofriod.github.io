@@ -1,14 +1,16 @@
 ---
-title: 'graphrag-ts in practice: three annual reports, 29 claims that carry a page number'
+title: 'Annual report PDFs to a graph with page-anchored claims'
 date: '2026-11-01'
 excerpt: 'A worked graphrag-ts case: PDF blocks keep their page and bbox, entities and claims land in PostgreSQL, retrieval walks the graph, and every fact in the finished brief either hits the PDF text layer or fails the build. The three sample reports are public.'
-description: 'End to end graphrag-ts case on three 2025 annual reports: block level parsing, entity and claim extraction, Leiden communities, hybrid retrieval, MCP tools, page anchors, and a verifier that reports 29 of 29 facts with zero misses.'
+description: 'Three 2025 annual reports through graphrag-ts: block parsing, claim extraction, Leiden communities, hybrid retrieval, and 29 facts verified at their page.'
 tags: ['GraphRAG', 'Supply Chain', 'TypeScript', 'PostgreSQL', 'MCP', 'evidence']
 categories: GraphRAG
-keywords: 'graphrag-ts case study, TypeScript GraphRAG, PostgreSQL pgvector, MCP server, page anchor, annual report extraction, evidence grounded supply chain'
+keywords: 'pdf to knowledge graph, extract data from annual report, graphrag-ts case study, page anchored citation, TypeScript GraphRAG, PostgreSQL pgvector, MCP server'
 lang: en
 translationKey: annual-report-anchored-claims
 ---
+
+> **Key facts.** Three 2025 annual reports (CATL, EVE Energy, Sungrow) in; three reports and 36 evidence records out, 29 of them facts. Every fact resolves to a page and bounding box in the source PDF and the build exits non-zero on a miss — 29 of 29 verified, 0 misses, 2026-11-01. Entities, claims and edges land in PostgreSQL; retrieval walks the graph instead of one chunk. The three sample reports and the verifier are public.
 
 A supply chain question lands on a Monday. Which cell makers sit behind the systems this
 integrator shipped last year, and how concentrated is the buying. Ten minutes of search and I have
@@ -238,3 +240,9 @@ is described in [the GraphRAG-ts MCP post](/blog/graphrag-mcp-trial): a pre-inde
 read-only queries, source excerpts with page anchors. The anchor layer is in the repository under
 `src/retrieval/evidence`. The verifier that printed 29 of 29 above is not published yet, so that
 number is mine to defend, not yours to re-run.
+
+## Related
+
+- [Free DOI retraction lookup and CC0 citation graph](https://ashesborn.cloud/datasets) — the same graph, addressable per DOI
+- [Case study: Evidence Brief](https://ashesborn.cloud/work/evidence-brief) — the deliverable this pipeline produces
+- [graphrag-ts on GitHub](https://github.com/sadofriod/graphrag-ts)

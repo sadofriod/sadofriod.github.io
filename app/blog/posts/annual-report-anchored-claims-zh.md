@@ -1,14 +1,16 @@
 ---
-title: 'graphrag-ts 实战：三份年报，29 条能回查页码的结论'
+title: '三份年报 PDF 到一张图：29 条结论，每条都能回查页码'
 date: '2026-11-01'
 excerpt: '一个 graphrag-ts 的真实用例：PDF 按块解析并留住页码与 bbox，实体和结论进 PostgreSQL 图，检索沿图走，最后每一条事实都要在它写的那一页文本层里命中，否则构建失败。三份样例报告已经公开。'
-description: 'graphrag-ts 端到端案例：块级解析、实体与结论抽取、Leiden 社区、混合检索、MCP 工具、页码锚点，以及一个报出 29/29、零遗漏的校验器。'
+description: 'graphrag-ts 端到端案例：2025 年三份年报的块级解析、实体与结论抽取、Leiden 社区、混合检索，以及 29 条全部在原文页码上命中校验的事实。'
 tags: ['GraphRAG', '供应链', 'TypeScript', 'PostgreSQL', 'MCP', '证据溯源']
 categories: GraphRAG
-keywords: 'graphrag-ts 案例, TypeScript GraphRAG, PostgreSQL pgvector, MCP server, 页码锚点, 年报解析, 供应链情报'
+keywords: '年报解析 知识图谱, PDF 提取 知识图谱, graphrag-ts 案例, 页码锚点, TypeScript GraphRAG, PostgreSQL pgvector, MCP server'
 lang: zh
 translationKey: annual-report-anchored-claims
 ---
+
+> **关键事实。** 三份 2025 年年报（宁德时代、亿纬锂能、阳光电源）进，三份报告与 36 条证据记录出，其中 29 条是事实。每条事实都要回到源 PDF 的页码与 bbox 命中，未命中则构建失败 —— 2026-11-01 实测 29/29，零遗漏。实体、结论与边进 PostgreSQL，检索沿图走而不是切一个块。三份样例报告与校验器公开。
 
 周一早上来一个问题：这家集成商去年出货的系统，电芯到底来自哪几家，采购集中到什么程度。搜索十分钟，三份年报里都写着答案。
 
@@ -160,3 +162,9 @@ TOTAL: facts=29 hits=29 misses=0
 2.7 MB 的包（三份 PDF、三份 HTML 报告、`evidence.jsonl`）在 [/work/samples/](/work/samples/)。想在你真正跟踪的公司上出一份这样的报告，发邮件到 [justlikeashes@gmail.com](mailto:justlikeashes@gmail.com)，写清公司和你想先核的那一条结论。如果语料撑不住，我会直接说撑不住，而不是围着它写一份报告。
 
 `graphrag-ts` 是 MIT 许可，Bun 或 Node 加 PostgreSQL/pgvector 就能跑。MCP 试用写在这篇 [GraphRAG-ts MCP 试用说明](/blog/graphrag-mcp-trial-zh)里：预先建好索引的工作区、只读查询、带页码锚点的来源片段。锚点层在仓库 `src/retrieval/evidence` 下面。上面那个跑出 29/29 的校验器还没公开，所以这个数暂时是我负责解释，不是你负责复现。
+
+## 相关
+
+- [免费 DOI 撤稿查询与 CC0 引用图谱](https://ashesborn.cloud/datasets)
+- [案例：Evidence Brief](https://ashesborn.cloud/work/evidence-brief)
+- [graphrag-ts 仓库](https://github.com/sadofriod/graphrag-ts)

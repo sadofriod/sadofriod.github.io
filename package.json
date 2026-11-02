@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/generate-post-index.js && next dev",
-    "build": "node scripts/generate-post-index.js && next build",
+    "build": "node scripts/generate-post-index.js && node scripts/generate-llms-txt.mjs && next build",
+    "llms": "node scripts/generate-post-index.js && node scripts/generate-llms-txt.mjs",
     "preview": "pnpm run build && wrangler dev",
     "deploy": "pnpm run build && wrangler deploy",
     "start": "wrangler dev",

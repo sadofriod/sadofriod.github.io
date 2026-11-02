@@ -5,10 +5,12 @@ excerpt: '付费判定端点的线上格式：402 挑战里有什么、EIP-3009 
 description: '面向付费 HTTP/MCP 端点的 x402 v2 接入指南：PAYMENT-REQUIRED 挑战字段、用 viem 构造 PAYMENT-SIGNATURE 载荷、EIP-3009 的 nonce 与有效期、PAYMENT-RESPONSE 回执、MCP 上的 payment_required 结构，以及实测的错误码。'
 tags: ['x402', 'MCP', 'TypeScript', 'payments', 'GraphRAG']
 categories: GraphRAG
-keywords: 'x402 接入, x402 v2, PAYMENT-SIGNATURE, PAYMENT-REQUIRED, EIP-3009, USDC Base, MCP 付费, 按次计费 API, x402-fetch'
+keywords: 'x402 接入, x402 v2, x402 mcp server, x402 api, PAYMENT-SIGNATURE, PAYMENT-REQUIRED, EIP-3009, USDC Base, MCP 付费, 按次计费 API'
 lang: zh
 translationKey: x402-integration
 ---
+
+> **关键事实。** 付费判定端点按次计费，走 x402 v2 —— Base 上的 USDC，无 API key、无账号、无发票。`retraction_propagation` 每次 $0.02（原子单位 20000），`integrity_evidence_audit` 每次 $0.10（100000）。402 挑战在 `PAYMENT-REQUIRED` 头里，客户端用 `PAYMENT-SIGNATURE` 提交 EIP-3009 签名授权，结算回执在 `PAYMENT-RESPONSE`。第 2、3、6、7 节于 2026-10-28 对 `pay.ashesborn.cloud` 实测；签名一节未实测。
 
 判定端点按次计费，传输层是 x402 v2，也就是说整个支付握手发生在 HTTP 头里：没有 API key、没有账号、
 没有账单。这篇记录 `pay.ashesborn.cloud` 实际使用的线上格式，重点写客户端最容易做错的地方。
@@ -278,3 +280,5 @@ MCP 传输层不承载 HTTP 的支付握手。工具错误里给出了产品、�
 - [`integrations/mcp/docs/deploy-x402.md`](https://github.com/sadofriod/graphrag-ts/blob/main/integrations/mcp/docs/deploy-x402.md)：
   把付费 API 挂在 Cloudflare Tunnel 后面的部署 runbook。里面有这篇没写的一个坑：把付费域名放进
   Cloudflare Access，`402 Payment Required` 会被一次邮箱验证挑战替换掉，任何 x402 客户端都付不进来。
+- [免费 DOI 撤稿查询](https://ashesborn.cloud/datasets)
+- [撤稿判断基准](https://ashesborn.cloud/benchmark)

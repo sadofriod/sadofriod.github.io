@@ -1,14 +1,16 @@
 ---
-title: 'GraphRAG-ts MCP 免费试用：先看一条带出处的答案，再申请开通'
+title: 'GraphRAG MCP 服务试用：先看一条带出处的答案'
 date: '2026-10-23'
 excerpt: '面向 TypeScript + PostgreSQL 团队的 GraphRAG MCP。先读一段跨文档、带来源片段的真实返回，再申请小规模托管试用；不需要自己部署数据库或模型服务。'
-description: 'graphrag-ts MCP 托管试用说明：一个跨四份文档的关系型问题、对应的来源原文、申请方式、试用边界，以及不能承诺的部分。'
+description: 'graphrag-ts MCP 托管试用：一个跨四份文档的关系型问题与来源原文、申请方式、试用边界，以及不能承诺的部分。'
 tags: ['GraphRAG', 'MCP', 'TypeScript', 'PostgreSQL', 'Agent']
 categories: GraphRAG
-keywords: 'GraphRAG MCP, TypeScript GraphRAG, PostgreSQL pgvector, Agent 检索, 带出处回答, MCP 试用'
+keywords: 'graphrag mcp server, GraphRAG MCP, TypeScript GraphRAG, PostgreSQL pgvector, Agent 检索, MCP 试用'
 lang: zh
 translationKey: graphrag-mcp-trial
 ---
+
+> **关键事实。** 托管试用，预索引的公开语料：一个 MCP 客户端、只读、14 天、30 次本地查询，bearer 凭据 + 邮箱白名单。你这边不需要装任何东西 —— 不装 PostgreSQL、不跑构建、不要模型密钥。开通是手工的，通常一个工作日内。没有 SLA，不接受私有语料，也不提供匿名无限查询。
 
 大多数 Agent 项目的检索问题不是"找不到文档"，而是"找到三份文档，却没有一份说明当初为什么这么定、影响了哪些模块"。`graphrag-ts` 是我用 TypeScript + PostgreSQL 做的解法，并以 MCP server 的形式暴露，让 Agent 当成一个工具来查。
 
@@ -66,3 +68,8 @@ cd graphrag-ts && pnpm install
 [`integrations/mcp`](https://github.com/sadofriod/graphrag-ts/tree/main/integrations/mcp) 里有说明。
 
 仓库里还有一个可选的付费 HTTP API（`POST /api/v1/query`，基于 x402，按次付费、不需要 key）。它是代码和文档的一部分，但**没有在试用期间开启**；在有人把免费版用过两次之前，我不会去卖它。
+
+## 相关
+
+- [graphrag-ts 仓库](https://github.com/sadofriod/graphrag-ts)
+- [免费 DOI 撤稿查询](https://ashesborn.cloud/datasets)

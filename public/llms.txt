@@ -1,0 +1,51 @@
+# Ashes Born — engineering notes
+
+> Source-based writing on GraphRAG in TypeScript, PostgreSQL/pgvector retrieval, MCP servers, x402 payments and research-integrity datasets, by Ashes Born (https://ashesborn.cloud).
+
+## Canonical answers
+- What is graphrag-ts? A GraphRAG implementation in TypeScript on PostgreSQL + pgvector: graph and vector index in one database, Leiden communities, hybrid retrieval, incremental builds and an MCP server. Source: https://github.com/sadofriod/graphrag-ts
+- How do you check whether a paper is retracted, for free? One HTTP GET with a DOI returns per-source rows (OpenAlex tier C, Crossref update-to tier A, Retraction Watch tier A) with dates and a verdict of retracted, contested, supported or abstained; a missing row is reported as missing. https://ashesborn.cloud/datasets
+- How accurate is that judgment? 28 auditable cases run on 2026-10-28 against the live endpoint: 15 of 15 direct retractions detected, 0 contaminated papers called clean, 8 abstentions, p50 2,158 ms. https://ashesborn.cloud/benchmark/
+- How do you pay for a deterministic judgment per call? x402 v2 in USDC on Base — $0.02 and $0.10 per call, no API key and no account. https://blog.ashesborn.cloud/blog/x402-integration-http-and-mcp
+
+## Articles
+- [Annual report PDFs to a graph with page-anchored claims](https://blog.ashesborn.cloud/blog/annual-report-anchored-claims) — Three 2025 annual reports through graphrag-ts: block parsing, claim extraction, Leiden communities, hybrid retrieval, and 29 facts verified at their page.
+- [How to check if a paper is retracted (measured on 20 DOIs)](https://blog.ashesborn.cloud/blog/free-doi-retraction-check) — How a retraction verdict is derived from three sources with tiers, how abstention works, and what 20 DOIs measured: median 1,595 ms, 16 retracted, 2 unknown.
+- [x402 Integration over HTTP and MCP: Paying for a Deterministic Judgment](https://blog.ashesborn.cloud/blog/x402-integration-http-and-mcp) — x402 v2 on a paid HTTP/MCP endpoint: PAYMENT-REQUIRED fields, PAYMENT-SIGNATURE with viem, EIP-3009 nonce, PAYMENT-RESPONSE, and four measured error paths.
+- [GraphRAG MCP server trial: one sourced answer, then access](https://blog.ashesborn.cloud/blog/graphrag-mcp-trial) — A hosted graphrag-ts MCP trial: one cross-document answer with source excerpts, how to apply, what the trial includes, and what it does not.
+- [Four years of remote work after leaving big tech: I think I am not built for remote](https://blog.ashesborn.cloud/blog/four-years-of-remote-work) — After leaving big tech I worked remotely for four years across a US-listed company and a Web3 team.
+- [Frontend and Agent Engineer Resume | TypeScript, React, GraphRAG](https://blog.ashesborn.cloud/blog/frontend-agent-engineer-resume) — Resume for a frontend and AI agent engineer featuring experience building JD low-code platforms, optimizing Compass micro-frontends and Salesforce rule
+- [GraphRAG Global Map-Reduce Query Implementation](https://blog.ashesborn.cloud/blog/GraphRAG%20Global%20Map-Reduce%20Query%20Implementation) — A code-level walkthrough of Global Map-Reduce in graphrag-ts: loading community summaries and descendant-leaf claims, approximate token batching, bounded
+- [GraphRAG Incremental Build in TypeScript: Diffing, Updates, and Pruning](https://blog.ashesborn.cloud/blog/GraphRAG%20Incremental%20Build%20in%20TypeScript%20-%20Diffing,%20Updates,%20and%20Pruning) — A source-based walkthrough of incremental GraphRAG builds in graphrag-ts: title and SHA-256 diffing, Markdown section-parent matching, update ordering,
+- [GraphRAG Hybrid Retrieval and Evidence Grounding in TypeScript](https://blog.ashesborn.cloud/blog/GraphRAG%20Hybrid%20Retrieval%20and%20Evidence%20Grounding%20in%20TypeScript) — A source-based guide to local and global GraphRAG retrieval in graphrag-ts, covering entity and topology recall, hybrid vector and keyword evidence, RRF
+- [GraphRAG TypeScript Indexing Pipeline and Incremental Updates](https://blog.ashesborn.cloud/blog/GraphRAG%20TypeScript%20Indexing%20Pipeline%20and%20Incremental%20Updates) — A source-based walkthrough of graphrag-ts indexing: adaptive chunking, structured LLM extraction and fallback, weighted edge aggregation, recursive Leiden
+- [GraphRAG Global Search Map-Reduce Explained](https://blog.ashesborn.cloud/blog/GraphRAG%20Global%20Map-Reduce) — A detailed guide to Microsoft GraphRAG global search Map-Reduce, explaining how hierarchical community summaries are shuffled and split by token budget, mapped
+- [Understanding the Community Concept in GraphRAG](https://blog.ashesborn.cloud/blog/Understanding%20the%20Community%20Concept%20in%20GraphRAG) — An intuitive and in-depth conceptual guide to the "Community" in Microsoft GraphRAG, explaining graph community detection via Leiden algorithm, hierarchical
+- [GraphRAG Retrieval Implementation Guide](https://blog.ashesborn.cloud/blog/GraphRAG%20Retrieval%20Implementation%20Guide) — A complete implementation guide for the GraphRAG query and retrieval phase, detailing query intent parsing, multi-channel entity retrieval with Reciprocal Rank
+- [GraphRAG Multi-Document Input Processing Architecture and Directory Structure](https://blog.ashesborn.cloud/blog/GraphRAG%20Multi-Document%20Input%20Processing%20Architecture%20and%20Directory%20Structure) — An in-depth architecture guide on Microsoft GraphRAG multi-document input processing and indexing pipeline, covering multi-format ingestion
+- [GraphRAG PostgreSQL + TypeScript Implementation Design](https://blog.ashesborn.cloud/blog/GraphRAG%20PostgreSQL%20+%20TypeScript%20Implementation%20Design) — A comprehensive engineering guide on implementing Microsoft GraphRAG with PostgreSQL and TypeScript, covering relation edge weight calculations, community
+- [Controlling the Loading Component Functionally in React Native](https://blog.ashesborn.cloud/blog/functional-loading-component-react-native) — What you need to know before reading - What React Context is - How to write a custom Hook # Wh
+- [React "Dynamic" Form Design (Part 1)](https://blog.ashesborn.cloud/blog/react-dynamic-form-design) — React "Dynamic" Form Design (Part 1) In this part I'll define what a dynamic form is, what prob
+- [Running Reality on AWS with Cloudflare in front](https://blog.ashesborn.cloud/blog/reality-on-aws-behind-cloudflare) — Running Reality on AWS with Cloudflare in front ## Overview This document explains how to set u
+- [Migrating a CRA App to a Micro Frontend (Part 1): Architecture and Setup](https://blog.ashesborn.cloud/blog/cra-to-micro-frontend-part-1) — How to migrate a create-react-app React project into a micro frontend architecture: analysing what to extract, rebuilding the repo as a pnpm monorepo, ejecting
+- [Hello, World!](https://blog.ashesborn.cloud/blog/hello-world) — Hello, World! This is my first blog post using **Next.js**.
+- [Some Experience with Functional Programming in JS Development](https://blog.ashesborn.cloud/blog/functional-programming-notes-javascript) — Functional programming, functional programming in JS
+- [Running only the E2E tests your commit actually affects](https://blog.ashesborn.cloud/blog/incremental-e2e-testing) — An incremental E2E runner for large frontends: pick the base commit from the branch, diff it against HEAD, keep the specs the change can touch, and stream the
+- [Local hot reload for a React project inside a monorepo](https://blog.ashesborn.cloud/blog/monorepo-react-hot-reload) — <img src="/images/monorepo-react-banner.jpeg" /> ## Prerequisites What you need to know before
+- [Storing KVM Virtual Machine Disks on a NAS (Proxmox / libvirt)](https://blog.ashesborn.cloud/blog/kvm-vm-storage-on-nas) — <img src="/images/kvm-log.png"> ## Prerequisites The concepts and software you should know before
+- [High performance grouped list design](https://blog.ashesborn.cloud/blog/High-performance-grouped-list-design) — Overall goal 1.
+- [Recording web pages to video at a specified time through a server](https://blog.ashesborn.cloud/blog/Recording-web-pages-to-video-at-a-specified-time-through-a-server) — Why is there such a need? I recently work in the field of front-end data visualization, and the
+- [Hexo SEO optimization](https://blog.ashesborn.cloud/blog/hexo-seo-optimization) — Before you read ### What you need to know + Basic Hexo commands + The HTML `<meta>` tag ## M
+- [Hexo table of contents and RSS](https://blog.ashesborn.cloud/blog/hexo-toc-and-rss) — Before you read ### What you need to know + Managing project dependencies with npm/yarn + Basi
+- [Hexo + LaTeX math rendering](https://blog.ashesborn.cloud/blog/hexo-latex-math) — Before you read ### What you need to know + Basic Hexo commands + Working with the shell + U
+- [Problems I have run into as an engineer: a running list](https://blog.ashesborn.cloud/blog/problems-engineers-run-into) — A long note to myself on why engineering and management keep colliding: executives who never "get" programmers, PMP project managers hired to interface with
+- [Drawing Smooth Cubic Bezier Curves](https://blog.ashesborn.cloud/blog/smooth-cubic-bezier-curve) — How to draw a smooth Bezier curve with cubic segments — choosing between quadratic and cubic curves, computing the two control points from the midpoint and
+
+## Other surfaces
+- https://blog.ashesborn.cloud/datasets
+- https://blog.ashesborn.cloud/benchmark
+- https://blog.ashesborn.cloud/about
+- https://blog.ashesborn.cloud/friends
+
+## Contact
+hello@ashesborn.cloud
