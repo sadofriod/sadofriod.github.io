@@ -4,16 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Live telemetry — Ashes Born</title>
-<meta name="description" content="Self-reported production telemetry for the Ashes Born GraphRAG and retraction-judgment x402 APIs: corpus size, settled payments, latency.">
+<meta name="description" content="Self-reported production telemetry for the Ashes Born x402 APIs: corpus size, settled payments with on-chain proof, latency.">
 <style>
  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:0 auto;padding:2.5rem 1.25rem;line-height:1.6;color:#111;background:#fff}
  h1{font-size:1.6rem;margin:0 0 .25rem} .sub{color:#6b7280;font-size:.9rem;margin:0 0 2rem}
  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.75rem;margin:0 0 2rem}
  .card{border:1px solid #e5e7eb;border-radius:12px;padding:.9rem 1rem} .n{font-size:1.45rem;font-weight:600;display:block}
  .l{color:#6b7280;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
- table{width:100%;border-collapse:collapse;font-size:.9rem} td,th{text-align:left;padding:.45rem .3rem;border-bottom:1px solid #f1f5f9}
+ table{width:100%;border-collapse:collapse;font-size:.9rem;margin-bottom:1.5rem} td,th{text-align:left;padding:.45rem .3rem;border-bottom:1px solid #f1f5f9}
  code{background:#f8fafc;padding:.1rem .3rem;border-radius:4px;font-size:.85em}
- .note{font-size:.85rem;color:#6b7280;margin-top:2rem}
+ .note{font-size:.85rem;color:#6b7280;margin-top:1.5rem}
+ h2{font-size:1.05rem;margin:1.5rem 0 .4rem}
 </style>
 </head>
 <body>
@@ -25,30 +26,34 @@
   <div class="card"><span class="n">162</span><span class="l">relationships</span></div>
   <div class="card"><span class="n">218,841</span><span class="l">papers indexed</span></div>
   <div class="card"><span class="n">247,137</span><span class="l">citation edges</span></div>
-  <div class="card"><span class="n">6</span><span class="l">settled payments</span></div>
-  <div class="card"><span class="n">2</span><span class="l">distinct payers</span></div>
+  <div class="card"><span class="n">4</span><span class="l">mainnet settlements</span></div>
+  <div class="card"><span class="n">0.08 USDC</span><span class="l">mainnet volume</span></div>
   <div class="card"><span class="n">10</span><span class="l">public-tier calls</span></div>
   <div class="card"><span class="n">11 ms</span><span class="l">p95 latency</span></div>
 </div>
 
-<h2 style="font-size:1.1rem;margin:0 0 .5rem">Settled x402 payments</h2>
+<h2>Mainnet settlements (Base + Arbitrum)</h2>
 <table>
   <tr><th>Network</th><th>Amount</th><th>Transaction</th></tr>
-      <tr><td>eip155:42161</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x9c647ac516e52d056d7d5d82d24c071ced7fbaf559b27065423bf6b8952a7174" rel="noopener">0x9c647ac516e52d05…</a></td></tr>
-      <tr><td>eip155:42161</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x3d9d8a15a817cf2ab884bef943860e4914d175fd4f36e208b41498085172069e" rel="noopener">0x3d9d8a15a817cf2a…</a></td></tr>
-      <tr><td>eip155:42161</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x31fa674ebf09fc15e1837d5f4f672781e29d645c361efd378d933c11860241fd" rel="noopener">0x31fa674ebf09fc15…</a></td></tr>
-      <tr><td>eip155:42161</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x319d249ec835f28aa9b4d57162fdb180236178fc89cfb0d8b1cc7e852b2ff0a4" rel="noopener">0x319d249ec835f28a…</a></td></tr>
-      <tr><td>eip155:84532</td><td>0.02 USDC</td><td><a href="https://basescan.org/tx/0xcf1fc32543a68a9bcb52a9a9db42b4a1b8d0e562034c6d81be73eb2a7d288451" rel="noopener">0xcf1fc32543a68a9b…</a></td></tr>
-      <tr><td>eip155:84532</td><td>0.02 USDC</td><td><a href="https://basescan.org/tx/0x997b6d13bf55c2f1bd6cb43f55f36015f9c716149482382f3187949c47f915a8" rel="noopener">0x997b6d13bf55c2f1…</a></td></tr>
+      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x9c647ac516e52d056d7d5d82d24c071ced7fbaf559b27065423bf6b8952a7174" rel="noopener">0x9c647ac516e5…</a></td></tr>
+      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x3d9d8a15a817cf2ab884bef943860e4914d175fd4f36e208b41498085172069e" rel="noopener">0x3d9d8a15a817…</a></td></tr>
+      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x31fa674ebf09fc15e1837d5f4f672781e29d645c361efd378d933c11860241fd" rel="noopener">0x31fa674ebf09…</a></td></tr>
+      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x319d249ec835f28aa9b4d57162fdb180236178fc89cfb0d8b1cc7e852b2ff0a4" rel="noopener">0x319d249ec835…</a></td></tr>
+</table>
+
+<h2>Testnet settlements (separated on purpose)</h2>
+<table>
+  <tr><th>Network</th><th>Amount</th><th>Transaction</th></tr>
+      <tr><td>Base Sepolia</td><td>0.02 USDC</td><td><a href="https://basescan.org/tx/0xcf1fc32543a68a9bcb52a9a9db42b4a1b8d0e562034c6d81be73eb2a7d288451" rel="noopener">0xcf1fc32543a6…</a></td></tr>
+      <tr><td>Base Sepolia</td><td>0.02 USDC</td><td><a href="https://basescan.org/tx/0x997b6d13bf55c2f1bd6cb43f55f36015f9c716149482382f3187949c47f915a8" rel="noopener">0x997b6d13bf55…</a></td></tr>
 </table>
 
 <p class="note">
-Verify any figure yourself:
-<code>GET https://pay.ashesborn.cloud/api/v1/datasets</code> (catalogue and prices),
-<code>GET https://pay.ashesborn.cloud/api/v1/pricing</code>,
-or POST an unpaid request to <code>/api/v1/query</code> and read the <code>PAYMENT-REQUIRED</code> header.
-Corpus: SWC Registry, MIT licensed. Retraction data: CC0.
-These numbers are small because the service is new — that is the point of publishing them.
+Verify any figure yourself: <code>GET https://pay.ashesborn.cloud/api/v1/datasets</code>,
+<code>GET https://pay.ashesborn.cloud/api/v1/pricing</code>, or POST an unpaid request to
+<code>/api/v1/query</code> and read the <code>PAYMENT-REQUIRED</code> header.
+Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet payments are listed but excluded from
+the volume figure. These numbers are small because the service is new — publishing them anyway is the point.
 </p>
 </body>
 </html>
