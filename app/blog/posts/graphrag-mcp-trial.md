@@ -76,7 +76,7 @@ client, or that this replaces your own document pipeline.
 
 ## How to apply
 
-Reply to [justlikeashes@gmail.com](mailto:justlikeashes@gmail.com) with:
+Reply to [hello@ashesborn.cloud](mailto:hello@ashesborn.cloud) with:
 
 1. the MCP client and version you would connect from;
 2. one question you actually need answered across several documents;

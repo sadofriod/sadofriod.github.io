@@ -233,7 +233,7 @@ with the reason it is missing.
 
 The 2.7 MB bundle (three PDFs, three HTML reports, `evidence.jsonl`) is at
 [/work/samples/](/work/samples/). If you want a report like this on a company you actually track,
-reply to [justlikeashes@gmail.com](mailto:justlikeashes@gmail.com) with the company and the claim
+reply to [hello@ashesborn.cloud](mailto:hello@ashesborn.cloud) with the company and the claim
 you would want checked first. If the corpus cannot support it, I will say so rather than ship a
 report around it.
 

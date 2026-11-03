@@ -39,7 +39,7 @@ export const profile = {
   },
   socials: [
     { label: 'GitHub', href: 'https://github.com/sadofriod', icon: 'github' },
-    { label: 'Email', href: 'mailto:justlikeashes@gmail.com', icon: 'mail' },
+    { label: 'Email', href: 'mailto:hello@ashesborn.cloud', icon: 'mail' },
     { label: 'Blog', href: 'https://blog.ashesborn.cloud', icon: 'blog' },
     { label: 'Company', href: 'https://ashesborn.cloud/', icon: 'company' },
   ] as ProfileSocial[],
@@ -105,16 +105,6 @@ export const profile = {
       ],
       moreHref: '/category/project',
     },
-    {
-      id: 'notes',
-      label: 'Career & notes',
-      blurb: 'One long retrospective, one resume, and the occasional experiment that did not fit anywhere else.',
-      accent: 'blue',
-      posts: [
-        { file: 'remote-work-after-four-years.md' },
-        { file: 'frontend-agent-engineer-resume.md' },
-      ],
-    },
   ] as WritingGroup[],
 
   projects: [
@@ -141,14 +131,16 @@ export const profile = {
   ] as PostRef[],
 
   contact: {
-    email: 'justlikeashes@gmail.com',
-    emailHref: 'mailto:justlikeashes@gmail.com',
+    email: 'hello@ashesborn.cloud',
+    emailHref: 'mailto:hello@ashesborn.cloud',
   },
 
   seo: {
+    homeDescription:
+      'Engineering notes and live samples: annual-report claims that link to the exact page (29/29 page hits), a free DOI retraction check, and an MCP trial. Evidence Briefs at ashesborn.cloud.',
     aboutTitle: 'About Ashes Born — Independent engineer building GraphRAG systems',
     aboutDescription:
-      'Independent engineer building graphrag-ts, an open-source GraphRAG implementation in TypeScript on Postgres/pgvector. Previously low-code, visualization and micro-frontend infrastructure at JD.com and Compass.',
+      "What I'm building now: evidence-anchored retrieval over filings and papers. Every claim links to its source page. Samples, free DOI check, and Evidence Briefs at ashesborn.cloud.",
   },
 };
 

@@ -161,7 +161,7 @@ TOTAL: facts=29 hits=29 misses=0
 
 ## 样例、试用与仓库
 
-2.7 MB 的包（三份 PDF、三份 HTML 报告、`evidence.jsonl`）在 [/work/samples/](/work/samples/)。想在你真正跟踪的公司上出一份这样的报告，发邮件到 [justlikeashes@gmail.com](mailto:justlikeashes@gmail.com)，写清公司和你想先核的那一条结论。如果语料撑不住，我会直接说撑不住，而不是围着它写一份报告。
+2.7 MB 的包（三份 PDF、三份 HTML 报告、`evidence.jsonl`）在 [/work/samples/](/work/samples/)。想在你真正跟踪的公司上出一份这样的报告，发邮件到 [hello@ashesborn.cloud](mailto:hello@ashesborn.cloud)，写清公司和你想先核的那一条结论。如果语料撑不住，我会直接说撑不住，而不是围着它写一份报告。
 
 `graphrag-ts` 是 MIT 许可，Bun 或 Node 加 PostgreSQL/pgvector 就能跑。MCP 试用写在这篇 [GraphRAG-ts MCP 试用说明](/blog/graphrag-mcp-trial-zh)里：预先建好索引的工作区、只读查询、带页码锚点的来源片段。锚点层在仓库 `src/retrieval/evidence` 下面。上面那个跑出 29/29 的校验器还没公开，所以这个数暂时是我负责解释，不是你负责复现。
 

@@ -73,7 +73,7 @@ export default function FriendsPage() {
         <T as="p" className="brutal-text friend-hero__subtitle" k="friends.subtitle" />
         <p className="brutal-text">
           <T k="friends.introLead" />{' '}
-          <a className="brutal-link" href="mailto:justlikeashes@gmail.com">justlikeashes@gmail.com</a>
+          <a className="brutal-link" href="mailto:hello@ashesborn.cloud">hello@ashesborn.cloud</a>
           <T k="friends.introTail" />{' '}
           <a className="brutal-link" href={COLLECTION_TOPIC} target="_blank" rel="noopener">
             <T k="friends.v2ex" />
@@ -122,8 +122,8 @@ export default function FriendsPage() {
         </ul>
         <T as="p" className="brutal-text" k="friends.applyFooter" />
         <div className="friend-actions">
-          <a className="brutal-btn brutal-btn--ink" href="mailto:justlikeashes@gmail.com">
-            justlikeashes@gmail.com
+          <a className="brutal-btn brutal-btn--ink" href="mailto:hello@ashesborn.cloud">
+            hello@ashesborn.cloud
           </a>
           <a className="brutal-btn" href={COLLECTION_TOPIC} target="_blank" rel="noreferrer noopener">
             <T k="friends.v2ex" /> →

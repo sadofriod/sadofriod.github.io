@@ -7,7 +7,7 @@ import { profile, type SocialIcon } from '@/data/profile';
 
 export const metadata: Metadata = {
   title: 'Ashes Born — Independent engineer building GraphRAG systems',
-  description: profile.seo.aboutDescription,
+  description: profile.seo.homeDescription,
   alternates: { canonical: '/' },
 };
 
@@ -77,17 +77,13 @@ function projectKeys(name: string) {
 }
 
 export default function Home() {
-  const posts = getAllPostIds();
+  // Career posts stay out of the home stream; they are linked from the footer.
+  const posts = getAllPostIds().filter((post) => post.translationKey !== 'resume');
   const series = profile.graphragSeries.posts.map((item) => getPostByFile(item.file));
   const groups = profile.writingGroups.map((group) => ({
     ...group,
     resolvedPosts: group.posts.map((item) => getPostByFile(item.file)),
   }));
-  const resumes = profile.resumes.map((item) => ({
-    label: item.label,
-    post: getPostByFile(item.file),
-  }));
-
   return (
     <main className="profile-shell">
       {/* Identity layer: who this is, what he is building, where the proof is. */}
@@ -263,17 +259,6 @@ export default function Home() {
           </ul>
         </section>
 
-        <section className="brutal-card bento__resume">
-          <T as="p" className="brutal-kicker" k="home.resume" />
-          <T as="h2" className="brutal-title" k="home.hireMe" />
-          <ul className="bento-list">
-            {resumes.map((item) => (
-              <li key={item.post.slug}>
-                <Link href={`/blog/${item.post.slug}`}>{item.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </section>
       </div>
 
       <section className="profile-latest">
@@ -283,6 +268,12 @@ export default function Home() {
         </div>
         <PostList posts={posts} />
       </section>
+
+      <footer className="brutal-muted" style={{ padding: '28px 4px 8px', fontSize: 14 }}>
+        <a className="brutal-link" href="/blog/frontend-agent-engineer-resume">
+          Career &amp; résumé
+        </a>
+      </footer>
     </main>
   );
 }

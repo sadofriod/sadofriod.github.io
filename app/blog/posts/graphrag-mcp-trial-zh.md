@@ -49,7 +49,7 @@ translationKey: graphrag-mcp-trial
 
 ## 如何申请
 
-发邮件到 [justlikeashes@gmail.com](mailto:justlikeashes@gmail.com)，写清三件事：
+发邮件到 [hello@ashesborn.cloud](mailto:hello@ashesborn.cloud)，写清三件事：
 
 1. 你打算用哪个 MCP 客户端、什么版本；
 2. 一个你真正需要跨多份文档回答的问题；

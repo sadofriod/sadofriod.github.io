@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>可售情报报告 · 索引</title>
+<style>
+*,*::before,*::after { box-sizing: border-box; }
+body { margin: 0; background: #f5f3ef; color: #2f2c26; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif; font-size: 16px; line-height: 1.7; }
+.page { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+h1 { font-size: 30px; }
+p.lede { font-size: 16px; color: #6d675b; }
+.report-card { display: block; background: #fffdf9; border: 1px solid #e7e1d6; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; text-decoration: none; color: inherit; }
+.report-card h3 { margin: 0 0 6px; font-size: 20px; }
+.report-card .sub { color: #6d675b; font-size: 14px; margin-bottom: 8px; }
+.report-card .stats { font-size: 13px; color: #8a857b; }
+</style>
+</head>
+<body>
+<div class="page">
+<h1>可售情报报告 · 索引</h1>
+<p class='lede'>这是什么：以下三份报告把三份 A 股新能源公司 2025 年年报里的结构化结论，转成「每条结论都能点回 PDF 原页坐标」的可售情报交付件。为什么可信：每条原文事实都通过 scripts/verify.mjs 对照 PDF 文本层定位锚点、渲染坐标裁剪图回查，未命中的结论会在报告内以红字标出。样例语料是哪三份年报：宁德时代（300750-宁德时代-2025AR）、亿纬锂能（300014-亿纬锂能-2025AR）与阳光电源（300274-阳光电源-2025AR）的 2025 年年报。</p>
+<p class='sub'><a href="/work/samples/">English</a> · 中文</p>
+<h2>报告列表</h2>
+<a class="report-card" href="/work/samples/S1.html">
+<h3>储能电芯交付能力对照：宁德时代 vs 亿纬锂能（2025 年报口径）</h3>
+<div class='sub'>每条数字都带页码与坐标；推断项单独标注，不与原文事实混排。</div>
+<div class='stats'>原文事实 8 条 · 命中率 100%（8/8）</div>
+</a>
+<a class="report-card" href="/work/samples/S2.html">
+<h3>阳光电源储能业务成本剖面：202 亿原材料与只有 5% 份额的具名二、三供电芯厂</h3>
+<div class='sub'>用年报的成本与供应商表，反推储能系统集成商的电芯采购结构；未具名第一大供应商单独列为风险项。</div>
+<div class='stats'>原文事实 10 条 · 命中率 100%（10/10）</div>
+</a>
+<a class="report-card" href="/work/samples/S3.html">
+<h3>全球储能集成商的中国电芯来源：四条关系边，全部带页码，缺口也全部标出</h3>
+<div class='sub'>把三份 2025 年报里的具名实体抽成一张关系图：谁给谁供电芯、谁和谁签了战略合作、哪条边因为客户匿名而断掉。</div>
+<div class='stats'>原文事实 11 条 · 命中率 100%（11/11）</div>
+</a>
+</div>
+</body>
+</html>

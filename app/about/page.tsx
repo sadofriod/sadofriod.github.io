@@ -253,27 +253,6 @@ export default function AboutPage() {
       </section>
 
       <section className="profile-section">
-        <div className="profile-section__head">
-          <T className="brutal-kicker" k="about.story" />
-          <T as="h2" k="about.howIGotHere" />
-        </div>
-        <div className="story">
-          <div className="story__item">
-            <T className="brutal-kicker" k="about.stepStart" />
-            <T as="p" k="profile.aboutStart" />
-          </div>
-          <div className="story__item">
-            <T className="brutal-kicker" k="about.stepTurn" />
-            <T as="p" k="profile.aboutTurn" />
-          </div>
-          <div className="story__item">
-            <T className="brutal-kicker" k="about.stepNow" />
-            <T as="p" k="profile.aboutNow" />
-          </div>
-        </div>
-      </section>
-
-      <section className="profile-section">
         <div className="brutal-card brutal-card--mint">
           <T as="p" className="brutal-kicker" k="profile.fullStoryLabel" />
           <h2 className="brutal-title">
@@ -323,7 +302,7 @@ export default function AboutPage() {
         <div className="brutal-card">
           <div className="contact-row">
             <a className="brutal-btn brutal-btn--ink" href={profile.contact.emailHref}>
-              {profile.contact.email}
+              Email hello@ashesborn.cloud
             </a>
             {github ? (
               <a className="brutal-btn" href={github.href} target="_blank" rel="noopener noreferrer">
