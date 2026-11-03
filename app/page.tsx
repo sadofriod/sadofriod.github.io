@@ -221,24 +221,29 @@ export default function Home() {
         <section className="brutal-card brutal-card--mint bento__now">
           <T as="p" className="brutal-kicker" k="home.now" />
           <T as="h2" className="brutal-title" k="home.rightNow" />
-          <T as="p" className="brutal-text" k="profile.now1" />
+          <T as="p" className="brutal-text" k="home.nowLead" />
+          <ul className="bento-list">
+            <li>
+              <a href="https://blog.ashesborn.cloud/work/samples/">
+                <T k="home.nowSamples" />
+              </a>
+            </li>
+            <li>
+              <a href="https://ashesborn.cloud/datasets/">
+                <T k="home.nowDoi" />
+              </a>
+            </li>
+            <li>
+              <a href="https://ashesborn.cloud/work/evidence-brief">
+                <T k="home.nowBrief" />
+              </a>
+            </li>
+          </ul>
           <p className="bento__more">
             <Link className="brutal-link" href="/about">
               <T k="home.fullPicture" />
             </Link>
           </p>
-        </section>
-
-        <section className="brutal-card bento__resume">
-          <T as="p" className="brutal-kicker" k="home.resume" />
-          <T as="h2" className="brutal-title" k="home.hireMe" />
-          <ul className="bento-list">
-            {resumes.map((item) => (
-              <li key={item.post.slug}>
-                <Link href={`/blog/${item.post.slug}`}>{item.label}</Link>
-              </li>
-            ))}
-          </ul>
         </section>
 
         <section className="brutal-card bento__projects">
@@ -253,6 +258,18 @@ export default function Home() {
                     <T k={projectKeys(project.name).role} /> · {project.meta}
                   </span>
                 </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="brutal-card bento__resume">
+          <T as="p" className="brutal-kicker" k="home.resume" />
+          <T as="h2" className="brutal-title" k="home.hireMe" />
+          <ul className="bento-list">
+            {resumes.map((item) => (
+              <li key={item.post.slug}>
+                <Link href={`/blog/${item.post.slug}`}>{item.label}</Link>
               </li>
             ))}
           </ul>

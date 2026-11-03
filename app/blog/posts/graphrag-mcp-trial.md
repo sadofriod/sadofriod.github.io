@@ -10,6 +10,8 @@ lang: en
 translationKey: graphrag-mcp-trial
 ---
 
+> **For buyers.** An agent that can only return an answer will invent its evidence, so this MCP returns the source excerpt with every result. Apply with one email: read-only key, a pre-indexed workspace, no install and no model key on your side.
+
 > **Key facts.** A hosted GraphRAG MCP trial on a pre-indexed public corpus: one MCP client, read-only, 14 days, 30 local queries, bearer credential plus email allowlist. Nothing to install on your side — no PostgreSQL, no build, no model key. Access is granted manually, usually within one business day. No SLA, no private corpora, and no anonymous unlimited queries.
 
 Most retrieval problems I see in agent projects are not "we cannot find a document". They are

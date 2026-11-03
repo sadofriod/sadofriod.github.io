@@ -10,6 +10,8 @@ lang: en
 translationKey: free-doi-retraction-check
 ---
 
+> **For buyers.** A cited paper can be retracted while the citation keeps travelling, and "no record found" is not the same answer as "not retracted". Paste any DOI into the free lookup and read the three source rows, their tiers and the abstention reason yourself.
+
 > **Key facts.** One HTTP GET answers whether a DOI is retracted — free, no key, no model call. The verdict is derived from per-source rows: OpenAlex (tier C), Crossref update-to (tier A), Retraction Watch (tier A) — 572 assertions over 98,868 papers in snapshot ri-20261025-1526. Measured 2026-10-28 on 20 DOIs: 20/20 HTTP 200, median 1,595 ms, 16 retracted, 1 not retracted, 2 with no status rows, 1 abstention. A missing row is returned as missing, never as “not retracted”.
 
 Retraction status is not one field in one database. A work can carry an OpenAlex flag, a Crossref

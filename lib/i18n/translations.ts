@@ -355,6 +355,26 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: "지금",
     es: "Ahora",
   },
+  'home.nowLead': {
+    en: 'Evidence briefs where every claim keeps the page it came from, and the free DOI lookup underneath them.',
+    zh: '在做带页码锚点的证据简报，以及它底下的免费 DOI 撤稿查询。'
+  },
+  'home.nowSamples': {
+    en: 'Open the three annual-report samples',
+    zh: '打开三份年报样例'
+  },
+  'home.nowDoi': {
+    en: 'Check a DOI for retraction — free, no key',
+    zh: '查一个 DOI 是否撤稿——免费、不用 key'
+  },
+  'home.nowBrief': {
+    en: 'Evidence Brief: what ships and what it costs',
+    zh: 'Evidence Brief：交付什么、多少钱'
+  },
+  'home.nowProof': {
+    en: 'Proof you can open',
+    zh: '可以点开的证明'
+  },
   "home.rightNow": {
     en: "Right now",
     zh: "最近在做",
@@ -459,6 +479,14 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ja: "いまやっていること",
     ko: "지금 하는 일",
     es: "Qué estoy haciendo",
+  },
+  'about.proofTitle': {
+    en: 'Pick a link and check it',
+    zh: '随便点一个，自己核'
+  },
+  'about.openTo': {
+    en: 'Open to agent-engineering and frontend roles, and to a small number of retrieval engagements. The long version and the resume are one click away.',
+    zh: '接受 agent 工程 / 前端职位，以及少量检索方向合作。完整版与简历都在下面。'
   },
   "about.selectedWork": {
     en: "Selected work",

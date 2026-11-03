@@ -10,6 +10,8 @@ lang: en
 translationKey: annual-report-anchored-claims
 ---
 
+> **For buyers.** A 232-page annual report hides the one number that decides the meeting, and the summary you were handed does not carry the table row it came from. This brief puts every claim on its page and bounding box and fails the build on a miss — open S2 and click the supplier row to land on page 36.
+
 > **Key facts.** Three 2025 annual reports (CATL, EVE Energy, Sungrow) in; three reports and 36 evidence records out, 29 of them facts. Every fact resolves to a page and bounding box in the source PDF and the build exits non-zero on a miss — 29 of 29 verified, 0 misses, 2026-11-01. Entities, claims and edges land in PostgreSQL; retrieval walks the graph instead of one chunk. The three sample reports and the verifier are public.
 
 A supply chain question lands on a Monday. Which cell makers sit behind the systems this

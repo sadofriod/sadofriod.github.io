@@ -82,7 +82,7 @@ function projectKeys(name: string) {
 }
 
 /** Paragraphs in profile.now, in order. */
-const NOW_KEYS = ['profile.now1', 'profile.now2', 'profile.now3'];
+const NOW_KEYS = ['profile.now1', 'profile.now2'];
 
 export default function AboutPage() {
   const fullStory = getPostByFile(profile.fullStory.file);
@@ -162,39 +162,6 @@ export default function AboutPage() {
 
       <section className="profile-section">
         <div className="profile-section__head">
-          <T className="brutal-kicker" k="about.story" />
-          <T as="h2" k="about.howIGotHere" />
-        </div>
-        <div className="story">
-          <div className="story__item">
-            <T className="brutal-kicker" k="about.stepStart" />
-            <T as="p" k="profile.aboutStart" />
-          </div>
-          <div className="story__item">
-            <T className="brutal-kicker" k="about.stepTurn" />
-            <T as="p" k="profile.aboutTurn" />
-          </div>
-          <div className="story__item">
-            <T className="brutal-kicker" k="about.stepNow" />
-            <T as="p" k="profile.aboutNow" />
-          </div>
-        </div>
-      </section>
-
-      <section className="profile-section">
-        <div className="brutal-card brutal-card--mint">
-          <T as="p" className="brutal-kicker" k="profile.fullStoryLabel" />
-          <h2 className="brutal-title">
-            <Link className="brutal-link" href={`/blog/${fullStory.slug}`}>
-              {fullStory.title}
-            </Link>
-          </h2>
-          <T as="p" className="brutal-text brutal-muted" k="profile.fullStoryNote" />
-        </div>
-      </section>
-
-      <section className="profile-section">
-        <div className="profile-section__head">
           <T className="brutal-kicker" k="home.now" />
           <T as="h2" k="about.whatIAmDoing" />
         </div>
@@ -205,6 +172,31 @@ export default function AboutPage() {
                 <T k={key} />
               </li>
             ))}
+          </ul>
+        </div>
+        <div className="brutal-card brutal-card--tight" style={{ marginTop: 16 }}>
+          <T as="p" className="brutal-kicker" k="about.proofTitle" />
+          <ul className="bento-list">
+            <li>
+              <a href="https://blog.ashesborn.cloud/work/samples/">
+                Three annual-report samples — click a claim, land on the page
+              </a>
+            </li>
+            <li>
+              <a href="https://ashesborn.cloud/datasets/">
+                Free DOI retraction lookup — 20 DOIs measured, 20/20 HTTP 200
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/sadofriod/graphrag-ts">
+                graphrag-ts — engine, benchmark report and the queries that missed
+              </a>
+            </li>
+            <li>
+              <a href="https://ashesborn.cloud/work/evidence-brief">
+                Evidence Brief — format, deliverables and the founding rate
+              </a>
+            </li>
           </ul>
         </div>
       </section>
@@ -258,16 +250,47 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <div className="profile-stack">
-          <div className="brutal-card brutal-card--tight">
-            <T as="p" className="brutal-kicker" k="home.resume" />
-            <div className="contact-row">
-              {resumeLinks.map((item) => (
-                <Link key={item.post.slug} className="brutal-btn" href={`/blog/${item.post.slug}`}>
-                  {item.label}
-                </Link>
-              ))}
-            </div>
+      </section>
+
+      <section className="profile-section">
+        <div className="profile-section__head">
+          <T className="brutal-kicker" k="about.story" />
+          <T as="h2" k="about.howIGotHere" />
+        </div>
+        <div className="story">
+          <div className="story__item">
+            <T className="brutal-kicker" k="about.stepStart" />
+            <T as="p" k="profile.aboutStart" />
+          </div>
+          <div className="story__item">
+            <T className="brutal-kicker" k="about.stepTurn" />
+            <T as="p" k="profile.aboutTurn" />
+          </div>
+          <div className="story__item">
+            <T className="brutal-kicker" k="about.stepNow" />
+            <T as="p" k="profile.aboutNow" />
+          </div>
+        </div>
+      </section>
+
+      <section className="profile-section">
+        <div className="brutal-card brutal-card--mint">
+          <T as="p" className="brutal-kicker" k="profile.fullStoryLabel" />
+          <h2 className="brutal-title">
+            <Link className="brutal-link" href={`/blog/${fullStory.slug}`}>
+              {fullStory.title}
+            </Link>
+          </h2>
+          <T as="p" className="brutal-text brutal-muted" k="profile.fullStoryNote" />
+        </div>
+        <div className="brutal-card brutal-card--tight" style={{ marginTop: 16 }}>
+          <T as="p" className="brutal-text" k="about.openTo" />
+          <div className="contact-row">
+            {resumeLinks.map((item) => (
+              <Link key={item.post.slug} className="brutal-btn" href={`/blog/${item.post.slug}`}>
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
