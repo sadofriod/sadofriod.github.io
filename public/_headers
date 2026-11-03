@@ -1,2 +1,7 @@
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable
+
+# /rss is the Next route handler exported without a file extension, so the asset layer cannot map
+# it to a media type; declare it explicitly. /rss.xml inherits application/xml from its extension.
+/rss
+  Content-Type: application/rss+xml; charset=utf-8

@@ -37,6 +37,15 @@ export default function RootLayout({
   return (
     <html lang={defaultLocale}>
       <link rel="icon" href="/favicon.ico" sizes="any" />
+      {/* Rendered here, not via `metadata.alternates`: a page that sets `alternates` (canonical,
+          languages) replaces the whole field, so most articles lost the feed link. React hoists
+          this into <head> on every route. */}
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title="Ashes Born — the blog feed"
+        href={`${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud'}/rss.xml`}
+      />
       <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-5JRRE2PZ65" />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
