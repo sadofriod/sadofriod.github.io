@@ -4,7 +4,7 @@
  * Posts are referenced by FILE NAME — slugs can be hashed for non-ASCII names.
  */
 
-export type SocialIcon = 'github' | 'mail' | 'blog';
+export type SocialIcon = 'github' | 'mail' | 'blog' | 'company';
 
 export type ProfileSocial = {
   label: string;
@@ -41,7 +41,7 @@ export const profile = {
     { label: 'GitHub', href: 'https://github.com/sadofriod', icon: 'github' },
     { label: 'Email', href: 'mailto:justlikeashes@gmail.com', icon: 'mail' },
     { label: 'Blog', href: 'https://blog.ashesborn.cloud', icon: 'blog' },
-    { label: 'MCP trial', href: 'https://blog.ashesborn.cloud/blog/graphrag-mcp-trial', icon: 'blog' },
+    { label: 'Company', href: 'https://ashesborn.cloud/', icon: 'company' },
   ] as ProfileSocial[],
 
   about: {

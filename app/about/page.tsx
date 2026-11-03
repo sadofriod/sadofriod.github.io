@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import T from '@/components/T';
+import TelemetryPanel from '@/components/profile/TelemetryPanel';
 import { profile, type SocialIcon } from '@/data/profile';
 import { getPostByFile } from '@/lib/posts';
 
@@ -30,6 +31,13 @@ function socialIcon(icon: SocialIcon) {
           <path d="m3 7 9 6 9-6" />
         </svg>
       );
+    case 'company':
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <rect x="4" y="3" width="16" height="18" rx="1" />
+          <path d="M8 7h2m4 0h2M8 11h2m4 0h2M8 15h2m4 0h2M10 21v-3h4v3" />
+        </svg>
+      );
     case 'blog':
     default:
       return (
@@ -46,6 +54,7 @@ const SOCIAL_KEYS: Record<SocialIcon, string> = {
   github: 'profile.socialGithub',
   mail: 'profile.socialEmail',
   blog: 'profile.socialBlog',
+  company: 'profile.socialCompany',
 };
 
 /** Writing-group copy lives under profile.group<Name>{Label,Blurb}. */
@@ -260,6 +269,26 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="profile-section" id="telemetry">
+        <div className="profile-section__head">
+          <T className="brutal-kicker" k="about.telemetryKicker" />
+          <T as="h2" k="about.telemetryTitle" />
+        </div>
+        <div className="brutal-card brutal-card--mint">
+          <T as="p" className="brutal-text" k="about.telemetryLead" />
+          <TelemetryPanel />
+          <p className="bento__more">
+            <a className="brutal-link" href="/telemetry.html">
+              <T k="telemetry.fullPage" />
+            </a>
+            {' · '}
+            <a className="brutal-link" href="/blog/x402-integration-http-and-mcp">
+              <T k="telemetry.howItWorks" />
+            </a>
+          </p>
         </div>
       </section>
 

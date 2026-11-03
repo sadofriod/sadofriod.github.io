@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Live telemetry — Ashes Born</title>
-<meta name="description" content="Self-reported production telemetry for the Ashes Born x402 APIs: corpus size, settled payments with on-chain proof, latency.">
+<meta name="description" content="Live production telemetry for the Ashes Born x402 APIs: corpus size, settled payments, public calls and latency.">
 <style>
  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:0 auto;padding:2.5rem 1.25rem;line-height:1.6;color:#111;background:#fff}
  h1{font-size:1.6rem;margin:0 0 .25rem} .sub{color:#6b7280;font-size:.9rem;margin:0 0 2rem}
@@ -15,45 +15,122 @@
  code{background:#f8fafc;padding:.1rem .3rem;border-radius:4px;font-size:.85em}
  .note{font-size:.85rem;color:#6b7280;margin-top:1.5rem}
  h2{font-size:1.05rem;margin:1.5rem 0 .4rem}
+ .status{font-size:.9rem;margin:0 0 1.5rem}
+ .testnet{margin:0 0 1.5rem;font-size:.9rem}
 </style>
 </head>
 <body>
 <h1>Live telemetry</h1>
-<p class="sub">Generated 2026-11-03T02:27:16+00:00 from the production Postgres behind <code>pay.ashesborn.cloud</code>. Self-reported, not audited.</p>
-
-<div class="grid">
-  <div class="card"><span class="n">827</span><span class="l">graph entities</span></div>
-  <div class="card"><span class="n">603</span><span class="l">relationships</span></div>
-  <div class="card"><span class="n">218,841</span><span class="l">papers indexed</span></div>
-  <div class="card"><span class="n">247,137</span><span class="l">citation edges</span></div>
-  <div class="card"><span class="n">4</span><span class="l">mainnet settlements</span></div>
-  <div class="card"><span class="n">0.08 USDC</span><span class="l">mainnet volume</span></div>
-  <div class="card"><span class="n">13</span><span class="l">public-tier calls</span></div>
-  <div class="card"><span class="n">11 ms</span><span class="l">p95 latency</span></div>
-</div>
-
-<h2>Mainnet settlements (Base + Arbitrum)</h2>
-<table>
-  <tr><th>Network</th><th>Amount</th><th>Transaction</th></tr>
-      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x9c647ac516e52d056d7d5d82d24c071ced7fbaf559b27065423bf6b8952a7174" rel="noopener">0x9c647ac516e5…</a></td></tr>
-      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x3d9d8a15a817cf2ab884bef943860e4914d175fd4f36e208b41498085172069e" rel="noopener">0x3d9d8a15a817…</a></td></tr>
-      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x31fa674ebf09fc15e1837d5f4f672781e29d645c361efd378d933c11860241fd" rel="noopener">0x31fa674ebf09…</a></td></tr>
-      <tr><td>Arbitrum One</td><td>0.02 USDC</td><td><a href="https://arbiscan.io/tx/0x319d249ec835f28aa9b4d57162fdb180236178fc89cfb0d8b1cc7e852b2ff0a4" rel="noopener">0x319d249ec835…</a></td></tr>
-</table>
-
-<h2>Testnet settlements (separated on purpose)</h2>
-<table>
-  <tr><th>Network</th><th>Amount</th><th>Transaction</th></tr>
-      <tr><td>Base Sepolia</td><td>0.02 USDC</td><td><a href="https://basescan.org/tx/0xcf1fc32543a68a9bcb52a9a9db42b4a1b8d0e562034c6d81be73eb2a7d288451" rel="noopener">0xcf1fc32543a6…</a></td></tr>
-      <tr><td>Base Sepolia</td><td>0.02 USDC</td><td><a href="https://basescan.org/tx/0x997b6d13bf55c2f1bd6cb43f55f36015f9c716149482382f3187949c47f915a8" rel="noopener">0x997b6d13bf55…</a></td></tr>
-</table>
-
+<p class="sub" id="generated">Live production telemetry. Self-reported, not audited.</p>
+<p class="status" id="status" aria-live="polite">Fetching live telemetry…</p>
+<div id="figures"></div>
+<div id="settlements"></div>
 <p class="note">
-Verify any figure yourself: <code>GET https://pay.ashesborn.cloud/api/v1/datasets</code>,
+Verify any figure yourself: <code>GET https://pay.ashesborn.cloud/api/v1/telemetry</code> first;
+you can also query <code>GET https://pay.ashesborn.cloud/api/v1/datasets</code> and
 <code>GET https://pay.ashesborn.cloud/api/v1/pricing</code>, or POST an unpaid request to
 <code>/api/v1/query</code> and read the <code>PAYMENT-REQUIRED</code> header.
-Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet payments are listed but excluded from
-the volume figure. These numbers are small because the service is new — publishing them anyway is the point.
+Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from the mainnet figure.
 </p>
+<script>
+(() => {
+  const endpoint = 'https://pay.ashesborn.cloud/api/v1/telemetry';
+  const status = document.getElementById('status');
+  const generated = document.getElementById('generated');
+  const figures = document.getElementById('figures');
+  const settlements = document.getElementById('settlements');
+  const number = (value) => typeof value === 'number' && Number.isFinite(value)
+    ? new Intl.NumberFormat(undefined).format(value)
+    : '—';
+  const amount = (value) => (typeof value === 'number' && Number.isFinite(value)) || (typeof value === 'string' && /^\d+(\.\d+)?$/.test(value)) ? String(value) : '—';
+  const section = (title) => {
+    const heading = document.createElement('h2');
+    heading.textContent = title;
+    return heading;
+  };
+  const addStat = (grid, label, value, suffix = '', format = number) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const n = document.createElement('span');
+    n.className = 'n';
+    n.textContent = `${format(value)}${suffix}`;
+    const l = document.createElement('span');
+    l.className = 'l';
+    l.textContent = label;
+    card.append(n, l);
+    grid.append(card);
+  };
+  const validPayload = (data) => data && typeof data === 'object' &&
+    data.payments && typeof data.payments === 'object' &&
+    data.payments.mainnet && data.payments.testnet &&
+    Array.isArray(data.payments.recent_mainnet) &&
+    data.public_calls && typeof data.public_calls === 'object' &&
+    (data.corpus === null || (data.corpus && typeof data.corpus === 'object')) &&
+    typeof data.generated_at === 'string' && Number.isFinite(new Date(data.generated_at).getTime());
+
+  fetch(endpoint)
+    .then((response) => {
+      if (!response.ok) throw new Error('Telemetry request failed');
+      return response.json();
+    })
+    .then((data) => {
+      if (!validPayload(data)) throw new Error('Invalid telemetry response');
+      status.remove();
+      generated.textContent = `Generated ${new Date(data.generated_at).toISOString()} from the production Postgres behind pay.ashesborn.cloud. Self-reported, not audited.`;
+
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      addStat(grid, 'papers indexed', data.corpus ? data.corpus.papers : null);
+      addStat(grid, 'citation edges', data.corpus ? data.corpus.citation_edges : null);
+      addStat(grid, 'mainnet settlements', data.payments.mainnet.settlements);
+      addStat(grid, 'mainnet volume', data.payments.mainnet.volume_usdc, ' USDC', amount);
+      addStat(grid, `public-tier calls (${number(data.public_calls.window_days)}d)`, data.public_calls.calls);
+      addStat(grid, 'p95 latency', data.public_calls.p95_latency_ms, ' ms');
+      figures.append(grid);
+
+      const mainnetHeading = section('Mainnet settlements');
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      for (const label of ['Network', 'Amount', 'Transaction']) {
+        const th = document.createElement('th');
+        th.textContent = label;
+        headerRow.append(th);
+      }
+      thead.append(headerRow);
+      const tbody = document.createElement('tbody');
+      for (const item of data.payments.recent_mainnet) {
+        const row = document.createElement('tr');
+        const network = document.createElement('td');
+        network.textContent = String(item.network ?? '—');
+        const amountCell = document.createElement('td');
+        amountCell.textContent = `${amount(item.amount_usdc)} USDC`;
+        const transactionCell = document.createElement('td');
+        const link = document.createElement('a');
+        link.href = String(item.explorer_url ?? '');
+        link.rel = 'noopener';
+        link.textContent = `0x${String(item.transaction ?? '').replace(/^0x/, '').slice(0, 10)}…`;
+        transactionCell.append(link);
+        row.append(network, amountCell, transactionCell);
+        tbody.append(row);
+      }
+      table.append(thead, tbody);
+      settlements.append(mainnetHeading, table);
+
+      const testnet = document.createElement('p');
+      testnet.className = 'testnet';
+      testnet.textContent = `${number(data.payments.testnet.settlements)} / ${amount(data.payments.testnet.volume_usdc)} USDC. Testnet volume is excluded from the mainnet figure.`;
+      settlements.append(section('Testnet settlements'), testnet);
+    })
+    .catch(() => {
+      status.replaceChildren();
+      status.append(document.createTextNode('Live telemetry is unreachable right now. '));
+      const link = document.createElement('a');
+      link.href = endpoint;
+      link.textContent = 'Open the raw JSON';
+      status.append(link);
+    });
+})();
+</script>
 </body>
 </html>

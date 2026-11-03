@@ -764,6 +764,14 @@ html body {
   text-transform: uppercase;
 }
 
+.telemetry-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 16px 0 6px; }
+.telemetry-stat { border: 2px solid var(--ink); border-radius: 3px; background: var(--paper); padding: 10px 12px; }
+.telemetry-stat__value { display: block; font-family: var(--brutal-mono); font-size: 1.15rem; font-weight: 700; }
+.telemetry-stat__label { display: block; margin-top: 2px; font-family: var(--brutal-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75; }
+.telemetry-note { font-family: var(--brutal-mono); font-size: 0.72rem; opacity: 0.7; margin: 6px 0 0; }
+.telemetry-settlements { list-style: none; padding: 0; margin: 10px 0 0; font-family: var(--brutal-mono); font-size: 0.75rem; }
+.telemetry-settlements li { margin: 2px 0; }
+
 .upload-notes {
   display: grid;
   gap: 6px;
