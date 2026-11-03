@@ -26,6 +26,13 @@ function socialIcon(icon: SocialIcon) {
           <path d="m3 7 9 6 9-6" />
         </svg>
       );
+    case 'company':
+      return (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <rect x="4" y="3" width="16" height="18" rx="1" />
+          <path d="M8 7h2m4 0h2M8 11h2m4 0h2M8 15h2m4 0h2M10 21v-3h4v3" />
+        </svg>
+      );
     case 'blog':
     default:
       return (
@@ -42,6 +49,7 @@ const SOCIAL_KEYS: Record<SocialIcon, string> = {
   github: 'profile.socialGithub',
   mail: 'profile.socialEmail',
   blog: 'profile.socialBlog',
+  company: 'profile.socialCompany',
 };
 
 /** Writing-group copy lives under profile.group<Name>{Label,Blurb}. */
@@ -129,6 +137,12 @@ export default function Home() {
                   <T k={SOCIAL_KEYS[social.icon]} />
                 </a>
               ))}
+            </div>
+            <div className="profile-hero__actions">
+              <Link className="brutal-pill" href="/about#telemetry">
+                <span className="brutal-pill__dot" aria-hidden="true" />
+                <T k="telemetry.entry" />
+              </Link>
             </div>
           </div>
         </div>
