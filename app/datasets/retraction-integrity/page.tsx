@@ -232,7 +232,7 @@ export default function IntegrityPage() {
             <TRich
               k="integrity.getData1"
               slots={{
-                link: <a className="brutal-link" href="https://huggingface.co/datasets/ashesborn6/integrity-citation-retraction-graph" target="_blank" rel="noreferrer noopener">Hugging Face: ashesborn6/integrity-citation-retraction-graph</a>,
+                link: <a className="brutal-link" href="https://huggingface.co/datasets/ashesborn6/retracted-papers-citation-integrity-graph" target="_blank" rel="noreferrer noopener">Hugging Face: ashesborn6/retracted-papers-citation-integrity-graph</a>,
                 code: <code>.jsonl.gz</code>,
               }}
             />

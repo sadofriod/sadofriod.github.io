@@ -55,7 +55,7 @@ const DATASETS: DatasetCard[] = [
       { labelKey: 'datasets.card.graph.count3', value: 'ri-20261025-1526' },
     ],
     sourcesKey: 'datasets.card.graph.sources',
-    href: 'https://huggingface.co/datasets/ashesborn6/integrity-citation-retraction-graph',
+    href: 'https://huggingface.co/datasets/ashesborn6/retracted-papers-citation-integrity-graph',
     hrefLabel: 'Hugging Face',
     bodyKey: 'datasets.card.graph.body',
   },
@@ -328,7 +328,7 @@ export default function DatasetsPage() {
                 {
                   '@type': 'DataDownload',
                   contentUrl:
-                    'https://huggingface.co/datasets/ashesborn6/integrity-citation-retraction-graph',
+                    'https://huggingface.co/datasets/ashesborn6/retracted-papers-citation-integrity-graph',
                   encodingFormat: 'application/jsonl+gzip',
                 },
                 {

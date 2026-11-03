@@ -137,7 +137,7 @@ for doi in 10.1001/jama.293.14.1727 10.1038/nature14581 10.9999/not-in-snapshot;
 done
 ```
 
-数据集与装载脚本在 Hugging Face（`ashesborn6/integrity-citation-retraction-graph`）。
+数据集与装载脚本在 Hugging Face（[撤稿论文与引用完整性图，CC0，244,254 行](https://huggingface.co/datasets/ashesborn6/retracted-papers-citation-integrity-graph)）。
 `/datasets/retraction-integrity` 上渲染的引用邻域由博客仓库的
 `scripts/build-retraction-graph.mjs` 生成，它从三份公开 JSONL 重新计算种子选择，而不是硬编码一份
 布局。

@@ -16,7 +16,7 @@ import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import path from 'node:path';
 
-const REPO = 'ashesborn6/integrity-citation-retraction-graph';
+const REPO = 'ashesborn6/retracted-papers-citation-integrity-graph';
 const BASE = `https://huggingface.co/datasets/${REPO}/resolve/main`;
 const FILES = ['data/papers.jsonl.gz', 'data/cites.jsonl.gz', 'data/retraction_status.jsonl.gz'];
 const CACHE = path.join('.cache', 'hf-integrity');
