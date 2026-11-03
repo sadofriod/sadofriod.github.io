@@ -28,7 +28,7 @@ const articles = posts
       const wordEnd = shortened.lastIndexOf(' ');
       blurb = shortened.slice(0, wordEnd === -1 ? shortened.length : wordEnd);
     }
-    const url = `https://blog.ashesborn.cloud/blog/${encodeURI(post.slug)}`;
+    const url = `https://blog.ashesborn.cloud/blog/${encodeURIComponent(post.slug)}`;
     return `- [${post.title}](${url})${blurb.length >= 10 ? ` — ${blurb}` : ''}`;
   });
 
