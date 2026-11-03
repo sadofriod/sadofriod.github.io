@@ -281,7 +281,7 @@ export default function AboutPage() {
           <T as="p" className="brutal-text" k="about.telemetryLead" />
           <TelemetryPanel />
           <p className="bento__more">
-            <a className="brutal-link" href="/telemetry.html">
+            <a className="brutal-link" href="/telemetry">
               <T k="telemetry.fullPage" />
             </a>
             {' · '}
