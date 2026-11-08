@@ -5,8 +5,8 @@
   "zh": "LDO / Lido DAO"
  },
  "subtitle": {
-  "en": "Official docs + the 161-entry audit index: claims, gaps, and where the documents contradict each other.",
-  "zh": "官方文档 + 161 条审计索引：结论、缺口，以及文档互相矛盾的地方。"
+  "en": "Lido runs liquid staking for Ethereum. Here are its voting rules, and 161 published audits that were never reconciled with each other.",
+  "zh": "Lido 做的是以太坊的质押（stETH）。这里是它的投票规则，以及 161 份彼此从未对账过的公开审计。"
  },
  "kind": "browse",
  "sources": [
@@ -52,8 +52,8 @@
    "doc": "d1",
    "id": "C1",
    "title": {
-    "en": "Snapshot proposer threshold: 1,000 LDO",
-    "zh": "Snapshot 提案门槛：1,000 LDO"
+    "en": "Anyone holding 1,000 LDO can open a vote",
+    "zh": "持有 1,000 LDO 就能发起一次投票"
    },
    "claim": "To create a proposal on the Lido DAO Snapshot, users need at least 1,000 LDO tokens",
    "section": "Regular process / Off-chain voting",
@@ -64,14 +64,14 @@
     "hl": "To create a proposal on the Lido DAO Snapshot, users need at least 1,000 LDO tokens"
    },
    "verify": "open lido.fi/governance → \"Regular process\" → \"Off-chain voting\", first paragraph",
-   "after": "### On-chain voting — To pass, a proposal requires the \"yes\" option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens."
+   "after": "On-chain voting — To pass, a proposal requires the \"yes\" option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens."
   },
   {
    "doc": "d1",
    "id": "C2",
    "title": {
-    "en": "Passing bar: 5% of supply plus a simple majority",
-    "zh": "通过条件：5% 总供应 + 简单多数"
+    "en": "A proposal passes only at 5% of all LDO voting yes. The docs never say how much LDO exists.",
+    "zh": "提案要 5% 的 LDO 投赞成才通过——而文档全文没有说 LDO 总共有多少"
    },
    "claim": "a minimum of 5% of total LDO token supply and a simple majority",
    "section": "Regular process / Off-chain voting",
@@ -82,14 +82,14 @@
     "hl": "a minimum of 5% of total LDO token supply and a simple majority"
    },
    "verify": "open lido.fi/governance → \"Regular process\" → \"Off-chain voting\", first paragraph",
-   "after": "### On-chain voting — To pass, a proposal requires the \"yes\" option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens."
+   "after": "On-chain voting — To pass, a proposal requires the \"yes\" option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens."
   },
   {
    "doc": "d1",
    "id": "C3",
    "title": {
-    "en": "Veto signalling: >1% stETH blocks motions 5–45 days",
-    "zh": "Veto Signaling：>1% stETH，锁定 5–45 天"
+    "en": "stETH holders can freeze a Lido decision for up to 45 days by escrowing 1% of stETH",
+    "zh": "stETH 持有者质押 1% 的 stETH 就能把治理决议冻结 5 到 45 天"
    },
    "claim": "Veto Signaling is activated with >1% of the total stETH supply",
    "section": "Dual Governance: Veto Signaling and Rage Quit",
@@ -100,15 +100,15 @@
     "hl": "Veto Signaling is activated with >1% of the total stETH supply"
    },
    "verify": "open lido.fi/governance → expand \"Dual Governance: Veto Signaling and Rage Quit\", first paragraph",
-   "before": "### Dual Governance: stETH holders challenge window — After passing the vote, on-chain actions targeting Lido on Ethereum protocol enter Dual Governance — a dynamic timelock that allows stETH holders to extend execution delay based on the level of opposition.",
+   "before": "Dual Governance: stETH holders challenge window — After passing the vote, on-chain actions targeting Lido on Ethereum protocol enter Dual Governance — a dynamic timelock that allows stETH holders to extend execution delay based on the level of opposition.",
    "after": "Rage Quit is triggered when >10% of the total stETH supply is locked in the signaling escrow. Governance stays paused until opposing stakers exit the protocol."
   },
   {
    "doc": "d1",
    "id": "C4",
    "title": {
-    "en": "Rage quit: >10% stETH pauses governance",
-    "zh": "Rage Quit：>10% stETH 暂停治理"
+    "en": "At 10% of stETH escrowed, governance stops until those stakers leave the protocol",
+    "zh": "一旦 10% 的 stETH 被锁进托管，治理就完全停摆，直到这些人退出"
    },
    "claim": "Rage Quit is triggered when >10% of the total stETH supply is locked in the signaling escrow",
    "section": "Dual Governance: Veto Signaling and Rage Quit",
@@ -125,8 +125,8 @@
    "doc": "d2",
    "id": "C5",
    "title": {
-    "en": "Holders: over 55,000 addresses",
-    "zh": "持币地址：55,000+"
+    "en": "Lido says it has more than 55,000 distinct LDO holders",
+    "zh": "Lido 自称有 55,000 名以上独立的 LDO 持有者"
    },
    "claim": "With over 55,000 unique LDO token holders",
    "section": "opening paragraph",
@@ -138,14 +138,14 @@
    },
    "verify": "open lido.fi/how-lido-works/how-the-lido-dao-works → second paragraph",
    "before": "The Lido Protocol operates under the oversight of the Lido DAO, a decentralized autonomous organization governed by LDO token holders.",
-   "after": "## LDO — LDO is the Lido DAO's governance token. Built on the ERC-20 standard, it includes balance snapshotting functionality…"
+   "after": "LDO — LDO is the Lido DAO's governance token. Built on the ERC-20 standard, it includes balance snapshotting functionality…"
   },
   {
    "doc": "d3",
    "id": "A1",
    "title": {
-    "en": "Audit entries: 161 (2020-12 → 2026-10)",
-    "zh": "审计条目：161 条（2020-12 → 2026-10）"
+    "en": "Lido has published 161 smart-contract audits between 2020 and 2026",
+    "zh": "2020 到 2026 年，Lido 一共公开了 161 份智能合约审计"
    },
    "claim": "161 audit entries",
    "section": "headings across the file",
@@ -174,8 +174,8 @@
    "doc": "d3",
    "id": "A2",
    "title": {
-    "en": "31 of 161 entries carry no issue count",
-    "zh": "其中 31 条没有 issue 数字"
+    "en": "31 of those 161 audits give no issue count, so totals only work for the other 130",
+    "zh": "其中 31 份完全没有 issue 数字，所以总量只能对另外 130 份比较"
    },
    "claim": "130 of 161 entries carry a Total Issues line",
    "section": "audit-coverage.json",
@@ -208,8 +208,8 @@
    "doc": "d3",
    "id": "A3",
    "title": {
-    "en": "Contradiction 1: total 5, buckets sum to 7",
-    "zh": "矛盾 ①：总数 5，分类加起来 7"
+    "en": "The bETH Vault audit summary says 5 issues. The list beneath it adds to 7, and every one is unfixed.",
+    "zh": "bETH Vault 那份审计的总结写 5 个问题，下面列的加起来是 7 个，而且 7 个全部未修"
    },
    "claim": "Total Issues: 5 (3 Fixed, 2 Acknowledged)",
    "section": "01-2022 MixBytes bETH Vault Security Audit Report",
@@ -247,8 +247,8 @@
    "doc": "d3",
    "id": "A4",
    "title": {
-    "en": "Contradiction 2: total 7, buckets sum to 6",
-    "zh": "矛盾 ②：总数 7，分类加起来 6"
+    "en": "The Chainlink CSR audit summary says 7 issues. The list beneath it adds to 6.",
+    "zh": "Chainlink CSR 那份审计的总结写 7 个问题，下面列的加起来只有 6 个"
    },
    "claim": "Total Issues: 7 (6 Fixed, 1 Acknowledged)",
    "section": "02-2025 Trail of Bits Chainlink CSR Security Review",
@@ -286,8 +286,8 @@
    "doc": "d3",
    "id": "A5",
    "title": {
-    "en": "Contradiction 3: 'Notes' counted in one entry, not another",
-    "zh": "矛盾 ③：Notes 算不算进总数，两条目口径不同"
+    "en": "One audit entry counts 'Notes' inside its total, another leaves them out",
+    "zh": "同一个「Notes」字段，一份审计算进总数，另一份不算"
    },
    "claim": "Notes: 3 (3 Acknowledged)",
    "section": "12-2023 Pessimistic Lido Stonks",
@@ -333,46 +333,46 @@
  "gaps": [
   {
    "q": {
-    "en": "Is there a token unlock or vesting schedule?",
-    "zh": "LDO 的代币解锁 / 归属时间表？"
+    "en": "When do the remaining LDO tokens unlock, and who holds them?",
+    "zh": "剩下的 LDO 什么时候解锁，在谁手里？"
    },
    "a": "The provided evidence does not include the LDO token unlock schedule or vesting terms.",
    "why": {
-    "en": "The official docs contain no such schedule.",
-    "zh": "官方文档里根本没有这份时间表"
+    "en": "Lido's official docs never publish a distribution or unlock schedule.",
+    "zh": "Lido 官方文档从不公布分配或解锁时间表"
    }
   },
   {
    "q": {
-    "en": "What is the total LDO supply?",
-    "zh": "LDO 的总供应量是多少？"
+    "en": "How many LDO exist in total?",
+    "zh": "LDO 总共有多少枚？"
    },
    "a": "The provided evidence does not specify a numeric total supply for LDO tokens.",
    "why": {
-    "en": "The 5% quorum cites a number the documents never state.",
-    "zh": "5% 的法定人数引用了一个文档从不给出的数字"
+    "en": "The 5% quorum is defined against a number the docs never give.",
+    "zh": "5% 的通过门槛是对着一个文档从不给出的数字定义的"
    }
   },
   {
    "q": {
-    "en": "What do the 31 entries without counts contain?",
-    "zh": "31 条没有 issue 数字的条目里写了什么？"
+    "en": "What do the 31 audits without issue counts contain?",
+    "zh": "没有 issue 数字的那 31 份审计，里面写了什么？"
    },
    "a": "31 / 161 entries carry no Total Issues line.",
    "why": {
-    "en": "Issue totals are comparable for 130 entries only.",
-    "zh": "总量只能对 130 条比较"
+    "en": "Issue totals can only be compared across 130 of the 161.",
+    "zh": "161 份里只有 130 份能比总量"
    }
   },
   {
    "q": {
-    "en": "Were the 'Acknowledged' findings ever fixed?",
-    "zh": "标为 Acknowledged 的问题后来修了吗？"
+    "en": "Has anything marked 'Acknowledged' ever been fixed later?",
+    "zh": "标为「Acknowledged」的问题，后来修过吗？"
    },
    "a": "The index has no field for whether a later audit resolved an earlier finding.",
    "why": {
-    "en": "98 entries carry acknowledged findings; the index has no follow-up field.",
-    "zh": "98 条含 Acknowledged，但没有跟进字段"
+    "en": "98 audits carry acknowledged findings and the index has no follow-up field.",
+    "zh": "98 份带着未修项，而索引里没有跟进字段"
    }
   }
  ]

@@ -5,8 +5,8 @@
   "zh": "智能合约审计 — Lido（真实语料）"
  },
  "subtitle": {
-  "en": "161 public smart-contract audits: coverage, unfixed findings, and where the index contradicts itself.",
-  "zh": "161 份公开审计报告：覆盖情况、未修复项，以及索引自相矛盾之处。"
+  "en": "All 161 smart-contract audits Lido has published since 2020, indexed. Three of them contradict their own numbers.",
+  "zh": "Lido 自 2020 年公开的全部 161 份智能合约审计，做成索引。其中三份的总结和它自己列的数字对不上。"
  },
  "kind": "browse",
  "sources": [
@@ -30,8 +30,8 @@
    "doc": "d1",
    "id": "W1",
    "title": {
-    "en": "Audit entries: 161 (2020-12 → 2026-10)",
-    "zh": "审计条目：161 份（2020-12 → 2026-10）"
+    "en": "161 audit reports between 2020 and 2026, by MixBytes, Statemind, Trail of Bits and others",
+    "zh": "2020 到 2026 年的 161 份审计，出自 MixBytes、Statemind、Trail of Bits 等"
    },
    "claim": "161 audit entries",
    "section": "headings across the file",
@@ -65,8 +65,8 @@
    "doc": "d1",
    "id": "W2",
    "title": {
-    "en": "130 of 161 carry issue counts; 31 do not",
-    "zh": "130 / 161 有 issue 数字，31 份没有"
+    "en": "31 of the 161 give no issue count, so totals only work for the other 130",
+    "zh": "161 份里有 31 份没有 issue 数字，总量只能对另外 130 份比较"
    },
    "claim": "31 entries carry no Total Issues line",
    "section": "per-entry scan",
@@ -100,8 +100,8 @@
    "doc": "d1",
    "id": "W3",
    "title": {
-    "en": "98 entries record 'Acknowledged' (accepted, not fixed)",
-    "zh": "98 份记录了「Acknowledged」（接受风险、未修复）"
+    "en": "98 audits list findings marked 'Acknowledged', meaning accepted and not fixed",
+    "zh": "98 份审计里带「Acknowledged」的发现，即接受但不修"
    },
    "claim": "98 entries record a concrete number of Acknowledged findings",
    "section": "per-entry scan",
@@ -131,8 +131,8 @@
    "doc": "d1",
    "id": "W4",
    "title": {
-    "en": "Contradiction 1: total 5, buckets sum to 7",
-    "zh": "矛盾 ①：总数 5，分类加起来 7"
+    "en": "The bETH Vault audit says 5 issues. Its own severity list adds to 7, all unfixed.",
+    "zh": "bETH Vault 那份审计写 5 个问题，它自己列的分类加起来是 7 个，全部未修"
    },
    "claim": "Total Issues: 5 (3 Fixed, 2 Acknowledged)",
    "section": "01-2022 MixBytes bETH Vault Security Audit Report",
@@ -170,8 +170,8 @@
    "doc": "d1",
    "id": "W5",
    "title": {
-    "en": "Contradiction 2: total 7, buckets sum to 6",
-    "zh": "矛盾 ②：总数 7，分类加起来 6"
+    "en": "The Chainlink CSR audit says 7 issues. Its own severity list adds to 6.",
+    "zh": "Chainlink CSR 那份审计写 7 个问题，它自己列的分类加起来是 6 个"
    },
    "claim": "Total Issues: 7 (6 Fixed, 1 Acknowledged)",
    "section": "02-2025 Trail of Bits Chainlink CSR Security Review",
@@ -209,8 +209,8 @@
    "doc": "d1",
    "id": "W6",
    "title": {
-    "en": "Contradiction 3: 'Notes' counted or not, two rules",
-    "zh": "矛盾 ③：「Notes」算不算进总数，两份报告口径相反"
+    "en": "'Notes' are counted inside the total in one entry and left out in another",
+    "zh": "「Notes」在一份里算进总数，在另一份里不算"
    },
    "claim": "Notes: 3 (3 Acknowledged)",
    "section": "12-2023 Pessimistic vs 08-2022 ChainSecurity",
@@ -248,35 +248,35 @@
  "gaps": [
   {
    "q": {
-    "en": "Were those 'Acknowledged' findings ever fixed?",
-    "zh": "这些标为 Acknowledged 的问题，后来修了吗？"
+    "en": "Has anything marked 'Acknowledged' been fixed since?",
+    "zh": "标为「Acknowledged」的问题后来修过吗？"
    },
    "a": "The index has no field for whether a later audit resolved an earlier finding.",
    "why": {
-    "en": "98 entries carry them; the index has no follow-up field.",
-    "zh": "98 份含 Acknowledged，但没有跟进字段；要回答必须逐份读 PDF"
+    "en": "The index has no field linking an old finding to a later audit.",
+    "zh": "索引里没有字段把旧发现和后来的审计连起来"
    }
   },
   {
    "q": {
-    "en": "How many findings do the 31 uncounted reports contain?",
-    "zh": "31 份报告共发现多少个问题？"
+    "en": "What is inside the 31 audits that report no counts?",
+    "zh": "没有数字的那 31 份里写了什么？"
    },
    "a": "31 of 161 entries carry no Total Issues line.",
    "why": {
-    "en": "Totals are comparable for 130 entries only.",
-    "zh": "无法做全量总量；只能对 130 份比较"
+    "en": "Totals can only be compared across 130 of 161.",
+    "zh": "只能对 161 份里的 130 份比总量"
    }
   },
   {
    "q": {
-    "en": "What does each report body actually say?",
-    "zh": "每份报告的正文写了什么？"
+    "en": "What does each report body say?",
+    "zh": "每份报告的正文说了什么？"
    },
    "a": "This corpus indexes the README index only; the 161 audit PDFs are not indexed.",
    "why": {
-    "en": "This corpus indexes the README only — every claim points at a README line, not a PDF page.",
-    "zh": "覆盖边界：这里的每条结论都指向 README 行号，不指向 PDF 页码"
+    "en": "This corpus indexes the README index, not the 161 PDFs. Claims point at README lines.",
+    "zh": "这个语料索引的是 README，不是 161 份 PDF；结论指向 README 行号"
    }
   }
  ]
