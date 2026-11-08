@@ -1,0 +1,319 @@
+{
+ "id": "ldo",
+ "title": "LDO / Lido DAO",
+ "subtitle": "Official docs + the 161-entry audit index: claims, gaps, and where the documents contradict each other.",
+ "kind": "browse",
+ "sources": [
+  {
+   "label": "lido.fi/governance",
+   "url": "https://lido.fi/governance"
+  },
+  {
+   "label": "lido.fi/how-lido-works",
+   "url": "https://lido.fi/how-lido-works/how-the-lido-dao-works"
+  },
+  {
+   "label": "github.com/lidofinance/audits",
+   "url": "https://github.com/lidofinance/audits"
+  }
+ ],
+ "snapshot": "4ecd1b9c · 2026-11-08",
+ "docs": [
+  {
+   "id": "d1",
+   "name": "lido.fi/governance",
+   "kind": "web",
+   "meta": "治理规则页 · 抓取 2026-11-08",
+   "url": "https://lido.fi/governance"
+  },
+  {
+   "id": "d2",
+   "name": "lido.fi/how-lido-works",
+   "kind": "web",
+   "meta": "DAO 说明页 · 抓取 2026-11-08",
+   "url": "https://lido.fi/how-lido-works/how-the-lido-dao-works"
+  },
+  {
+   "id": "d3",
+   "name": "lidofinance/audits",
+   "kind": "repo",
+   "meta": "审计索引 README · push 2026-10-31 · 80,541 B",
+   "url": "https://github.com/lidofinance/audits"
+  }
+ ],
+ "claims": [
+  {
+   "doc": "d1",
+   "id": "C1",
+   "title": "Snapshot 提案门槛：1,000 LDO",
+   "claim": "To create a proposal on the Lido DAO Snapshot, users need at least 1,000 LDO tokens",
+   "section": "Regular process / Off-chain voting",
+   "anchor": "chunk 66dc5c42",
+   "ev": {
+    "type": "mark",
+    "text": "To create a proposal on the Lido DAO Snapshot, users need at least 1,000 LDO tokens — a minimum threshold that deters spam proposals. To pass, a proposal requires the winning option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens.",
+    "hl": "To create a proposal on the Lido DAO Snapshot, users need at least 1,000 LDO tokens"
+   },
+   "verify": "open lido.fi/governance → “Regular process” → “Off-chain voting” 第一段",
+   "after": "### On-chain voting — To pass, a proposal requires the \"yes\" option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens."
+  },
+  {
+   "doc": "d1",
+   "id": "C2",
+   "title": "通过条件：5% 总供应 + 简单多数",
+   "claim": "a minimum of 5% of total LDO token supply and a simple majority",
+   "section": "Regular process / Off-chain voting",
+   "anchor": "chunk 66dc5c42",
+   "ev": {
+    "type": "mark",
+    "text": "To create a proposal on the Lido DAO Snapshot, users need at least 1,000 LDO tokens — a minimum threshold that deters spam proposals. To pass, a proposal requires the winning option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens.",
+    "hl": "a minimum of 5% of total LDO token supply and a simple majority"
+   },
+   "verify": "open lido.fi/governance → “Regular process” → “Off-chain voting” 第一段",
+   "after": "### On-chain voting — To pass, a proposal requires the \"yes\" option to receive both a minimum of 5% of total LDO token supply and a simple majority of all participating tokens."
+  },
+  {
+   "doc": "d1",
+   "id": "C3",
+   "title": "Veto Signaling：>1% stETH，锁定 5–45 天",
+   "claim": "Veto Signaling is activated with >1% of the total stETH supply",
+   "section": "Dual Governance: Veto Signaling and Rage Quit",
+   "anchor": "chunk ecccdc91",
+   "ev": {
+    "type": "mark",
+    "text": "Veto Signaling is activated with >1% of the total stETH supply in the signaling escrow. This blocks governance motions for 5 to 45 days, depending on the amount of opposing tokens. This provides time for negotiation between LDO and stETH holders.",
+    "hl": "Veto Signaling is activated with >1% of the total stETH supply"
+   },
+   "verify": "open lido.fi/governance → 展开 “Dual Governance: Veto Signaling and Rage Quit” → 第一段",
+   "before": "### Dual Governance: stETH holders challenge window — After passing the vote, on-chain actions targeting Lido on Ethereum protocol enter Dual Governance — a dynamic timelock that allows stETH holders to extend execution delay based on the level of opposition.",
+   "after": "Rage Quit is triggered when >10% of the total stETH supply is locked in the signaling escrow. Governance stays paused until opposing stakers exit the protocol."
+  },
+  {
+   "doc": "d1",
+   "id": "C4",
+   "title": "Rage Quit：>10% stETH",
+   "claim": "Rage Quit is triggered when >10% of the total stETH supply is locked in the signaling escrow",
+   "section": "Dual Governance: Veto Signaling and Rage Quit",
+   "anchor": "chunk ecccdc91",
+   "ev": {
+    "type": "mark",
+    "text": "Rage Quit is triggered when >10% of the total stETH supply is locked in the signaling escrow. Governance stays paused until opposing stakers exit the protocol.",
+    "hl": "Rage Quit is triggered when >10% of the total stETH supply is locked"
+   },
+   "verify": "同上，下一段",
+   "before": "Veto Signaling is activated with >1% of the total stETH supply in the signaling escrow. This blocks governance motions for 5 to 45 days, depending on the amount of opposing tokens."
+  },
+  {
+   "doc": "d2",
+   "id": "C5",
+   "title": "持币地址：55,000+",
+   "claim": "With over 55,000 unique LDO token holders",
+   "section": "开头段",
+   "anchor": "chunk 59db485e",
+   "ev": {
+    "type": "mark",
+    "text": "With over 55,000 unique LDO token holders, the Lido DAO stewards the protocol towards community and decentralization alignment. Additional safeguard for the protocol is provided by stETH holders via the Dual Governance system that allows them to delay contentious proposals before execution.",
+    "hl": "With over 55,000 unique LDO token holders"
+   },
+   "verify": "open lido.fi/how-lido-works/how-the-lido-dao-works → 开头第二段",
+   "before": "The Lido Protocol operates under the oversight of the Lido DAO, a decentralized autonomous organization governed by LDO token holders.",
+   "after": "## LDO — LDO is the Lido DAO's governance token. Built on the ERC-20 standard, it includes balance snapshotting functionality…"
+  },
+  {
+   "doc": "d3",
+   "id": "A1",
+   "title": "审计条目：161 条（2020-12 → 2026-10）",
+   "claim": "161 audit entries",
+   "section": "全文标题行",
+   "anchor": "L3–L1881",
+   "ev": {
+    "type": "code",
+    "lines": [
+     [
+      "3",
+      "## Lido on Ethereum"
+     ],
+     [
+      "…",
+      "…"
+     ],
+     [
+      "1854",
+      "## Lido on Polygon PoS"
+     ]
+    ],
+    "note": "grep -c '^### ' README.md → 161"
+   },
+   "verify": "grep -c '^### ' README.md  → 161"
+  },
+  {
+   "doc": "d3",
+   "id": "A2",
+   "title": "其中 31 条没有 issue 数字",
+   "claim": "130 of 161 entries carry a Total Issues line",
+   "section": "audit-coverage.json",
+   "anchor": "31 条明细",
+   "ev": {
+    "type": "code",
+    "lines": [
+     [
+      "5",
+      "12-2020 Sigma Prime Security Assessment"
+     ],
+     [
+      "154",
+      "10-2021 Sigma Prime Easy Track Smart Contract Security Assessment"
+     ],
+     [
+      "265",
+      "08-2022 MixBytes Lido Protocol Security Auditor's Review"
+     ],
+     [
+      "…",
+      "（共 31 条，见 audit-coverage.json）"
+     ]
+    ],
+    "note": "无 Total Issues 行 → 无法与其余条目做总量对比"
+   },
+   "verify": "见 audit-coverage.json（31 条清单）"
+  },
+  {
+   "doc": "d3",
+   "id": "A3",
+   "title": "矛盾 ①：总数 5，分类加起来 7",
+   "claim": "Total Issues: 5 (3 Fixed, 2 Acknowledged)",
+   "section": "01-2022 MixBytes bETH Vault Security Audit Report",
+   "anchor": "L172–L176",
+   "ev": {
+    "type": "code",
+    "lines": [
+     [
+      "172",
+      "- Total Issues: 5 (3 Fixed, 2 Acknowledged)"
+     ],
+     [
+      "173",
+      "- Critical Issues: 0"
+     ],
+     [
+      "174",
+      "- Major Issues: 1 (1 Acknowledged)"
+     ],
+     [
+      "175",
+      "- Warning Issues: 4 (4 Acknowledged)"
+     ],
+     [
+      "176",
+      "- Comment Risk Issues: 2 (2 Acknowledged)"
+     ]
+    ],
+    "hl": "172",
+    "note": "分类合计 1+4+2 = 7 ≠ 总数 5；且三类全部 Acknowledged，与“3 Fixed”矛盾"
+   },
+   "verify": "sed -n '172,176p' src/audits-README.md"
+  },
+  {
+   "doc": "d3",
+   "id": "A4",
+   "title": "矛盾 ②：总数 7，分类加起来 6",
+   "claim": "Total Issues: 7 (6 Fixed, 1 Acknowledged)",
+   "section": "02-2025 Trail of Bits Chainlink CSR Security Review",
+   "anchor": "L1636–L1640",
+   "ev": {
+    "type": "code",
+    "lines": [
+     [
+      "1636",
+      "- Total Issues: 7 (6 Fixed, 1 Acknowledged)"
+     ],
+     [
+      "1637",
+      "- Critical Issues: 0"
+     ],
+     [
+      "1638",
+      "- High Issues: 1 (1 Fixed)"
+     ],
+     [
+      "1639",
+      "- Medium Issues: 2 (1 Fixed, 1 Acknowledged)"
+     ],
+     [
+      "1640",
+      "- Informational Issues: 3 (3 Fixed)"
+     ]
+    ],
+    "hl": "1636",
+    "note": "分类合计 1+2+3 = 6 ≠ 总数 7，少一条"
+   },
+   "verify": "sed -n '1636,1640p' src/audits-README.md"
+  },
+  {
+   "doc": "d3",
+   "id": "A5",
+   "title": "矛盾 ③：Notes 算不算进总数，两条目口径不同",
+   "claim": "Notes: 3 (3 Acknowledged)",
+   "section": "12-2023 Pessimistic Lido Stonks",
+   "anchor": "L494 vs L255",
+   "ev": {
+    "type": "code",
+    "lines": [
+     [
+      "494",
+      "- Total Issues: 8 (4 Fixed, 4 Acknowledged)   ← 12-2023 Pessimistic"
+     ],
+     [
+      "497",
+      "- Low: 3 (3 Fixed)"
+     ],
+     [
+      "498",
+      "- Notes: 3 (3 Acknowledged)      ← 0+2+3+3 = 8，Notes 计入"
+     ],
+     [
+      "—",
+      ""
+     ],
+     [
+      "255",
+      "- Total Issues: 9 (4 Risk accepted, 5 Acknowledged)   ← 08-2022 ChainSecurity"
+     ],
+     [
+      "260",
+      "- Low Issues: 9 (4 Risk accepted, 5 Acknowledged)"
+     ],
+     [
+      "261",
+      "- Notes: 2 (Highlights)          ← 9+2 ≠ 9，Notes 不计入"
+     ]
+    ],
+    "hl": "494",
+    "note": "同一个字段名，两条目两种计数口径"
+   },
+   "verify": "sed -n '494,498p' src/audits-README.md 与 sed -n '252,261p' src/audits-README.md"
+  }
+ ],
+ "gaps": [
+  {
+   "q": "LDO 的代币解锁 / 归属时间表？",
+   "a": "The provided evidence does not include the LDO token unlock schedule or vesting terms.",
+   "why": "官方文档里根本没有这份时间表"
+  },
+  {
+   "q": "LDO 的总供应量是多少？",
+   "a": "The provided evidence does not specify a numeric total supply for LDO tokens.",
+   "why": "5% 的法定人数引用了一个文档从不给出的数字"
+  },
+  {
+   "q": "31 条审计没有 issue 数字？",
+   "a": "31 / 161 entries carry no Total Issues line.",
+   "why": "总量只能对 130 条比较"
+  },
+  {
+   "q": "标为 Acknowledged 的问题后来修了吗？",
+   "a": "The index has no field for whether a later audit resolved an earlier finding.",
+   "why": "98 条含 Acknowledged，但没有跟进字段"
+  }
+ ]
+}
