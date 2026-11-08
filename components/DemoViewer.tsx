@@ -3,10 +3,11 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
-import type { Demo, DemoClaim, DemoGap } from '@/lib/demos';
+import type { Demo } from '@/lib/demos';
+import { pickText } from '@/lib/demos-l10n';
 
 export default function DemoViewer({ corpus }: { corpus: Demo }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<'claims' | 'gaps'>('claims');
   const [activeDoc, setActiveDoc] = useState<string | null>(null);
   const [activeClaimId, setActiveClaimId] = useState(corpus.claims[0]?.id ?? '');
@@ -37,8 +38,8 @@ export default function DemoViewer({ corpus }: { corpus: Demo }) {
       <header className="demo-viewer__header">
         <div>
           <p className="brutal-kicker"><Link className="demo-viewer__back" href="/demo">{t('demo.back')}</Link> / {corpus.snapshot}</p>
-          <h1 className="demo-viewer__title">{corpus.title}</h1>
-          <p className="brutal-text">{corpus.subtitle}</p>
+          <h1 className="demo-viewer__title">{pickText(corpus.title, locale)}</h1>
+          <p className="brutal-text">{pickText(corpus.subtitle, locale)}</p>
         </div>
         <nav className="demo-tabs" aria-label={t('demo.sections')}>
           <button type="button" className="demo-tabs__button" aria-pressed={activeTab === 'claims'} onClick={() => setActiveTab('claims')}>
@@ -77,7 +78,7 @@ export default function DemoViewer({ corpus }: { corpus: Demo }) {
               {visibleClaims.map((claim) => (
                 <button key={claim.id} type="button" className="demo-claim" aria-pressed={activeClaim?.id === claim.id} onClick={() => setActiveClaimId(claim.id)}>
                   <span className="demo-claim__id">{claim.id}</span>
-                  <strong>{claim.title}</strong>
+                  <strong>{pickText(claim.title, locale)}</strong>
                   <span className="demo-claim__quote">{claim.claim}</span>
                   <span className="demo-claim__anchor">{claim.section} · {claim.anchor}</span>
                 </button>
@@ -86,9 +87,9 @@ export default function DemoViewer({ corpus }: { corpus: Demo }) {
           ) : (
             <div className="demo-middle__list">
               {corpus.gaps.map((gap, index) => (
-                <button key={`${gap.q}-${index}`} type="button" className="demo-gap" aria-pressed={activeGapIndex === index} onClick={() => setActiveGapIndex(index)}>
+                <button key={index} type="button" className="demo-gap" aria-pressed={activeGapIndex === index} onClick={() => setActiveGapIndex(index)}>
                   <span className="demo-claim__id">{String(index + 1).padStart(2, '0')}</span>
-                  <strong>{gap.q}</strong>
+                  <strong>{pickText(gap.q, locale)}</strong>
                 </button>
               ))}
             </div>
@@ -132,9 +133,9 @@ export default function DemoViewer({ corpus }: { corpus: Demo }) {
           ) : activeGap ? (
             <>
               <p className="demo-column__heading">{t('demo.gapDetail')}</p>
-              <h2 className="demo-gap-detail__question">{activeGap.q}</h2>
+              <h2 className="demo-gap-detail__question">{pickText(activeGap.q, locale)}</h2>
               <p className="demo-gap-detail__answer">{activeGap.a}</p>
-              <p className="demo-gap-detail__why">{activeGap.why}</p>
+              <p className="demo-gap-detail__why">{pickText(activeGap.why, locale)}</p>
             </>
           ) : <p className="demo-empty">{t('demo.noGaps')}</p>}
         </aside>

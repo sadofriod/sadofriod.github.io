@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import type { LocalizedText } from './demos-l10n';
+
+export type { LocalizedText } from './demos-l10n';
+export { pickText } from './demos-l10n';
 
 export const DEMO_IDS = ['ldo', 'audits'] as const;
 export type DemoId = (typeof DEMO_IDS)[number];
@@ -15,7 +19,7 @@ export type DemoDoc = {
 export type DemoClaim = {
   doc: string;
   id: string;
-  title: string;
+  title: LocalizedText;
   claim: string;
   section: string;
   anchor: string;
@@ -27,12 +31,12 @@ export type DemoClaim = {
   after?: string;
 };
 
-export type DemoGap = { q: string; a: string; why: string };
+export type DemoGap = { q: LocalizedText; a: string; why: LocalizedText };
 
 export type Demo = {
   id: DemoId;
-  title: string;
-  subtitle: string;
+  title: LocalizedText;
+  subtitle: LocalizedText;
   kind: 'browse';
   sources: { label: string; url: string }[];
   snapshot: string;
@@ -51,11 +55,24 @@ function requireString(value: unknown, field: string, file: string): asserts val
   }
 }
 
+function requireLocalizedText(value: unknown, field: string, file: string): asserts value is LocalizedText {
+  if (!isRecord(value) || typeof value.en !== 'string' || value.en.length === 0) {
+    throw new Error(`${file}: missing or invalid required field "${field}.en"`);
+  }
+  for (const locale of ['zh', 'ja', 'ko', 'es'] as const) {
+    if (value[locale] !== undefined && typeof value[locale] !== 'string') {
+      throw new Error(`${file}: missing or invalid required field "${field}.${locale}"`);
+    }
+  }
+}
+
 function validateDemo(value: unknown, id: DemoId, file: string): Demo {
   if (!isRecord(value)) throw new Error(`${file}: expected a JSON object`);
-  for (const field of ['id', 'title', 'subtitle', 'kind', 'snapshot']) {
+  for (const field of ['id', 'kind', 'snapshot']) {
     requireString(value[field], field, file);
   }
+  requireLocalizedText(value.title, 'title', file);
+  requireLocalizedText(value.subtitle, 'subtitle', file);
   if (value.id !== id) throw new Error(`${file}: field "id" must be "${id}"`);
   if (value.kind !== 'browse') throw new Error(`${file}: field "kind" must be "browse"`);
 
@@ -78,9 +95,10 @@ function validateDemo(value: unknown, id: DemoId, file: string): Demo {
   (value.claims as unknown[]).forEach((claim, index) => {
     const prefix = `claims[${index}]`;
     if (!isRecord(claim)) throw new Error(`${file}: ${prefix} must be an object`);
-    for (const field of ['doc', 'id', 'title', 'claim', 'section', 'anchor', 'verify']) {
+    for (const field of ['doc', 'id', 'claim', 'section', 'anchor', 'verify']) {
       requireString(claim[field], `${prefix}.${field}`, file);
     }
+    requireLocalizedText(claim.title, `${prefix}.title`, file);
     if (claim.before !== undefined) requireString(claim.before, `${prefix}.before`, file);
     if (claim.after !== undefined) requireString(claim.after, `${prefix}.after`, file);
     if (!isRecord(claim.ev)) throw new Error(`${file}: missing or invalid required field "${prefix}.ev"`);
@@ -110,7 +128,10 @@ function validateDemo(value: unknown, id: DemoId, file: string): Demo {
 
   (value.gaps as unknown[]).forEach((gap, index) => {
     if (!isRecord(gap)) throw new Error(`${file}: gaps[${index}] must be an object`);
-    for (const field of ['q', 'a', 'why']) requireString(gap[field], `gaps[${index}].${field}`, file);
+    const prefix = `gaps[${index}]`;
+    requireLocalizedText(gap.q, `${prefix}.q`, file);
+    requireString(gap.a, `${prefix}.a`, file);
+    requireLocalizedText(gap.why, `${prefix}.why`, file);
   });
 
   const docIds = new Set((value.docs as DemoDoc[]).map((doc) => doc.id));

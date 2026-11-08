@@ -1,7 +1,13 @@
 {
  "id": "audits",
- "title": "Smart-contract audits — Lido (real corpus)",
- "subtitle": "161 public smart-contract audits: coverage, unfixed findings, and where the index contradicts itself.",
+ "title": {
+  "en": "Smart-contract audits — Lido (real corpus)",
+  "zh": "智能合约审计 — Lido（真实语料）"
+ },
+ "subtitle": {
+  "en": "161 public smart-contract audits: coverage, unfixed findings, and where the index contradicts itself.",
+  "zh": "161 份公开审计报告：覆盖情况、未修复项，以及索引自相矛盾之处。"
+ },
  "kind": "browse",
  "sources": [
   {
@@ -15,7 +21,7 @@
    "id": "d1",
    "name": "lidofinance/audits",
    "kind": "repo",
-   "meta": "审计索引 README · 80,541 B · 1,881 行",
+   "meta": "audit index README · 80,541 B · 1,881 lines",
    "url": "https://github.com/lidofinance/audits"
   }
  ],
@@ -23,9 +29,12 @@
   {
    "doc": "d1",
    "id": "W1",
-   "title": "审计条目：161 份（2020-12 → 2026-10）",
+   "title": {
+    "en": "Audit entries: 161 (2020-12 → 2026-10)",
+    "zh": "审计条目：161 份（2020-12 → 2026-10）"
+   },
    "claim": "161 audit entries",
-   "section": "README 全文标题行",
+   "section": "headings across the file",
    "anchor": "L3–L1881",
    "verify": "grep -c '^### ' README.md",
    "ev": {
@@ -55,11 +64,14 @@
   {
    "doc": "d1",
    "id": "W2",
-   "title": "130 / 161 有 issue 数字，31 份没有",
+   "title": {
+    "en": "130 of 161 carry issue counts; 31 do not",
+    "zh": "130 / 161 有 issue 数字，31 份没有"
+   },
    "claim": "31 entries carry no Total Issues line",
-   "section": "逐条扫描",
+   "section": "per-entry scan",
    "anchor": "audit-coverage.json",
-   "verify": "python3 - <<'EOF'（按 '### ' 分块，统计含 'Total Issues' 的块数）",
+   "verify": "count blocks containing 'Total Issues' (see audit-coverage.json)",
    "ev": {
     "type": "code",
     "hl": "5",
@@ -87,10 +99,13 @@
   {
    "doc": "d1",
    "id": "W3",
-   "title": "98 份记录了「Acknowledged」（接受风险、未修复）",
+   "title": {
+    "en": "98 entries record 'Acknowledged' (accepted, not fixed)",
+    "zh": "98 份记录了「Acknowledged」（接受风险、未修复）"
+   },
    "claim": "98 entries record a concrete number of Acknowledged findings",
-   "section": "逐条扫描",
-   "anchor": "全文件",
+   "section": "per-entry scan",
+   "anchor": "whole file",
    "verify": "grep -cE '[0-9]+ Acknowledged' README.md",
    "ev": {
     "type": "code",
@@ -115,7 +130,10 @@
   {
    "doc": "d1",
    "id": "W4",
-   "title": "矛盾 ①：总数 5，分类加起来 7",
+   "title": {
+    "en": "Contradiction 1: total 5, buckets sum to 7",
+    "zh": "矛盾 ①：总数 5，分类加起来 7"
+   },
    "claim": "Total Issues: 5 (3 Fixed, 2 Acknowledged)",
    "section": "01-2022 MixBytes bETH Vault Security Audit Report",
    "anchor": "L172–L176",
@@ -151,7 +169,10 @@
   {
    "doc": "d1",
    "id": "W5",
-   "title": "矛盾 ②：总数 7，分类加起来 6",
+   "title": {
+    "en": "Contradiction 2: total 7, buckets sum to 6",
+    "zh": "矛盾 ②：总数 7，分类加起来 6"
+   },
    "claim": "Total Issues: 7 (6 Fixed, 1 Acknowledged)",
    "section": "02-2025 Trail of Bits Chainlink CSR Security Review",
    "anchor": "L1636–L1640",
@@ -187,11 +208,14 @@
   {
    "doc": "d1",
    "id": "W6",
-   "title": "矛盾 ③：「Notes」算不算进总数，两份报告口径相反",
+   "title": {
+    "en": "Contradiction 3: 'Notes' counted or not, two rules",
+    "zh": "矛盾 ③：「Notes」算不算进总数，两份报告口径相反"
+   },
    "claim": "Notes: 3 (3 Acknowledged)",
    "section": "12-2023 Pessimistic vs 08-2022 ChainSecurity",
    "anchor": "L494 vs L255",
-   "verify": "sed -n '494,498p;252,261p' README.md",
+   "verify": "sed -n '494,498p' README.md and sed -n '252,261p' README.md",
    "ev": {
     "type": "code",
     "hl": "494",
@@ -223,19 +247,37 @@
  ],
  "gaps": [
   {
-   "q": "这些标为 Acknowledged 的问题，后来修了吗？",
+   "q": {
+    "en": "Were those 'Acknowledged' findings ever fixed?",
+    "zh": "这些标为 Acknowledged 的问题，后来修了吗？"
+   },
    "a": "The index has no field for whether a later audit resolved an earlier finding.",
-   "why": "98 份含 Acknowledged，但没有跟进字段；要回答必须逐份读 PDF"
+   "why": {
+    "en": "98 entries carry them; the index has no follow-up field.",
+    "zh": "98 份含 Acknowledged，但没有跟进字段；要回答必须逐份读 PDF"
+   }
   },
   {
-   "q": "31 份报告共发现多少个问题？",
+   "q": {
+    "en": "How many findings do the 31 uncounted reports contain?",
+    "zh": "31 份报告共发现多少个问题？"
+   },
    "a": "31 of 161 entries carry no Total Issues line.",
-   "why": "无法做全量总量；只能对 130 份比较"
+   "why": {
+    "en": "Totals are comparable for 130 entries only.",
+    "zh": "无法做全量总量；只能对 130 份比较"
+   }
   },
   {
-   "q": "每份报告的正文写了什么？",
-   "a": "本语料只索引 README 的索引行，未索引 161 份 PDF 正文。",
-   "why": "覆盖边界：这里的每条结论都指向 README 行号，不指向 PDF 页码"
+   "q": {
+    "en": "What does each report body actually say?",
+    "zh": "每份报告的正文写了什么？"
+   },
+   "a": "This corpus indexes the README index only; the 161 audit PDFs are not indexed.",
+   "why": {
+    "en": "This corpus indexes the README only — every claim points at a README line, not a PDF page.",
+    "zh": "覆盖边界：这里的每条结论都指向 README 行号，不指向 PDF 页码"
+   }
   }
  ]
 }

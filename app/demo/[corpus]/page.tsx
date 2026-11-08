@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import DemoViewer from '@/components/DemoViewer';
-import { DEMO_IDS, getDemo } from '@/lib/demos';
+import { DEMO_IDS, getDemo, pickText } from '@/lib/demos';
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 
@@ -20,8 +20,8 @@ export async function generateMetadata({
   const demo = getDemo(corpus);
   if (!demo) notFound();
   return {
-    title: demo.title,
-    description: demo.subtitle,
+    title: pickText(demo.title, 'en'),
+    description: pickText(demo.subtitle, 'en'),
     alternates: { canonical: `${SITE}/demo/${corpus}` },
   };
 }

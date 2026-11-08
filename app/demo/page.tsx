@@ -1,17 +1,37 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { isValidElement, type ReactNode } from 'react';
 import T from '@/components/T';
+import L10n from '@/components/L10n';
 import graphMeta from '@/data/retraction-graph-meta.json';
-import { getAllDemos } from '@/lib/demos';
+import { getAllDemos, type LocalizedText } from '@/lib/demos';
 
 export const metadata: Metadata = {
   title: 'Evidence demos',
   description: 'Browse evidence-backed conclusions, source excerpts, and research gaps across real corpora.',
 };
 
+type DemoCard = {
+  href: string;
+  title: LocalizedText | ReactNode;
+  subtitle: LocalizedText | ReactNode;
+  count: number;
+  countLabel: string;
+  extra?: string;
+  color: string;
+  live: boolean;
+};
+
+function renderCardText(value: LocalizedText | ReactNode, as: 'h2' | 'p', className: string) {
+  if (typeof value === 'object' && value !== null && !isValidElement(value) && 'en' in value) {
+    return <L10n v={value as LocalizedText} as={as} className={className} />;
+  }
+  return as === 'h2' ? <h2 className={className}>{value}</h2> : <p className={className}>{value}</p>;
+}
+
 export default function DemoIndexPage() {
   const demos = getAllDemos();
-  const cards = [
+  const cards: DemoCard[] = [
     ...demos.map((demo) => ({
       href: `/demo/${demo.id}`,
       title: demo.title,
@@ -44,8 +64,8 @@ export default function DemoIndexPage() {
       <div className="demo-index__grid">
         {cards.map((card) => (
           <article className={`brutal-card demo-card ${card.color}`} key={card.href}>
-            <h2 className="demo-card__title">{card.title}</h2>
-            <p className="demo-card__subtitle">{card.subtitle}</p>
+            {renderCardText(card.title, 'h2', 'demo-card__title')}
+            {renderCardText(card.subtitle, 'p', 'demo-card__subtitle')}
             <p className="demo-card__stat">
               <strong>{card.count}</strong>{' '}
               <T k={card.countLabel} />
