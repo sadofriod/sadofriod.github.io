@@ -1,8 +1,8 @@
 {
  "id": "ldo",
  "title": {
-  "en": "LDO / Lido DAO",
-  "zh": "LDO / Lido DAO"
+  "en": "Lido DAO: who can vote, and what can stop a vote",
+  "zh": "Lido DAO：谁能投票，什么能拦下投票"
  },
  "subtitle": {
   "en": "Lido runs liquid staking for Ethereum. Here are its voting rules, and 161 published audits that were never reconciled with each other.",

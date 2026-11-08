@@ -1,8 +1,8 @@
 {
  "id": "audits",
  "title": {
-  "en": "Smart-contract audits — Lido (real corpus)",
-  "zh": "智能合约审计 — Lido（真实语料）"
+  "en": "161 smart-contract audits of Lido",
+  "zh": "Lido 的 161 份智能合约审计"
  },
  "subtitle": {
   "en": "All 161 smart-contract audits Lido has published since 2020, indexed. Three of them contradict their own numbers.",
