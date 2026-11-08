@@ -9,6 +9,7 @@
 - How do you pay for a deterministic judgment per call? x402 v2 in USDC on Base — $0.02 and $0.10 per call, no API key and no account. https://blog.ashesborn.cloud/blog/x402-integration-http-and-mcp
 
 ## Articles
+- [What a sourced brief looks like: three findings from the IEA Energy and AI report](https://blog.ashesborn.cloud/blog/iea-energy-ai-sourced-brief) — A complete, reproducible sourced-intelligence brief: three verifiable findings from the IEA Energy and AI report, each with its source paragraph and chunk id,
 - [Annual report PDFs to a graph with page-anchored claims](https://blog.ashesborn.cloud/blog/annual-report-anchored-claims) — Three 2025 annual reports through graphrag-ts: block parsing, claim extraction, Leiden communities, hybrid retrieval, and 29 facts verified at their page.
 - [How to check if a paper is retracted (measured on 20 DOIs)](https://blog.ashesborn.cloud/blog/free-doi-retraction-check) — How a retraction verdict is derived from three sources with tiers, how abstention works, and what 20 DOIs measured: median 1,595 ms, 16 retracted, 2 unknown.
 - [x402 Integration over HTTP and MCP: Paying for a Deterministic Judgment](https://blog.ashesborn.cloud/blog/x402-integration-http-and-mcp) — x402 v2 on a paid HTTP/MCP endpoint: PAYMENT-REQUIRED fields, PAYMENT-SIGNATURE with viem, EIP-3009 nonce, PAYMENT-RESPONSE, and four measured error paths.
