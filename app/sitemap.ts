@@ -47,7 +47,7 @@ export default async function sitemap() {
 
   // Static routes carry no lastModified: `new Date()` stamped every page with the build date on
   // each deploy, which tells crawlers every page changed when none did.
-  const routes = ['', '/blog', '/about', '/photography', '/podcast', '/friends', '/datasets', '/datasets/retraction-integrity', '/benchmark'].map((route) => ({
+  const routes = ['', '/blog', '/about', '/photography', '/podcast', '/friends', '/datasets', '/datasets/retraction-integrity', '/benchmark', '/demo', '/demo/ldo', '/demo/audits'].map((route) => ({
     url: `${baseUrl}${route}`,
   }))
 
