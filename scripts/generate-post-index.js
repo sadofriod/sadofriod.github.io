@@ -10,6 +10,9 @@ const redirectsPath = path.join(generatedDirectory, 'slug-redirects.json');
 const translationsPath = path.join(generatedDirectory, 'post-translations.json');
 const redirects = {};
 const translations = {};
+const preservedLegacySlugs = new Map();
+const hashedSlugs = new Map();
+const legacySlugs = new Map();
 
 const posts = fs.readdirSync(postsDirectory)
   .filter((fileName) => /\.(md|mdx)$/.test(fileName))
@@ -32,6 +35,9 @@ const posts = fs.readdirSync(postsDirectory)
     const slug = preserveChineseSlug
       ? legacySlug.length > 180 || legacySlug.includes('%') ? hashedSlug : legacySlug
       : !/[a-z0-9]/.test(clean) ? hashedSlug : clean;
+    preservedLegacySlugs.set(fileName, preserveChineseSlug && slug === legacySlug);
+    hashedSlugs.set(fileName, hashedSlug);
+    legacySlugs.set(fileName, legacySlug);
 
     if (slug !== legacySlug) {
       redirects[`/blog/${legacySlug.replace(/ /g, '%20')}`] = `/blog/${slug}`;
@@ -57,6 +63,26 @@ const posts = fs.readdirSync(postsDirectory)
       content,
     };
   });
+
+const caseInsensitiveSlugGroups = new Map();
+for (const post of posts) {
+  const key = post.slug.toLowerCase();
+  if (!caseInsensitiveSlugGroups.has(key)) caseInsensitiveSlugGroups.set(key, []);
+  caseInsensitiveSlugGroups.get(key).push(post);
+}
+
+for (const group of caseInsensitiveSlugGroups.values()) {
+  if (group.length < 2) continue;
+
+  for (const post of group) {
+    if (!preservedLegacySlugs.get(post.file)) continue;
+
+    const legacySlug = legacySlugs.get(post.file);
+    post.slug = hashedSlugs.get(post.file);
+    post.legacySlug = legacySlug;
+    redirects[`/blog/${legacySlug.replace(/ /g, '%20')}`] = `/blog/${post.slug}`;
+  }
+}
 
 // Group posts that are the same article in different languages. One listing entry
   // per group, and the language switcher can jump straight to the sibling.

@@ -43,6 +43,16 @@ export default {
     const podcastResponse = await handlePodcastRequest(request, env, ctx);
     if (podcastResponse) return podcastResponse;
 
-    return env.ASSETS.fetch(request);
+    const response = await env.ASSETS.fetch(request);
+    if (url.pathname.endsWith('.md') && response.status === 200) {
+      const headers = new Headers(response.headers);
+      headers.set('content-type', 'text/markdown; charset=utf-8');
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+    return response;
   },
 };

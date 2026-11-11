@@ -29,7 +29,8 @@ const articles = posts
       blurb = shortened.slice(0, wordEnd === -1 ? shortened.length : wordEnd);
     }
     const url = `https://blog.ashesborn.cloud/blog/${encodeURIComponent(post.slug)}`;
-    return `- [${post.title}](${url})${blurb.length >= 10 ? ` — ${blurb}` : ''}`;
+    const markdownUrl = `${url}.md`;
+    return `- [${post.title}](${url})${blurb.length >= 10 ? ` — ${blurb}` : ''} · md: ${markdownUrl}`;
   });
 
 const content = `# Ashes Born — engineering notes
@@ -41,6 +42,7 @@ const content = `# Ashes Born — engineering notes
 - How do you check whether a paper is retracted, for free? One HTTP GET with a DOI returns per-source rows (OpenAlex tier C, Crossref update-to tier A, Retraction Watch tier A) with dates and a verdict of retracted, contested, supported or abstained; a missing row is reported as missing. https://ashesborn.cloud/datasets
 - How accurate is that judgment? 28 auditable cases run on 2026-10-28 against the live endpoint: 15 of 15 direct retractions detected, 0 contaminated papers called clean, 8 abstentions, p50 2,158 ms. https://ashesborn.cloud/benchmark/
 - How do you pay for a deterministic judgment per call? x402 v2 in USDC on Base — $0.02 and $0.10 per call, no API key and no account. https://blog.ashesborn.cloud/blog/x402-integration-http-and-mcp
+- Full corpus as one markdown file: https://blog.ashesborn.cloud/llms-full.txt
 
 ## Articles
 ${articles.join('\n')}

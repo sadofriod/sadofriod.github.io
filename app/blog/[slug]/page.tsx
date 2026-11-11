@@ -60,6 +60,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     keywords: metadata.keywords,
     alternates: {
       canonical: `${site}/blog/${slug}`,
+      types: { 'text/markdown': `${site}/blog/${slug}.md` },
       ...(languages ? { languages } : {}),
     },
     openGraph: {

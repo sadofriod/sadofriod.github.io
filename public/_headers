@@ -5,3 +5,7 @@
 # it to a media type; declare it explicitly. /rss.xml inherits application/xml from its extension.
 /rss
   Content-Type: application/rss+xml; charset=utf-8
+
+/blog/*.md
+  content-type: text/markdown; charset=utf-8
+  x-robots-tag: noindex
