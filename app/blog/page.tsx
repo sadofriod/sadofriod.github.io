@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import PostList from "@/components/PostList";
 import T from "@/components/T";
 import { getAllPostIds } from "@/lib/posts";
+
+export const metadata: Metadata = {
+  alternates: { canonical: 'https://blog.ashesborn.cloud/blog' },
+  openGraph: { url: 'https://blog.ashesborn.cloud/blog' },
+};
 
 export default function Blog() {
   return (

@@ -1,6 +1,6 @@
 ---
 layout: interestring
-title: Storing KVM Virtual Machine Disks on a NAS (Proxmox / libvirt)
+title: KVM VM disks on a NAS (Proxmox / libvirt)
 date: 2022-04-27 19:52:50
 keywords: 'KVM NAS, VM storage, Proxmox NAS, qcow2, NFS VM, kvm migration storage, proxmox nas storage'
 tags: interestring

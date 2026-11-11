@@ -20,6 +20,7 @@ import { profile } from '../../../data/profile';
 import { slugToFilename } from '../../../lib/utils';
 import T from '../../../components/T';
 import LocalizedDate from '@/components/LocalizedDate';
+import ArticleMoreLinks from '@/components/ArticleMoreLinks';
 
 interface PageProps {
   params: Promise<{
@@ -27,12 +28,21 @@ interface PageProps {
   }>;
 }
 
+const clampDescription = (value: string, limit = 155) => {
+  const text = value.replace(/\s+/g, ' ').trim();
+  if (text.length <= limit) return text;
+  const cut = text.slice(0, limit - 3);
+  const atSpace = cut.lastIndexOf(' ');
+  return `${(atSpace > 100 ? cut.slice(0, atSpace) : cut).replace(/[\s,;:.\-]+$/, '')}…`;
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
   const { metadata } = getPostBySlug(decodedSlug);
 
   const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://blog.ashesborn.cloud';
+  const description = clampDescription(metadata.description || metadata.excerpt || metadata.title);
   const alternates = metadata.alternates ?? {};
   const languages =
     Object.keys(alternates).length > 1
@@ -46,7 +56,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: metadata.title,
-    description: metadata.description || metadata.excerpt || metadata.title,
+    description,
     keywords: metadata.keywords,
     alternates: {
       canonical: `${site}/blog/${slug}`,
@@ -54,7 +64,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     openGraph: {
       title: metadata.title,
-      description: metadata.description || metadata.excerpt || metadata.title,
+      description,
       url: `${site}/blog/${slug}`,
       type: 'article',
       publishedTime: metadata.date,
@@ -64,7 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     twitter: {
       card: 'summary_large_image',
       title: metadata.title,
-      description: metadata.description || metadata.excerpt || metadata.title,
+      description,
     },
     robots: metadata.isHidden
       ? { index: false, follow: true }
@@ -119,25 +129,6 @@ export default async function BlogPost({ params }: PageProps) {
   // profile.fullStory.file is a file name with extension; route slugs are not.
   const isFullStory =
     slugToFilename(decodedSlug) === profile.fullStory.file.replace(/\.(md|mdx)$/, '');
-  const relatedPosts = getAllPostIds()
-    .filter(
-      (post) =>
-        !post.isHidden &&
-        post.slug !== slug &&
-        (!metadata.translationKey || post.translationKey !== metadata.translationKey)
-    )
-    .map((post) => {
-      const postTags = new Set(Array.isArray(post.tags) ? post.tags : post.tags ? [post.tags] : []);
-      const currentTags = Array.isArray(metadata.tags) ? metadata.tags : metadata.tags ? [metadata.tags] : [];
-      const sharedTags = currentTags.filter((tag) => postTags.has(tag)).length;
-      const sameCategory = metadata.category && post.category === metadata.category ? 1 : 0;
-      const sameDate = metadata.date === post.date ? 1 : 0;
-      return { post, score: sharedTags * 4 + sameCategory * 2 + sameDate };
-    })
-    .sort((a, b) => b.score - a.score || b.post.date.localeCompare(a.post.date) || a.post.slug.localeCompare(b.post.slug))
-    .slice(0, 3)
-    .map(({ post }) => post);
-
   return (
     <main className="article-shell">
       <article className="article">
@@ -232,7 +223,7 @@ export default async function BlogPost({ params }: PageProps) {
               },
               pre: ({ children }) => <pre>{children}</pre>,
               // Headings carry the ids the TOC links to.
-              h1: (props: any) => <ArticleHeading as="h1" {...props} />,
+              h1: (props: any) => <ArticleHeading as="h2" {...props} />,
               h2: (props: any) => <ArticleHeading as="h2" {...props} />,
               h3: (props: any) => <ArticleHeading as="h3" {...props} />,
               h4: (props: any) => <ArticleHeading as="h4" {...props} />,
@@ -245,22 +236,7 @@ export default async function BlogPost({ params }: PageProps) {
         </div>
 
         <ProfileCallout variant="bottom" />
-        <section className="brutal-card" style={{ marginTop: 28 }} aria-labelledby="related-posts-title">
-          <h2 id="related-posts-title" className="brutal-title">
-            {metadata.lang === 'zh' ? '相关文章' : 'Related posts'}
-          </h2>
-          <div className="post-list">
-            {relatedPosts.map((post) => (
-              <Link key={post.slug} className="post-card" href={`/blog/${post.slug}`}>
-                <div className="post-card__meta">
-                  <LocalizedDate iso={post.date} />
-                  {post.category ? <span>{post.category}</span> : null}
-                </div>
-                <h3 className="post-card__title">{post.title}</h3>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <ArticleMoreLinks current={{ ...metadata, slug }} />
       </article>
 
       <aside className="article-toc">

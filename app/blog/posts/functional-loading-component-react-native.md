@@ -1,5 +1,5 @@
 ---
-title: Controlling the Loading Component Functionally in React Native
+title: A functional loading component in React Native
 tags: project
 p: project
 categories: project

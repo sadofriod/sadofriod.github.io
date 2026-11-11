@@ -1,5 +1,5 @@
 ---
-title: GraphRAG PostgreSQL + TypeScript Implementation Design
+title: 'GraphRAG on PostgreSQL + TypeScript: design'
 tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, PostgreSQL, TypeScript]
 p: graphrag
 categories: AI

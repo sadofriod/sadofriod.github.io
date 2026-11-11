@@ -1,5 +1,5 @@
 ---
-title: 'Problems I have run into as an engineer: a running list'
+title: 'Problems I have hit as an engineer: a list'
 tags: interesting
 p: interesting
 categories: interesting

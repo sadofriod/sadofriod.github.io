@@ -1,5 +1,5 @@
 ---
-title: 'Running only the E2E tests your commit actually affects'
+title: 'Run only the E2E tests your commit affects'
 date: '2022-08-08 19:51:42'
 excerpt: 'How we cut CI time by selecting E2E specs from the git diff: base-commit detection, AST-free path matching, and streaming the run in real time.'
 description: 'An incremental E2E runner for large frontends: pick the base commit from the branch, diff it against HEAD, keep the specs the change can touch, and stream the Cypress output so CI does not time out.'

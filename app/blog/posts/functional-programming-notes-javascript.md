@@ -1,5 +1,5 @@
 ---
-title: Some Experience with Functional Programming in JS Development
+title: 'Functional programming in JS: notes from work'
 tags: project
 p: project
 categories: project

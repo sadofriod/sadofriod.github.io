@@ -1,5 +1,5 @@
 ---
-title: GraphRAG Multi-Document Input Processing Architecture and Directory Structure
+title: 'GraphRAG multi-document input: architecture'
 tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, Architecture, Indexing Pipeline]
 p: graphrag
 categories: AI

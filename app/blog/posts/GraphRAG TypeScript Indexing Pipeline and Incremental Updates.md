@@ -1,5 +1,5 @@
 ---
-title: GraphRAG TypeScript Indexing Pipeline and Incremental Updates
+title: GraphRAG indexing pipeline in TypeScript
 tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, TypeScript, Indexing, Incremental Build]
 p: graphrag
 categories: AI

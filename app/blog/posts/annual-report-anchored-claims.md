@@ -1,5 +1,5 @@
 ---
-title: 'Annual report PDFs to a graph with page-anchored claims'
+title: 'PDF to knowledge graph, with page anchors'
 date: '2026-11-01'
 excerpt: 'A worked graphrag-ts case: PDF blocks keep their page and bbox, entities and claims land in PostgreSQL, retrieval walks the graph, and every fact in the finished brief either hits the PDF text layer or fails the build. The three sample reports are public.'
 description: 'Three 2025 annual reports through graphrag-ts: block parsing, claim extraction, Leiden communities, hybrid retrieval, and 29 facts verified at their page.'

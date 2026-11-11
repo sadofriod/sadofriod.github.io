@@ -1,5 +1,5 @@
 ---
-title: Local hot reload for a React project inside a monorepo
+title: Local hot reload in a monorepo
 tags: project
 p: project
 categories: project

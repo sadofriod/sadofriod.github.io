@@ -1,5 +1,5 @@
 ---
-title: 'Four years of remote work after leaving big tech: I think I am not built for remote'
+title: 'Four years of remote work: not built for it'
 date: '2026-10-19'
 excerpt: 'Four years of remote work, two layoffs, and a personal retrospective on career choices, remote collaboration and how I want to work.'
 description: 'After leaving big tech I worked remotely for four years across a US-listed company and a Web3 team. Between unemployment and re-employment, this is a re-examination of what kind of work and professional contact I actually need.'

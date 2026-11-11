@@ -1,5 +1,5 @@
 ---
-title: Recording web pages to video at a specified time through a server
+title: Recording web pages to video on a schedule
 tags: project
 p: project
 categories: project

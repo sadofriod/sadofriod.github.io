@@ -1,5 +1,5 @@
 ---
-title: 'GraphRAG Incremental Build in TypeScript: Diffing, Updates, and Pruning'
+title: GraphRAG incremental build in TypeScript
 tags: [GraphRAG, Graph RAG, AI, TypeScript, Incremental Build, Indexing]
 p: graphrag
 categories: AI

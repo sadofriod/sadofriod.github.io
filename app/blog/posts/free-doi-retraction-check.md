@@ -1,5 +1,5 @@
 ---
-title: 'How to check if a paper is retracted (measured on 20 DOIs)'
+title: 'How to check if a paper is retracted (20 DOIs)'
 date: '2026-10-28'
 excerpt: 'A retraction lookup built on a citation graph: three source assertions per paper, two tiers, four possible verdicts, and the numbers from twenty DOIs run against the endpoint. Includes why an empty status list is a different answer from "not retracted".'
 description: 'How a retraction verdict is derived from three sources with tiers, how abstention works, and what 20 DOIs measured: median 1,595 ms, 16 retracted, 2 unknown.'
