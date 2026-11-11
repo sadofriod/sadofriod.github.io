@@ -1,4 +1,4 @@
-import { getBlogPosts } from "./blog/utils"
+import { getAllPostIds } from "../lib/posts"
 
 export const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud'
 
@@ -18,11 +18,11 @@ const isoDate = (value: unknown): string | undefined => {
 }
 
 export default async function sitemap() {
-  const blogs = getBlogPosts()
+  const blogs = getAllPostIds()
     // one URL per article: the canonical (English) copy, with hreflang links
-    .filter((post) => post.metadata.isPrimary !== false)
+    .filter((post) => !post.isHidden && post.isPrimary !== false)
     .map((post) => {
-      const alternates = post.metadata.alternates ?? {};
+      const alternates = post.alternates ?? {};
       const languages: Record<string, string> = Object.fromEntries(
         Object.entries(alternates).map(([lang, slug]) => [
           lang === 'zh' ? 'zh-CN' : lang,
@@ -31,12 +31,12 @@ export default async function sitemap() {
       );
 
       // A hreflang pair is only valid when each page also lists itself.
-      const selfLang = post.metadata.lang === 'zh' ? 'zh-CN' : (post.metadata.lang ?? 'en');
+      const selfLang = post.lang === 'zh' ? 'zh-CN' : (post.lang ?? 'en');
       if (Object.keys(languages).length > 0 && !languages[selfLang]) {
         languages[selfLang] = postUrl(post.slug);
       }
 
-      const lastModified = isoDate(post.metadata.date);
+      const lastModified = isoDate(post.date);
 
       return {
         url: postUrl(post.slug),

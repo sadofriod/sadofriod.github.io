@@ -13,7 +13,7 @@ translationKey: graphrag-map-reduce-explained
 
 # GraphRAG Global Search Map-Reduce
 
-> Based on *From Local to Global: A GraphRAG Approach to Query-Focused Summarization*, with a focus on §§3.1.5–3.1.6. See the [original paper](./2404.16130v2.pdf) and [Chinese translation](./2404.16130v2_zh.md).
+> Based on *From Local to Global: A GraphRAG Approach to Query-Focused Summarization*, with a focus on §§3.1.5–3.1.6. See the [original paper](https://arxiv.org/abs/2404.16130).
 
 ## 1. In a Nutshell
 

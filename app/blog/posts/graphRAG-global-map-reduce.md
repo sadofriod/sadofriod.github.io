@@ -16,8 +16,7 @@ translationKey: graphrag-map-reduce-explained
 
 > 根据论文《From Local to Global: A GraphRAG Approach to Query-Focused
 > Summarization》整理，重点对应 §3.1.5–§3.1.6。论文原文见
-> [2404.16130v2.pdf](./2404.16130v2.pdf)，中文稿见
-> [2404.16130v2_zh.md](./2404.16130v2_zh.md)。
+> [论文原文](https://arxiv.org/abs/2404.16130)。
 
 ## 1. 一句话概括
 

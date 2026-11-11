@@ -11,7 +11,6 @@ lang: en
 translationKey: 绘制平滑的三次贝塞尔曲线
 ---
 
-<img src="/images/ezgif.com-gif-maker.gif"/>
 
 
 ## Prerequisites
