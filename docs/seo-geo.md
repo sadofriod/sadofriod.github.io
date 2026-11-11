@@ -137,3 +137,24 @@ What answer engines need, and where it now comes from:
 
 **2026-11-25**：重跑 45 URL 的 URL Inspection，比较收录数（基线 3）与 `last_crawled` 分布；同时看
 Bing Webmaster 是否因为 IndexNow 先行抓取。
+
+---
+
+## 7. 2026-11-11 GEO：markdown 孪生、llms-full.txt、alternate 链接
+
+| 交付 | 实现 | 线上实测 |
+| --- | --- | --- |
+| 每篇文章的 markdown | `scripts/generate-markdown-exports.mjs`，挂在 `build` 里、`next build` 之后，把源文件原样写进 `out/blog/<slug>.md` | 64 篇 → 64 个文件；`text/markdown; charset=utf-8`，6,773 B 的样例 |
+| 整站语料 | `out/llms-full.txt`，按日期倒序，每篇一节，首行是 canonical HTML URL | 249,062 B，`text/plain` |
+| 发现路径 | 文章页 `<link rel="alternate" type="text/markdown">`；`llms.txt` 每行追加 `· md: <url>.md`，头部加 `Full corpus as one markdown file` | 链接实测存在；`md:` 32 行（英文主版本）|
+| 防重复索引 | `worker.js` 对 `.md` 强制 `text/markdown`；`public/_headers` 同时加 `x-robots-tag: noindex` | 响应头两条都在；隐藏文章 `/blog/tennis-api-documentation.md` 返回 404 |
+
+**顺手修掉的一个隐患**：`GraphRAG Global Map-Reduce.md`（英文）改 slug 后变成
+`graphrag-global-map-reduce`，和中文那篇保留的 `graphRAG-global-map-reduce` 只差大小写。在
+大小写不敏感的文件系统上两个 md 互相覆盖（64 篇只落 63 个文件），在 CDN 缓存与部分爬虫里也是
+同一个键。生成器现在做一遍大小写分组：组内发生冲突时，保留 legacy slug 的那篇（`lang: zh`）
+改用 `article-<hash>`，旧路径进 `slug-redirects.json`。实测 `/blog/graphRAG-global-map-reduce`
+308 → `/blog/article-179ae567888d`，64 篇 64 个文件。
+
+**为什么不给中文文章也做可读 slug**：`Chinese-anymouns`（简历页）是 28 天内浏览量最高的页面
+（554 PV），改 URL 的收益不足以抵消风险；其余中文文章维持 `article-<hash>`，稳定优先。
