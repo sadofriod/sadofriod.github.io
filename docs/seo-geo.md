@@ -92,3 +92,48 @@ What answer engines need, and where it now comes from:
 - No internal link from old posts to the new ones yet — the Related sections only point at the company
   site and the repo.
 - Chinese titles are optimised on autocomplete only; Google Trends for zh-CN is too thin to measure.
+
+---
+
+## 6. 2026-11-11 收录诊断与修复
+
+### 6.1 基线（Search Console，2026-10-15 → 11-12）
+
+`https://blog.ashesborn.cloud/`：**0 点击 / 17 展示 / 平均排名 1.1**。45 个 sitemap URL 逐个 URL Inspection：
+
+| 状态 | 数量 |
+| --- | ---: |
+| Submitted and indexed | 3（`/`、`/blog/hello-world`、`/blog/TENNIS_API_DOCUMENTATION`）|
+| Discovered - currently not indexed | 30 |
+| URL is unknown to Google | 12 |
+| Crawled - currently not indexed | 1（`/blog` 本身，2026-07-24 抓取）|
+
+除这 3 个以外，所有 URL 的 `last_crawled` 都是 Never。首页 `/` 已收录而 `/blog` 列表页没有收录，说明
+问题不在单个文章质量，而在抓取需求与内部链接结构。
+
+### 6.2 本轮改动
+
+| 问题 | 修复 | 验证 |
+| --- | --- | --- |
+| 9 篇英文文章 URL 带 `%20` 和大写（`/blog/GraphRAG%20Global%20Map-Reduce…`）| `scripts/generate-post-index.js` 改为 ASCII kebab-case，旧路径写进 `slug-redirects.json` | 旧的 `%20` URL 实测 308 → 新 URL 200；`sitemap.xml` 44 条、`%20` 计数 0 |
+| 中文文章 URL 必须保持稳定 | 生成器对 `lang: zh` 保留原 slug 与 `article-<hash>` 目标 | 25 条 `article-` 重定向目标与改动前一致；`/blog/Chinese-anymouns` 不变 |
+| 65 篇文章互相之间几乎没有内链 | `components/ArticleMoreLinks.tsx`：同语言 prev/next + 3 篇按 tag 相关 | 65/65 个生成的 HTML 都有 `aria-label="More articles"` |
+| 文章正文自带 `#` 标题 → 页面出现 2–5 个 `<h1>` | markdown 渲染器把 `h1` 映射成 `h2` | 全部 65 篇 `<h1>` 计数 = 1 |
+| title 超出 SERP 预算（布局追加 `— Ashes Born` 13 字）| 19 篇文章 + 4 个路由页的 title 重写为 ≤ 60 渲染长度 | 82 个导出页全部 ≤ 62 |
+| description 200–405 字（frontmatter 原样输出）| `generateMetadata` 增加 `clampDescription`，按词边界截到 155 + `…` | 解码后全部 ≤ 155 |
+| `/blog`、`/demo` 没有 canonical 和 og:url | 补 `alternates.canonical` | 线上实测两条 canonical 正确 |
+| 遗留的 `TENNIS_API_DOCUMENTATION` 属于站外内容却占了一个收录位 | frontmatter `isHidden: true`（noindex + 出 sitemap + 隐藏列表）| sitemap 44 条不含该 URL |
+| 一篇中文文章 frontmatter title 里带 `'# '` | 去掉标题前缀 | 渲染 title 无 `#` |
+| Bing/Yandex 从未被通知 | `public/3a57fd31ed0aa0c9f58319951e012aa2.txt` + 44 个 URL 提交 | `api.indexnow.org` 返回 202 |
+
+### 6.3 还没做
+
+- **GSC sitemap 重新提交被拒**：service account 只有 `webmasters.readonly`，提交接口返回 403。
+- **GA4 接入**：`mcp-ga4` 容器里的 property id 是占位值，且 service account 无属性权限，两端都要处理。
+- 文章正文里的站内链接（Related 段现在由组件生成，正文里的手工链接仍是历史状态）。
+- 中文文章的 slug 仍是 `article-<hash>`（保持稳定优先），可读性可以下一轮单独评估。
+
+### 6.4 复查
+
+**2026-11-25**：重跑 45 URL 的 URL Inspection，比较收录数（基线 3）与 `last_crawled` 分布；同时看
+Bing Webmaster 是否因为 IndexNow 先行抓取。
