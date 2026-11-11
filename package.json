@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node scripts/generate-post-index.js && next dev",
-    "build": "node scripts/generate-post-index.js && node scripts/generate-llms-txt.mjs && next build && node scripts/copy-feed.mjs && node scripts/check-seo-artifacts.mjs",
+    "build": "node scripts/generate-post-index.js && node scripts/generate-llms-txt.mjs && next build && node scripts/generate-markdown-exports.mjs && node scripts/copy-feed.mjs && node scripts/check-seo-artifacts.mjs",
+    "md": "node scripts/generate-post-index.js && node scripts/generate-markdown-exports.mjs",
     "llms": "node scripts/generate-post-index.js && node scripts/generate-llms-txt.mjs",
     "preview": "pnpm run build && wrangler dev",
     "deploy": "pnpm run build && wrangler deploy",
