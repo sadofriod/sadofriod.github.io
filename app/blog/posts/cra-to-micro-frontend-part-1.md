@@ -1,5 +1,5 @@
 ---
-title: 'Migrating a CRA App to a Micro Frontend (Part 1): Architecture and Setup'
+title: 'Migrating a CRA app to a micro frontend (part 1)'
 tags: project
 p: project
 categories: project

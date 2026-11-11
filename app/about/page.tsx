@@ -9,7 +9,7 @@ import { getPostByFile } from '@/lib/posts';
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 
 export const metadata: Metadata = {
-  title: profile.seo.aboutTitle,
+  title: 'About: a Hong Kong engineering firm',
   description: profile.seo.aboutDescription,
   alternates: {
     canonical: `${SITE}/about`,

@@ -1,5 +1,5 @@
 ---
-title: 'x402 Integration over HTTP and MCP: Paying for a Deterministic Judgment'
+title: 'x402 over HTTP and MCP: paying per judgment'
 date: '2026-10-28'
 excerpt: 'The wire format of the paid judgment endpoint: what the 402 challenge contains, how the EIP-3009 authorization is built and signed, what the settlement receipt looks like, and the four error paths measured against the live service.'
 description: 'x402 v2 on a paid HTTP/MCP endpoint: PAYMENT-REQUIRED fields, PAYMENT-SIGNATURE with viem, EIP-3009 nonce, PAYMENT-RESPONSE, and four measured error paths.'

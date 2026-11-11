@@ -1,5 +1,5 @@
 ---
-title: 'Frontend and Agent Engineer Resume | TypeScript, React, GraphRAG'
+title: 'Frontend and agent engineer resume'
 date: '2026-10-19'
 excerpt: 'Frontend engineer with experience at JD, Compass, and Yellow, specializing in TypeScript, React, micro-frontends, low-code platforms, and GraphRAG / AI agent development.'
 description: 'Resume for a frontend and AI agent engineer featuring experience building JD low-code platforms, optimizing Compass micro-frontends and Salesforce rule engines, developing a Yellow Web3 trading platform, and creating a TypeScript GraphRAG project.'

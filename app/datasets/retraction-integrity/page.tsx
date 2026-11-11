@@ -11,9 +11,9 @@ import meta from '@/data/retraction-graph-meta.json';
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 
 export const metadata: Metadata = {
-  title: 'Inside the retraction integrity graph: schema, sources and a live citation neighbourhood',
+  title: 'Inside the retraction integrity graph',
   description:
-    'Field-by-field schema of the CC0 retraction and citation graph: papers, citation edges and per-source retraction assertions with tiers. Includes 20 DOIs measured against the free lookup and an interactive rendering of 12 retracted papers and their 781 citing works.',
+    'Inside the graph: schema, 98,868 papers, 144,814 citation edges, 572 retraction assertions, and a live citation neighbourhood you can inspect.',
   keywords:
     'retraction integrity graph schema, citation network visualization, Retraction Watch data, Crossref update-to, OpenAlex retraction, research integrity dataset, 撤稿 数据 图谱',
   alternates: { canonical: `${SITE}/datasets/retraction-integrity` },

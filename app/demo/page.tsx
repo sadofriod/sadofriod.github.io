@@ -9,6 +9,8 @@ import { getAllDemos, type LocalizedText } from '@/lib/demos';
 export const metadata: Metadata = {
   title: 'Evidence demos',
   description: 'Browse evidence-backed conclusions, source excerpts, and research gaps across real corpora.',
+  alternates: { canonical: 'https://blog.ashesborn.cloud/demo' },
+  openGraph: { url: 'https://blog.ashesborn.cloud/demo' },
 };
 
 type DemoCard = {

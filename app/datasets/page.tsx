@@ -8,18 +8,18 @@ import JudgeLookup from '@/components/JudgeLookup';
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 
 export const metadata: Metadata = {
-  title: 'Datasets: retraction integrity and citation graphs you can query',
+  title: 'Retraction and citation datasets you can query',
   description:
-    'Three queryable datasets from Ashes Born: a CC0 citation and retraction graph (98,868 papers, 144,814 citation edges, 572 retraction status rows), a deterministic retraction-propagation judgment, and a synthetic smart-contract security corpus. Free status lookup, per-call pricing, schema and licenses.',
+    'Free DOI lookup: OpenAlex and Retraction Watch rows plus a Crossref notice where one exists, with source tiers, four verdicts, 98,868 papers.',
   keywords:
     'retraction dataset, citation graph dataset, CC0 dataset, retraction watch API, paper integrity dataset, GraphRAG dataset, DOI retraction check, research integrity data',
   alternates: { canonical: `${SITE}/datasets` },
   openGraph: {
     type: 'website',
     url: `${SITE}/datasets`,
-    title: 'Datasets: retraction integrity and citation graphs you can query',
+    title: 'Retraction and citation datasets you can query',
     description:
-      'A CC0 retraction and citation graph with a free per-DOI lookup, a deterministic propagation judgment, and the schema behind both.',
+      'Free DOI lookup: OpenAlex and Retraction Watch rows plus a Crossref notice where one exists, with source tiers, four verdicts, 98,868 papers.',
   },
 };
 

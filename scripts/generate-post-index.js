@@ -23,9 +23,15 @@ const posts = fs.readdirSync(postsDirectory)
       .replace(/%5B/g, '[')
       .replace(/%5D/g, ']')
       .replace(/%20/g, ' ');
-    const slug = legacySlug.length > 180 || legacySlug.includes('%')
-      ? `article-${createHash('sha256').update(name).digest('hex').slice(0, 12)}`
-      : legacySlug;
+    const clean = name.normalize('NFKD').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    const hashedSlug = `article-${createHash('sha256').update(name).digest('hex').slice(0, 12)}`;
+    const preserveChineseSlug = data.lang === 'zh';
+    const slug = preserveChineseSlug
+      ? legacySlug.length > 180 || legacySlug.includes('%') ? hashedSlug : legacySlug
+      : !/[a-z0-9]/.test(clean) ? hashedSlug : clean;
 
     if (slug !== legacySlug) {
       redirects[`/blog/${legacySlug.replace(/ /g, '%20')}`] = `/blog/${slug}`;

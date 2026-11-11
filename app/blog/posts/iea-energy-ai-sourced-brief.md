@@ -1,5 +1,5 @@
 ---
-title: 'What a sourced brief looks like: three findings from the IEA Energy and AI report'
+title: 'Three findings from the IEA Energy and AI report'
 date: '2026-11-06'
 excerpt: 'I fed the IEA Energy and AI executive summary into graphrag-ts and asked three investor-style questions. Every claim came back with the paragraph it came from — and one question came back as "cannot confirm". Both halves are in here.'
 description: 'A complete, reproducible sourced-intelligence brief: three verifiable findings from the IEA Energy and AI report, each with its source paragraph and chunk id, plus the one query the system refused to answer and why.'

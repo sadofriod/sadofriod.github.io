@@ -9,9 +9,9 @@ const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
 const ENDPOINT = 'https://pay.ashesborn.cloud/api/v1/judge/paper';
 
 export const metadata: Metadata = {
-  title: 'Benchmark: free DOI retraction lookup across 20 DOIs, measured',
+  title: 'Retraction lookup benchmark: 28 audited cases',
   description:
-    'A reproducible benchmark of the free retraction lookup: 20 DOIs (16 retracted, 3 controls, 1 unknown), 20/20 HTTP 200, median 1,595 ms, 16/16 retractions confirmed by three sources, one documented abstention. Method, raw numbers and the shell loop that reproduces it.',
+    '28 audited cases against the live endpoint: 15 of 15 direct retractions caught, 0 contaminated papers called clean, 8 abstentions, p50 2,158 ms.',
   keywords:
     'retraction lookup benchmark, DOI retraction check API, research integrity API latency, retraction watch api free, Crossref retraction check, benchmark GraphRAG judgment',
   alternates: { canonical: `${SITE}/benchmark` },

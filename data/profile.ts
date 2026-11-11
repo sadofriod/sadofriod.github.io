@@ -137,10 +137,10 @@ export const profile = {
 
   seo: {
     homeDescription:
-      'Engineering notes and live samples: annual-report claims that link to the exact page (29/29 page hits), a free DOI retraction check, and an MCP trial. Evidence Briefs at ashesborn.cloud.',
+      'Engineering notes with every claim traceable: annual-report facts that link to their page (29/29 hits), a free DOI retraction check, and an MCP trial.',
     aboutTitle: 'About Ashes Born — Independent engineer building GraphRAG systems',
     aboutDescription:
-      "What I'm building now: evidence-anchored retrieval over filings and papers. Every claim links to its source page. Samples, free DOI check, and Evidence Briefs at ashesborn.cloud.",
+      'Independent engineer in Hong Kong building evidence-anchored retrieval: GraphRAG in TypeScript, a CC0 retraction graph, and annual-report briefs.',
   },
 };
 

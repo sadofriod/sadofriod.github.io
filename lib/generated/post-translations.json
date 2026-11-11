@@ -7,77 +7,77 @@
     "zh": "Chinese-anymouns",
     "en": "frontend-agent-engineer-resume"
   },
-  "GraphRAG Global Map-Reduce Query Implementation": {
-    "en": "GraphRAG Global Map-Reduce Query Implementation",
+  "graphrag-global-map-reduce-query-implementation": {
+    "en": "graphrag-global-map-reduce-query-implementation",
     "zh": "article-9b49bb9ddfb1"
   },
   "article-9b49bb9ddfb1": {
-    "en": "GraphRAG Global Map-Reduce Query Implementation",
+    "en": "graphrag-global-map-reduce-query-implementation",
     "zh": "article-9b49bb9ddfb1"
   },
-  "GraphRAG Global Map-Reduce": {
-    "en": "GraphRAG Global Map-Reduce",
+  "graphrag-global-map-reduce": {
+    "en": "graphrag-global-map-reduce",
     "zh": "graphRAG-global-map-reduce"
   },
   "graphRAG-global-map-reduce": {
-    "en": "GraphRAG Global Map-Reduce",
+    "en": "graphrag-global-map-reduce",
     "zh": "graphRAG-global-map-reduce"
   },
-  "GraphRAG Hybrid Retrieval and Evidence Grounding in TypeScript": {
-    "en": "GraphRAG Hybrid Retrieval and Evidence Grounding in TypeScript",
+  "graphrag-hybrid-retrieval-and-evidence-grounding-in-typescript": {
+    "en": "graphrag-hybrid-retrieval-and-evidence-grounding-in-typescript",
     "zh": "article-76802ec68da0"
   },
   "article-76802ec68da0": {
-    "en": "GraphRAG Hybrid Retrieval and Evidence Grounding in TypeScript",
+    "en": "graphrag-hybrid-retrieval-and-evidence-grounding-in-typescript",
     "zh": "article-76802ec68da0"
   },
-  "GraphRAG Incremental Build in TypeScript - Diffing, Updates, and Pruning": {
-    "en": "GraphRAG Incremental Build in TypeScript - Diffing, Updates, and Pruning",
+  "graphrag-incremental-build-in-typescript-diffing-updates-and-pruning": {
+    "en": "graphrag-incremental-build-in-typescript-diffing-updates-and-pruning",
     "zh": "article-e98105d779d1"
   },
   "article-e98105d779d1": {
-    "en": "GraphRAG Incremental Build in TypeScript - Diffing, Updates, and Pruning",
+    "en": "graphrag-incremental-build-in-typescript-diffing-updates-and-pruning",
     "zh": "article-e98105d779d1"
   },
-  "GraphRAG Multi-Document Input Processing Architecture and Directory Structure": {
-    "en": "GraphRAG Multi-Document Input Processing Architecture and Directory Structure",
+  "graphrag-multi-document-input-processing-architecture-and-directory-structure": {
+    "en": "graphrag-multi-document-input-processing-architecture-and-directory-structure",
     "zh": "article-e4838ee1a11b"
   },
   "article-e4838ee1a11b": {
-    "en": "GraphRAG Multi-Document Input Processing Architecture and Directory Structure",
+    "en": "graphrag-multi-document-input-processing-architecture-and-directory-structure",
     "zh": "article-e4838ee1a11b"
   },
-  "GraphRAG PostgreSQL + TypeScript Implementation Design": {
-    "en": "GraphRAG PostgreSQL + TypeScript Implementation Design",
+  "graphrag-postgresql-typescript-implementation-design": {
+    "en": "graphrag-postgresql-typescript-implementation-design",
     "zh": "article-a01d31c64ddf"
   },
   "article-a01d31c64ddf": {
-    "en": "GraphRAG PostgreSQL + TypeScript Implementation Design",
+    "en": "graphrag-postgresql-typescript-implementation-design",
     "zh": "article-a01d31c64ddf"
   },
-  "GraphRAG Retrieval Implementation Guide": {
-    "en": "GraphRAG Retrieval Implementation Guide",
+  "graphrag-retrieval-implementation-guide": {
+    "en": "graphrag-retrieval-implementation-guide",
     "zh": "article-41f472d98d25"
   },
   "article-41f472d98d25": {
-    "en": "GraphRAG Retrieval Implementation Guide",
+    "en": "graphrag-retrieval-implementation-guide",
     "zh": "article-41f472d98d25"
   },
-  "GraphRAG TypeScript Indexing Pipeline and Incremental Updates": {
-    "en": "GraphRAG TypeScript Indexing Pipeline and Incremental Updates",
+  "graphrag-typescript-indexing-pipeline-and-incremental-updates": {
+    "en": "graphrag-typescript-indexing-pipeline-and-incremental-updates",
     "zh": "article-48439fbce06b"
   },
   "article-48439fbce06b": {
-    "en": "GraphRAG TypeScript Indexing Pipeline and Incremental Updates",
+    "en": "graphrag-typescript-indexing-pipeline-and-incremental-updates",
     "zh": "article-48439fbce06b"
   },
   "article-54cbe60d6dab": {
     "zh": "article-54cbe60d6dab",
-    "en": "Understanding the Community Concept in GraphRAG"
+    "en": "understanding-the-community-concept-in-graphrag"
   },
-  "Understanding the Community Concept in GraphRAG": {
+  "understanding-the-community-concept-in-graphrag": {
     "zh": "article-54cbe60d6dab",
-    "en": "Understanding the Community Concept in GraphRAG"
+    "en": "understanding-the-community-concept-in-graphrag"
   },
   "article-bc1604ae625f": {
     "zh": "article-bc1604ae625f",
@@ -95,16 +95,16 @@
     "zh": "article-f9bf9fe4bad4",
     "en": "hexo-toc-and-rss"
   },
-  "High-performance-grouped-list-design": {
-    "en": "High-performance-grouped-list-design",
+  "high-performance-grouped-list-design": {
+    "en": "high-performance-grouped-list-design",
     "zh": "article-98c363ab5709"
   },
   "article-828552d834ad": {
-    "en": "High-performance-grouped-list-design",
+    "en": "high-performance-grouped-list-design",
     "zh": "article-98c363ab5709"
   },
   "article-98c363ab5709": {
-    "en": "High-performance-grouped-list-design",
+    "en": "high-performance-grouped-list-design",
     "zh": "article-98c363ab5709"
   },
   "article-79c8d18db942": {
@@ -123,12 +123,12 @@
     "zh": "article-e6ce6fb51da4",
     "en": "reality-on-aws-behind-cloudflare"
   },
-  "Recording-web-pages-to-video-at-a-specified-time-through-a-server": {
-    "en": "Recording-web-pages-to-video-at-a-specified-time-through-a-server",
+  "recording-web-pages-to-video-at-a-specified-time-through-a-server": {
+    "en": "recording-web-pages-to-video-at-a-specified-time-through-a-server",
     "zh": "article-b93b7a7b30a1"
   },
   "article-b93b7a7b30a1": {
-    "en": "Recording-web-pages-to-video-at-a-specified-time-through-a-server",
+    "en": "recording-web-pages-to-video-at-a-specified-time-through-a-server",
     "zh": "article-b93b7a7b30a1"
   },
   "annual-report-anchored-claims-zh": {

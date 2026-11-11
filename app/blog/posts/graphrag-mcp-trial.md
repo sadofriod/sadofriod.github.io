@@ -1,5 +1,5 @@
 ---
-title: 'GraphRAG MCP server trial: one sourced answer, then access'
+title: 'GraphRAG MCP server trial: one sourced answer'
 date: '2026-10-23'
 excerpt: 'A TypeScript + PostgreSQL GraphRAG MCP for agents. Read a cross-document answer with its source excerpts, then apply for a small hosted trial — no database or model service of your own.'
 description: 'A hosted graphrag-ts MCP trial: one cross-document answer with source excerpts, how to apply, what the trial includes, and what it does not.'

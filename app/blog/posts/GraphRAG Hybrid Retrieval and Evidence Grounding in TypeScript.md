@@ -1,5 +1,5 @@
 ---
-title: GraphRAG Hybrid Retrieval and Evidence Grounding in TypeScript
+title: GraphRAG hybrid retrieval in TypeScript
 tags: [GraphRAG, Graph RAG, AI, Knowledge Graph, Hybrid Retrieval, RRF, TypeScript]
 p: graphrag
 categories: AI
