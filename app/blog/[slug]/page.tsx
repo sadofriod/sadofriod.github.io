@@ -21,6 +21,7 @@ import { slugToFilename } from '../../../lib/utils';
 import T from '../../../components/T';
 import LocalizedDate from '@/components/LocalizedDate';
 import ArticleMoreLinks from '@/components/ArticleMoreLinks';
+import SubscribeBox from '@/components/SubscribeBox';
 
 interface PageProps {
   params: Promise<{
@@ -237,6 +238,7 @@ export default async function BlogPost({ params }: PageProps) {
         </div>
 
         <ProfileCallout variant="bottom" />
+        <SubscribeBox />
         <ArticleMoreLinks current={{ ...metadata, slug }} />
       </article>
 

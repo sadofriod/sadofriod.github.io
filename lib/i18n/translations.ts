@@ -111,6 +111,34 @@ export const translations: Record<string, Partial<Record<Locale, string>>> = {
     ko: '더 읽기',
     es: 'Leer más'
   },
+  'subscribe.kicker': {
+    en: 'EVIDENCE BRIEF',
+    zh: '证据简报',
+    ja: 'エビデンス・ブリーフ',
+    ko: '증거 브리프',
+    es: 'EVIDENCE BRIEF'
+  },
+  'subscribe.title': {
+    en: 'Three quotes from one filing, each with the page it came from.',
+    zh: '一份文件的三个引用，每条都带页码。',
+    ja: '1 つの資料からの引用 3 点、それぞれページ付き。',
+    ko: '문서 하나에서 인용 3개, 각각 페이지 번호 포함.',
+    es: 'Tres citas de un documento, cada una con su página.'
+  },
+  'subscribe.note': {
+    en: 'I send it when I have run a new document, not on a schedule. No interpretation: every line is a quote you can open on the page it came from.',
+    zh: '有新文件跑完才发，不定时。不写判断：每一行都是你能点回原页的原文引用。',
+    ja: '新しい資料を処理したときにだけ送ります（定期配信ではありません）。解釈は書きません。各行は元ページを開いて確認できる引用です。',
+    ko: '새 문서를 처리했을 때만 보냅니다(정기 발송 아님). 해석은 쓰지 않습니다. 모든 줄은 원문 페이지에서 확인할 수 있는 인용입니다.',
+    es: 'Lo envío cuando he procesado un documento nuevo, no con periodicidad. Sin interpretación: cada línea es una cita que puedes abrir en su página.'
+  },
+  'subscribe.cta': {
+    en: 'Get the next issue',
+    zh: '订阅下一期',
+    ja: '次号を受け取る',
+    ko: '다음 호 받기',
+    es: 'Recibir el próximo número'
+  },
   'common.dateFormat': {
     en: 'MMMM d, yyyy',
     zh: 'yyyy年MM月dd日',
