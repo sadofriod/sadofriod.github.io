@@ -158,3 +158,27 @@ Bing Webmaster 是否因为 IndexNow 先行抓取。
 
 **为什么不给中文文章也做可读 slug**：`Chinese-anymouns`（简历页）是 28 天内浏览量最高的页面
 （554 PV），改 URL 的收益不足以抵消风险；其余中文文章维持 `article-<hash>`，稳定优先。
+
+## 8. 2026-11-15 复查：44 条 sitemap URL 里 2 条收录；中文页从未当过 `<loc>`
+
+实测（GSC `batch_url_inspection` + GA4，2026-11-15）：
+
+- 44 条 sitemap URL：**2 条收录**（`/`、`/blog/hello-world`）、25 条 `Discovered`、16 条 `unknown`、
+  1 条 `/blog` 是 `Crawled - currently not indexed`（抓取日期还是改版前的 2026-07-24）。
+  `last_crawled` 为 `Never` 的有 41/44。
+- **`app/sitemap.ts` 每篇文章只输出一个 `<loc>`（英文主版本）**，中文版只作为 `xhtml:link` alternate。
+  磁盘上 66 个文章页 = 32 个 `<loc>` + 32 个可索引中文页 + 2 个 `noindex`（`tennis-api-documentation`、
+  `article-a23b7b64f971`）。中文页在正文页里有内链（post-badge、related），但**从不作为 `<loc>` 出现**。
+- 代价最明显的一例：`/blog/Chinese-anymouns` 是 GA4 28 天内流量最高的落地页（367 sessions，来自 v2ex），
+  GSC 判 `URL is unknown to Google`。
+- GA4 现在可用：28 天 928 sessions（Referral 636 / Direct 282 / Organic Social 7 / Organic Search 0）。
+  搜索带来的会话是 0，说明问题不在内容，而在发现与抓取。
+- 中文页才是历史展示的来源：90 天 page 维度里 `hexo-seo-%E4%BC%98%E5%8C%96` 13 次、
+  `增量运行E2E测试` 13 次（均已 308 到 `article-<hash>` 中文页）。
+
+**已修（2026-11-15）**：`app/sitemap.ts` 现在把每种语言版本各自写成 `<loc>`（`<loc>` 从 44 条变成 76 条：
+12 静态路由 + 32 英文 + 32 中文，两个 `noindex` 页仍被 `isHidden` 过滤）。门禁
+`scripts/check-seo-artifacts.mjs` 新增两条：URL 数必须 ≥ 70，且 sitemap 里每一个 `xhtml:link` 的
+alternate `href` 必须同时是 `<loc>`（缺一个就红）。新增 `scripts/submit-indexnow.mjs`（`--dry-run`
+可查），部署工作流在 `Deploy Worker` 之后自动 POST `api.indexnow.org`，失败只告警不影响部署。
+实测：`pnpm build` 通过 `seo-check` 门禁，`out/sitemap.xml` 76 条 loc、126 条 alternate 全部命中 loc。
