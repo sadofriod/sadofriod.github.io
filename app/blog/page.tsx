@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import PostList from "@/components/PostList";
+import SubscribeBox from '@/components/SubscribeBox';
 import T from "@/components/T";
 import { getAllPostIds } from "@/lib/posts";
 
@@ -18,6 +19,7 @@ export default function Blog() {
       </header>
 
       <PostList posts={getAllPostIds()} />
+      <SubscribeBox source="blog-index" />
     </main>
   );
 }
