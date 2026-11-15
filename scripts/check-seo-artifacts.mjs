@@ -27,8 +27,13 @@ const sitemap = read('out/sitemap.xml')
 if (sitemap) {
   const locs = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1])
   check(count(sitemap, '<url>') === count(sitemap, '</url>'), 'sitemap: unbalanced <url> tags')
-  check(locs.length >= 10, `sitemap: only ${locs.length} URLs`)
+  check(locs.length >= 70, `sitemap: only ${locs.length} URLs`)
   check(locs.length === count(sitemap, '<url>'), 'sitemap: <loc> count != <url> count')
+  const locSet = new Set(locs)
+  const alternates = [...sitemap.matchAll(/<xhtml:link\b[^>]*\brel="alternate"[^>]*\bhref="([^"]+)"[^>]*\/?\s*>/g)]
+  for (const [, href] of alternates) {
+    if (!locSet.has(href)) problems.push('sitemap: alternate not a <loc>: ' + href)
+  }
   for (const loc of locs) {
     if (!(loc === SITE || loc.startsWith(`${SITE}/`))) problems.push(`sitemap: loc outside the site: ${loc}`)
     if (/\s/.test(loc)) problems.push(`sitemap: unencoded whitespace in loc: ${loc}`)

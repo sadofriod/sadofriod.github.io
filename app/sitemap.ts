@@ -19,8 +19,8 @@ const isoDate = (value: unknown): string | undefined => {
 
 export default async function sitemap() {
   const blogs = getAllPostIds()
-    // one URL per article: the canonical (English) copy, with hreflang links
-    .filter((post) => !post.isHidden && post.isPrimary !== false)
+    // Include each indexable language version as its own URL, with hreflang links.
+    .filter((post) => !post.isHidden)
     .map((post) => {
       const alternates = post.alternates ?? {};
       const languages: Record<string, string> = Object.fromEntries(
