@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     Object.keys(alternates).length > 1
       ? Object.fromEntries(
           Object.entries(alternates).map(([lang, siblingSlug]) => [
-            lang === 'zh' ? 'zh-CN' : lang,
+            lang === 'zh' ? 'zh-Hans' : lang,
             `${site}/blog/${encodeURI(siblingSlug)}`,
           ])
         )

@@ -1095,6 +1095,12 @@ html body {
   transition: transform 0.14s ease, box-shadow 0.14s ease;
 }
 
+.post-card__body {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
 .post-card:hover {
   transform: translate(-2px, -2px);
   box-shadow: var(--brutal-shadow-hover);
@@ -1119,10 +1125,31 @@ html body {
   letter-spacing: -0.01em;
 }
 
-.post-card:hover .post-card__title {
+.post-card__body:hover .post-card__title {
   text-decoration: underline;
   text-decoration-thickness: 3px;
   text-underline-offset: 4px;
+}
+
+.post-card__langs {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ink);
+  font-family: var(--brutal-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+.post-card__lang-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.post-card__lang-link:hover {
+  text-decoration-thickness: 2px;
 }
 
 .post-card__desc {

@@ -68,7 +68,7 @@ export function BlogPostJsonLd({
     },
     ...(keywords !== undefined ? { keywords } : {}),
     ...(section !== undefined ? { articleSection: section } : {}),
-    inLanguage: lang === 'zh' ? 'zh-CN' : 'en',
+    inLanguage: lang === 'zh' ? 'zh-Hans' : 'en',
     description,
   };
 

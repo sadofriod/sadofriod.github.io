@@ -25,13 +25,13 @@ export default async function sitemap() {
       const alternates = post.alternates ?? {};
       const languages: Record<string, string> = Object.fromEntries(
         Object.entries(alternates).map(([lang, slug]) => [
-          lang === 'zh' ? 'zh-CN' : lang,
+          lang === 'zh' ? 'zh-Hans' : lang,
           postUrl(slug),
         ])
       );
 
       // A hreflang pair is only valid when each page also lists itself.
-      const selfLang = post.lang === 'zh' ? 'zh-CN' : (post.lang ?? 'en');
+      const selfLang = post.lang === 'zh' ? 'zh-Hans' : (post.lang ?? 'en');
       if (Object.keys(languages).length > 0 && !languages[selfLang]) {
         languages[selfLang] = postUrl(post.slug);
       }

@@ -36,13 +36,20 @@ export default function PostList({ posts }: PostListProps) {
 
     // Order of preference: the visitor's language, then English, then whatever
     // the group has (zh-only posts stay visible for ja/ko/es readers).
-    return Array.from(groups.values()).map(
-      (group) =>
+    // Merge every member's alternates so all language versions get in-site links.
+    return Array.from(groups.values()).map((group) => {
+      const chosen =
         group.find((post) => post.lang === locale) ??
         group.find((post) => post.lang === 'en') ??
         group.find((post) => post.isPrimary) ??
-        group[0]
-    );
+        group[0];
+      const alternates: Record<string, string> = {};
+      for (const member of group) {
+        if (member.alternates) Object.assign(alternates, member.alternates);
+        else if (member.lang) alternates[member.lang] = member.slug;
+      }
+      return { ...chosen, alternates };
+    });
   }, [posts, locale]);
 
   // Map locale to date-fns locale
