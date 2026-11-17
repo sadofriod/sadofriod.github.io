@@ -15,8 +15,9 @@
  code{background:#f8fafc;padding:.1rem .3rem;border-radius:4px;font-size:.85em}
  .note{font-size:.85rem;color:#6b7280;margin-top:1.5rem}
  h2{font-size:1.05rem;margin:1.5rem 0 .4rem}
- .status{font-size:.9rem;margin:0 0 1.5rem}
- .testnet{margin:0 0 1.5rem;font-size:.9rem}
+  .status{font-size:.9rem;margin:0 0 1.5rem}
+  .testnet{margin:0 0 1.5rem;font-size:.9rem}
+  .muted{display:block;color:#6b7280;font-size:.8rem}
 </style>
 </head>
 <body>
@@ -43,6 +44,11 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
     ? new Intl.NumberFormat(undefined).format(value)
     : '—';
   const amount = (value) => (typeof value === 'number' && Number.isFinite(value)) || (typeof value === 'string' && /^\d+(\.\d+)?$/.test(value)) ? String(value) : '—';
+  const dateOnly = (value) => {
+    if (typeof value !== 'string') return '—';
+    const date = new Date(value);
+    return Number.isFinite(date.getTime()) ? date.toISOString().slice(0, 10) : '—';
+  };
   const section = (title) => {
     const heading = document.createElement('h2');
     heading.textContent = title;
@@ -53,7 +59,8 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
     card.className = 'card';
     const n = document.createElement('span');
     n.className = 'n';
-    n.textContent = `${format(value)}${suffix}`;
+    const formatted = format(value);
+    n.textContent = formatted === '—' ? '—' : `${formatted}${suffix}`;
     const l = document.createElement('span');
     l.className = 'l';
     l.textContent = label;
@@ -82,17 +89,77 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
       grid.className = 'grid';
       addStat(grid, 'papers indexed', data.corpus ? data.corpus.papers : null);
       addStat(grid, 'citation edges', data.corpus ? data.corpus.citation_edges : null);
+      addStat(grid, 'graph entities', data.corpus && data.corpus.graph ? data.corpus.graph.entities : null);
+      addStat(grid, 'graph relationships', data.corpus && data.corpus.graph ? data.corpus.graph.relationships : null);
       addStat(grid, 'mainnet settlements', data.payments.mainnet.settlements);
       addStat(grid, 'mainnet volume', data.payments.mainnet.volume_usdc, ' USDC', amount);
       addStat(grid, `public-tier calls (${number(data.public_calls.window_days)}d)`, data.public_calls.calls);
       addStat(grid, 'p95 latency', data.public_calls.p95_latency_ms, ' ms');
+      addStat(grid, 'SKUs with revenue', Array.isArray(data.payments.by_dataset)
+        ? data.payments.by_dataset.filter((item) => Number(item.mainnet && item.mainnet.settlements || 0) + Number(item.testnet && item.testnet.settlements || 0) > 0).length
+        : null);
+      addStat(grid, 'rejected payments (30d)', data.payments.rejected ? data.payments.rejected.attempts : null);
       figures.append(grid);
+
+      if (Array.isArray(data.payments.by_dataset)) {
+        const revenueHeading = section('Revenue by SKU');
+        const revenueTable = document.createElement('table');
+        const revenueHead = document.createElement('thead');
+        const revenueHeaderRow = document.createElement('tr');
+        for (const label of ['SKU', 'Unit price', 'Mainnet settlements', 'Mainnet USDC', 'Testnet settlements', 'Last settlement']) {
+          const th = document.createElement('th');
+          th.textContent = label;
+          revenueHeaderRow.append(th);
+        }
+        revenueHead.append(revenueHeaderRow);
+        const revenueBody = document.createElement('tbody');
+        const revenueItems = data.payments.by_dataset.map((item, index) => {
+          const volume = amount(item.mainnet && item.mainnet.volume_usdc);
+          return { item, index, volume: volume === '—' ? '0' : volume };
+        });
+        const precision = Math.max(0, ...revenueItems.map(({ volume }) => (volume.split('.')[1] || '').length));
+        for (const entry of revenueItems) {
+          const [whole, fraction = ''] = entry.volume.split('.');
+          entry.numericVolume = BigInt(`${whole}${fraction.padEnd(precision, '0')}`);
+        }
+        revenueItems.sort((a, b) => {
+          if (a.numericVolume !== b.numericVolume) return a.numericVolume > b.numericVolume ? -1 : 1;
+          const titleOrder = String(a.item.title ?? '').localeCompare(String(b.item.title ?? ''));
+          return titleOrder || a.index - b.index;
+        });
+        for (const { item } of revenueItems) {
+          const row = document.createElement('tr');
+          const skuCell = document.createElement('td');
+          const title = document.createElement('span');
+          title.textContent = String(item.title ?? '—');
+          const datasetId = document.createElement('small');
+          datasetId.className = 'muted';
+          datasetId.textContent = String(item.dataset_id ?? '—');
+          skuCell.append(title, datasetId);
+          const priceCell = document.createElement('td');
+          const priceValue = typeof item.price_usd === 'string' ? item.price_usd.replace(/^\$/, '') : item.price_usd;
+          const price = amount(priceValue);
+          priceCell.textContent = price === '—' ? '—' : `$${price}`;
+          const mainnetSettlementsCell = document.createElement('td');
+          mainnetSettlementsCell.textContent = number(item.mainnet && item.mainnet.settlements);
+          const mainnetVolumeCell = document.createElement('td');
+          mainnetVolumeCell.textContent = amount(item.mainnet && item.mainnet.volume_usdc);
+          const testnetSettlementsCell = document.createElement('td');
+          testnetSettlementsCell.textContent = number(item.testnet && item.testnet.settlements);
+          const lastSettlementCell = document.createElement('td');
+          lastSettlementCell.textContent = dateOnly(item.last_settled_at);
+          row.append(skuCell, priceCell, mainnetSettlementsCell, mainnetVolumeCell, testnetSettlementsCell, lastSettlementCell);
+          revenueBody.append(row);
+        }
+        revenueTable.append(revenueHead, revenueBody);
+        settlements.append(revenueHeading, revenueTable);
+      }
 
       const mainnetHeading = section('Mainnet settlements');
       const table = document.createElement('table');
       const thead = document.createElement('thead');
       const headerRow = document.createElement('tr');
-      for (const label of ['Network', 'Amount', 'Transaction']) {
+      for (const label of ['SKU', 'Network', 'Amount', 'Transaction']) {
         const th = document.createElement('th');
         th.textContent = label;
         headerRow.append(th);
@@ -101,8 +168,16 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
       const tbody = document.createElement('tbody');
       for (const item of data.payments.recent_mainnet) {
         const row = document.createElement('tr');
+        const sku = document.createElement('td');
+        sku.textContent = String(item.title ?? item.dataset_id ?? '—');
         const network = document.createElement('td');
-        network.textContent = String(item.network ?? '—');
+        const networkNames = {
+          'eip155:8453': 'Base',
+          'eip155:42161': 'Arbitrum One',
+          'eip155:84532': 'Base Sepolia'
+        };
+        const networkValue = String(item.network ?? '—');
+        network.textContent = networkNames[networkValue] || networkValue;
         const amountCell = document.createElement('td');
         amountCell.textContent = `${amount(item.amount_usdc)} USDC`;
         const transactionCell = document.createElement('td');
@@ -111,7 +186,7 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
         link.rel = 'noopener';
         link.textContent = `0x${String(item.transaction ?? '').replace(/^0x/, '').slice(0, 10)}…`;
         transactionCell.append(link);
-        row.append(network, amountCell, transactionCell);
+        row.append(sku, network, amountCell, transactionCell);
         tbody.append(row);
       }
       table.append(thead, tbody);
@@ -121,6 +196,31 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
       testnet.className = 'testnet';
       testnet.textContent = `${number(data.payments.testnet.settlements)} / ${amount(data.payments.testnet.volume_usdc)} USDC. Testnet volume is excluded from the mainnet figure.`;
       settlements.append(section('Testnet settlements'), testnet);
+
+      if (Array.isArray(data.public_calls.by_tool)) {
+        const toolHeading = section('Free-tier calls by tool');
+        const toolTable = document.createElement('table');
+        const toolHead = document.createElement('thead');
+        const toolHeaderRow = document.createElement('tr');
+        for (const label of ['Tool', 'Calls']) {
+          const th = document.createElement('th');
+          th.textContent = label;
+          toolHeaderRow.append(th);
+        }
+        toolHead.append(toolHeaderRow);
+        const toolBody = document.createElement('tbody');
+        for (const item of data.public_calls.by_tool) {
+          const row = document.createElement('tr');
+          const toolCell = document.createElement('td');
+          toolCell.textContent = String(item.tool ?? '—');
+          const callsCell = document.createElement('td');
+          callsCell.textContent = number(item.calls);
+          row.append(toolCell, callsCell);
+          toolBody.append(row);
+        }
+        toolTable.append(toolHead, toolBody);
+        settlements.append(toolHeading, toolTable);
+      }
     })
     .catch(() => {
       status.replaceChildren();
