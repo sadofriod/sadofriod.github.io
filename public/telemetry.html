@@ -18,6 +18,7 @@
   .status{font-size:.9rem;margin:0 0 1.5rem}
   .testnet{margin:0 0 1.5rem;font-size:.9rem}
   .muted{display:block;color:#6b7280;font-size:.8rem}
+  .operator{color:#6b7280;font-size:.8rem}
 </style>
 </head>
 <body>
@@ -32,6 +33,7 @@ you can also query <code>GET https://pay.ashesborn.cloud/api/v1/datasets</code> 
 <code>GET https://pay.ashesborn.cloud/api/v1/pricing</code>, or POST an unpaid request to
 <code>/api/v1/query</code> and read the <code>PAYMENT-REQUIRED</code> header.
 Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from the mainnet figure.
+Settlements from wallets we control are labelled operator; any other payer is an unverified third-party payer, not a customer.
 </p>
 <script>
 (() => {
@@ -98,6 +100,10 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
       addStat(grid, 'SKUs with revenue', Array.isArray(data.payments.by_dataset)
         ? data.payments.by_dataset.filter((item) => Number(item.mainnet && item.mainnet.settlements || 0) + Number(item.testnet && item.testnet.settlements || 0) > 0).length
         : null);
+      addStat(grid, 'external settlements', data.payments.mainnet.external_settlements);
+      addStat(grid, 'external volume', data.payments.mainnet.external_volume_usdc, ' USDC', amount);
+      addStat(grid, 'external payers', data.payments.mainnet.external_payers);
+      addStat(grid, 'operator wallets', data.payments.operator_wallets);
       addStat(grid, 'rejected payments (30d)', data.payments.rejected ? data.payments.rejected.attempts : null);
       figures.append(grid);
 
@@ -106,7 +112,7 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
         const revenueTable = document.createElement('table');
         const revenueHead = document.createElement('thead');
         const revenueHeaderRow = document.createElement('tr');
-        for (const label of ['SKU', 'Unit price', 'Mainnet settlements', 'Mainnet USDC', 'Testnet settlements', 'Last settlement']) {
+        for (const label of ['SKU', 'Unit price', 'Payers', 'Mainnet settlements', 'Mainnet USDC', 'External settlements', 'External USDC', 'Last settlement']) {
           const th = document.createElement('th');
           th.textContent = label;
           revenueHeaderRow.append(th);
@@ -140,15 +146,19 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
           const priceValue = typeof item.price_usd === 'string' ? item.price_usd.replace(/^\$/, '') : item.price_usd;
           const price = amount(priceValue);
           priceCell.textContent = price === '—' ? '—' : `$${price}`;
+          const payersCell = document.createElement('td');
+          payersCell.textContent = number(item.mainnet && item.mainnet.payers);
           const mainnetSettlementsCell = document.createElement('td');
           mainnetSettlementsCell.textContent = number(item.mainnet && item.mainnet.settlements);
           const mainnetVolumeCell = document.createElement('td');
           mainnetVolumeCell.textContent = amount(item.mainnet && item.mainnet.volume_usdc);
-          const testnetSettlementsCell = document.createElement('td');
-          testnetSettlementsCell.textContent = number(item.testnet && item.testnet.settlements);
+          const externalSettlementsCell = document.createElement('td');
+          externalSettlementsCell.textContent = number(item.mainnet && item.mainnet.external_settlements);
+          const externalVolumeCell = document.createElement('td');
+          externalVolumeCell.textContent = amount(item.mainnet && item.mainnet.external_volume_usdc);
           const lastSettlementCell = document.createElement('td');
           lastSettlementCell.textContent = dateOnly(item.last_settled_at);
-          row.append(skuCell, priceCell, mainnetSettlementsCell, mainnetVolumeCell, testnetSettlementsCell, lastSettlementCell);
+          row.append(skuCell, priceCell, payersCell, mainnetSettlementsCell, mainnetVolumeCell, externalSettlementsCell, externalVolumeCell, lastSettlementCell);
           revenueBody.append(row);
         }
         revenueTable.append(revenueHead, revenueBody);
@@ -169,7 +179,15 @@ Corpus: SWC Registry, MIT. Retraction data: CC0. Testnet volume is excluded from
       for (const item of data.payments.recent_mainnet) {
         const row = document.createElement('tr');
         const sku = document.createElement('td');
-        sku.textContent = String(item.title ?? item.dataset_id ?? '—');
+        const skuTitle = document.createElement('span');
+        skuTitle.textContent = String(item.title ?? item.dataset_id ?? '—');
+        sku.append(skuTitle);
+        if (item.operator === true) {
+          const operator = document.createElement('span');
+          operator.className = 'operator';
+          operator.textContent = ' (operator)';
+          sku.append(operator);
+        }
         const network = document.createElement('td');
         const networkNames = {
           'eip155:8453': 'Base',
