@@ -68,6 +68,10 @@ An agent that receives an answer without evidence will assert it. Returning the 
 
 If you only read one article on this blog to judge whether the approach is useful, read that one. It is the pipeline pointed at a real document type with a verification step at the end.
 
+## One decision that runs through all of it
+
+- [Entity resolution in GraphRAG: the write-time job and the read-time job](/blog/entity-resolution-in-graphrag-the-write-time-job-and-the-read-time-job) — the two places identity gets decided (the `UNIQUE (namespace, name)` upsert at build time, the exact → alias → fuzzy → semantic ladder at query time), why tolerance belongs on the query side, and the alias table this implementation still owes you.
+
 ## What this series does not cover
 
 - No benchmark comparison against naive vector RAG. The case article above shows a verification result on one document class; it is not an evaluation across corpora, and this blog has not run one.
