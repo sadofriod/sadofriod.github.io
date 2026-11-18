@@ -68,6 +68,10 @@ An agent that receives an answer without evidence will assert it. Returning the 
 
 If you only read one article on this blog to judge whether the approach is useful, read that one. It is the pipeline pointed at a real document type with a verification step at the end.
 
+## Before you build any of it
+
+- [GraphRAG vs RAG: the difference is the question, not the accuracy](/blog/graphrag-vs-rag-the-difference-is-the-question) — what each pipeline builds, what it costs (12m 19s to index five chapters, 22.5s per query in this implementation's own benchmark), the question shapes each one wins, and the 30-minute test that settles the choice on your corpus.
+
 ## One decision that runs through all of it
 
 - [Entity resolution in GraphRAG: the write-time job and the read-time job](/blog/entity-resolution-in-graphrag-the-write-time-job-and-the-read-time-job) — the two places identity gets decided (the `UNIQUE (namespace, name)` upsert at build time, the exact → alias → fuzzy → semantic ladder at query time), why tolerance belongs on the query side, and the alias table this implementation still owes you.
