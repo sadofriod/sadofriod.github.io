@@ -2,7 +2,7 @@
 title: 'HSK 3.0: extracting 11,000 syllabus entries from a PDF and proving none are missing'
 date: '2026-11-24'
 excerpt: 'The November 2025 HSK syllabus puts 11,000 words in a 406-page PDF printed as running text. Here is how the extraction was done, how a third-party dataset turned out to be 123 rows short, and how completeness gets proven without trusting a checksum.'
-description: 'Extracting an 11,000-entry vocabulary list from the November 2025 HSK 3.0 syllabus PDF: page-anchored rows, id-continuity and level-distribution proofs of completeness, homograph and pinyin normalisation for mapping 5,001 old HSK words, and a 100% anchor hit rate with the misses reported in full.'
+description: 'How the 11,000-entry HSK 3.0 word list was extracted from a 406-page PDF, why a public dataset was 123 rows short, and how completeness is proven.'
 tags: ['Data Engineering', 'PDF Extraction', 'Data Validation', 'Chinese', 'Python', 'HSK']
 categories: Data
 keywords: 'HSK 3.0 word list, HSK syllabus PDF extraction, extract vocabulary list from PDF, HSK 2.0 to 3.0 migration, data completeness verification, pypdf text extraction, Chinese word list dataset'
