@@ -7,6 +7,7 @@ import { LanguageProvider } from '../lib/i18n/LanguageContext';
 import MainNavbar from '../components/MainNavbar';
 import { defaultLocale } from '../lib/i18n/translations';
 import Script from 'next/script';
+import { SiteJsonLd } from '../components/JsonLd';
 import './profile.css';
 
 export const metadata: Metadata = {
@@ -34,6 +35,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
+
   return (
     <html lang={defaultLocale}>
       <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -57,6 +60,7 @@ export default function RootLayout({
         `}
       </Script>
       <body>
+        <SiteJsonLd siteUrl={siteUrl} />
         <LanguageProvider initialLocale={defaultLocale}>
           <AppRouterCacheProvider options={{ key: 'css' }}>
             <ThemeProvider theme={themeOptions}>

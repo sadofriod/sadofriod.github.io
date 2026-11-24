@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PostList from '@/components/PostList';
+import { BlogPostingsJsonLd } from '@/components/JsonLd';
 import T from '@/components/T';
 import { getAllPostIds, getPostByFile } from '@/lib/posts';
 import { profile, type SocialIcon } from '@/data/profile';
@@ -80,12 +81,23 @@ export default function Home() {
   // Career posts stay out of the home stream; they are linked from the footer.
   const posts = getAllPostIds().filter((post) => post.translationKey !== 'resume');
   const series = profile.graphragSeries.posts.map((item) => getPostByFile(item.file));
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://blog.ashesborn.cloud';
   const groups = profile.writingGroups.map((group) => ({
     ...group,
     resolvedPosts: group.posts.map((item) => getPostByFile(item.file)),
   }));
   return (
     <main className="profile-shell">
+      <BlogPostingsJsonLd
+        siteUrl={siteUrl}
+        posts={series.map((post) => ({
+          slug: post.slug,
+          title: post.title,
+          date: post.date,
+          description: post.summary || post.excerpt || post.title,
+          lang: post.lang,
+        }))}
+      />
       {/* Identity layer: who this is, what he is building, where the proof is. */}
       <section className="brutal-card brutal-card--yellow">
         <div className="profile-hero">

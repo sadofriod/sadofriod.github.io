@@ -95,4 +95,67 @@ export function WebsiteJsonLd({
   return <JsonLd data={data} />;
 }
 
+export function SiteJsonLd({ siteUrl }: { siteUrl: string }) {
+  const data = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://ashesborn.cloud/#org',
+        name: 'Ashes Born',
+        alternateName: 'Ashes Born Trade and Services Limited',
+        url: 'https://ashesborn.cloud',
+        logo: { '@type': 'ImageObject', url: `${siteUrl}/avatar.jpg` },
+        sameAs: ['https://github.com/sadofriod', 'https://ashesborn.cloud', 'https://blog.ashesborn.cloud'],
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${siteUrl}/#website`,
+        url: siteUrl,
+        name: 'Ashes Born — engineering notes',
+        description:
+          'Technical notes on GraphRAG, TypeScript and frontend architecture, alongside a photography gallery and podcast.',
+        inLanguage: 'en',
+        publisher: { '@id': 'https://ashesborn.cloud/#org' },
+      },
+    ],
+  };
+
+  return <JsonLd data={data} />;
+}
+
+export function BlogPostingsJsonLd({
+  siteUrl,
+  posts,
+}: {
+  siteUrl: string;
+  posts: { slug: string; title: string; date: string; description: string; lang?: string }[];
+}) {
+  if (posts.length === 0) return null;
+
+  const data = {
+    '@context': 'https://schema.org',
+    '@graph': posts.map((post) => {
+      const url = `${siteUrl}/blog/${encodeURI(post.slug)}`;
+
+      return {
+        '@type': 'BlogPosting',
+        '@id': `${url}#article`,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+        headline: post.title,
+        url,
+        datePublished: post.date,
+        dateModified: post.date,
+        description: post.description,
+        inLanguage: post.lang === 'zh' ? 'zh-Hans' : 'en',
+        author: { '@type': 'Person', name: 'Ashes Born', url: `${siteUrl}/about` },
+        publisher: { '@id': 'https://ashesborn.cloud/#org' },
+        isPartOf: { '@type': 'Blog', '@id': `${siteUrl}/#website` },
+      };
+    }),
+  };
+
+  return <JsonLd data={data} />;
+}
+
 export default JsonLd;
