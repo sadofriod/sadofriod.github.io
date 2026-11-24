@@ -10,21 +10,13 @@ lang: en
 translationKey: entity-resolution-graphrag
 ---
 
-**Entity resolution is deciding when two mentions refer to one thing.** In a GraphRAG pipeline that decision happens in two places that look similar and are not: while you build the graph, where the choice is permanent, and while you answer a query, where the choice is cheap to get wrong. Most write-ups treat them as one problem and then pick a tool that is wrong for one half of it.
+Entity resolution decides when mentions refer to the same thing. A GraphRAG system makes that decision during graph construction and again when it interprets a query. The first choice shapes stored graph state and can require a rebuild to correct. The second affects which evidence a single query retrieves. The [graphrag-ts](https://github.com/sadofriod/graphrag-ts) implementation shows how these jobs use different rules, and where its current design leaves a gap.
 
-This is what the two jobs actually cost, using the implementation in [graphrag-ts](https://github.com/sadofriod/graphrag-ts) as the worked example — including the part it does not solve yet.
+## Identity at graph construction
 
-## The short version
+An extraction pass returns strings. “pgvector,” “pgvector extension,” and “PGVector” may refer to one product; “Michael Jordan” the basketball player and “Michael Jordan” the statistician are two people who share a name. Write-time resolution decides which strings collapse into a node before the graph is built.
 
-- **Write-time**: decide identity once, with a key. Deterministic, cheap, and it decides the shape of the graph. Fixing a mistake here means re-running a build.
-- **Read-time**: decide whether the query mentions a node you already have, with a matching ladder. Tolerant, throw-away, and it decides whether the right evidence is recalled.
-- Do the first with the smallest rule that cannot merge two different things, and put the expensive judgement in the second, where a mistake costs an answer rather than a graph.
-
-## Job 1: write-time identity
-
-Every extraction pass hands you strings. "pgvector", "pgvector extension", "PGVector" are one product; "Michael Jordan" the basketball player and "Michael Jordan" the statistician are two people with the same string. Write-time resolution is the choice of which of those you collapse before they become nodes.
-
-The cheapest version — the one that survives a rebuild without human review — is a normalised name plus a unique constraint:
+In this codebase, the write-time policy is exact string equality inside a namespace. A normalised name and unique constraint provide a simple key that remains deterministic across rebuilds:
 
 ```sql
 CREATE TABLE rag_entities (
@@ -36,7 +28,7 @@ CREATE TABLE rag_entities (
 );
 ```
 
-The insert path is then an upsert keyed on `(namespace, name)`, with the unique-violation race guarded explicitly:
+The insert path uses an upsert keyed on `(namespace, name)` and explicitly handles a unique-violation race:
 
 ```ts
 const upsertRagEntity = async (namespace: string, name: string, description?: string) => {
@@ -53,19 +45,15 @@ const upsertRagEntity = async (namespace: string, name: string, description?: st
 };
 ```
 
-That is the whole write-time policy in this codebase: **exact string equality inside a namespace**. No fuzzy merge, no embedding clustering, no LLM adjudication at ingest time. Three consequences worth stating plainly:
+That rule avoids merging two distinct names into one node, while leaving near-duplicates separate. “HNSW index” and “HNSW” can become two nodes with separate edges, so the graph under-counts the topic. The extraction prompt asks for “clear nouns, proper nouns, algorithm names, or component names,” yet it does not require one spelling; variants can arrive. The `namespace` field isolates corpora from each other. It does not establish that two names represent the same entity.
 
-- **It never merges two different things.** Over-merging is the expensive error, and a `UNIQUE` constraint cannot make it.
-- **It splits near-duplicates.** "HNSW index" and "HNSW" become two nodes, each with its own edges, and the graph under-counts the topic. The extraction prompt asks for "clear nouns, proper nouns, algorithm names, or component names" but nothing forces one spelling, so variants do arrive.
-- **`namespace` is isolation, not resolution.** It keeps two corpora from contaminating each other; it does not tell you that two names are the same entity.
+If the write path needs more resolution, the proposed sequence is to normalise case, whitespace, and punctuation, then use an alias table that a person curates. A cheap rule can surface candidate pairs with the same normalised form or edit distance under a small threshold; an LLM can adjudicate those candidates once, with its decision stored for later builds. Persisting the decision keeps a rebuild from silently choosing identity again. There is no fuzzy merge, embedding clustering, or LLM adjudication at ingest time in the current codebase.
 
-If you need more at write time, the order that keeps risk low is: normalise (case, whitespace, punctuation) → an alias table you curate → adjudicate only the candidate pairs a cheap rule surfaced (same normalised form, or edit distance under a small threshold) with an LLM call whose answer is stored, not re-derived. The point of storing the decision is that a rebuild must not silently re-decide identity.
+## Matching query mentions
 
-## Job 2: read-time matching
+A query arrives as a sentence and may use a surface form absent from storage. Read-time resolution asks which existing nodes the query mentions. A wrong match can add irrelevant evidence to one retrieval, while the graph itself remains unchanged.
 
-A query arrives as a sentence. Nothing guarantees it contains the exact string you stored. Read-time resolution asks a narrower question — *which existing nodes does this query mention?* — where a wrong answer costs one retrieval, not the graph.
-
-The ladder in `entityMatcher.ts` runs cheapest first:
+In `entityMatcher.ts`, the matching ladder applies its cheaper rules first:
 
 | Step | Rule | Score |
 |---|---|---|
@@ -74,34 +62,20 @@ The ladder in `entityMatcher.ts` runs cheapest first:
 | fuzzy | string similarity above `FUZZY_THRESHOLD = 0.4` | proportional |
 | semantic | embedding cosine similarity above `SEMANTIC_THRESHOLD = 0.7` | proportional |
 
-The four lists are fused with Reciprocal Rank Fusion rather than by score, because the four signals are not calibrated against each other: a fuzzy score of 0.6 and a cosine of 0.6 mean different things, but their *ranks* are comparable. Recall then leans on the match type — high-confidence intent entities and exact/alias matches go in ahead of query keywords, and fuzzy/semantic matches fill the tail (`keywordSearch.ts`).
+The four result lists are fused with Reciprocal Rank Fusion. Their raw scores are not calibrated against one another: a fuzzy score of 0.6 and a cosine of 0.6 mean different things, while their ranks can be compared. Recall also depends on match type. High-confidence intent entities and exact or alias matches come before query keywords; fuzzy and semantic matches fill the tail, as shown in `keywordSearch.ts`.
 
-Two design notes that matter more than the thresholds:
+`EntityAlias` is available at retrieval time as `{ entityId, alias }`, and the matcher consumes the list supplied by its caller. The codebase has no persisted alias table. “MSFT” therefore matches “Microsoft” only when the caller provides that mapping. Adding persistence is a schema change. Thresholds also depend on language and corpus: 0.4 on a short-string similarity metric is aggressive for three-character Chinese names and conservative for long English product names. Both values are defaults to re-measure for the data in use.
 
-- **Aliases are an input, not a table.** `EntityAlias` exists at retrieval time (`{ entityId, alias }`), and the matcher consumes whatever list you pass. In this codebase there is no persisted alias table, so "MSFT" only matches "Microsoft" if the caller supplies that mapping. That is the clearest gap in the current design, and it is a schema addition, not a model problem.
-- **The thresholds are per-language and per-corpus.** 0.4 on a short-string similarity metric is aggressive on three-character Chinese names and conservative on long English product names. Treat both numbers as defaults to re-measure, not constants.
+## Measure the different failure costs
 
-## Why tolerance belongs at read time
+When an ingestion run merges distinct entities at write time, the decision is permanent and silent. The GraphRAG summariser can then produce wrong communities, and each downstream summary can inherit the error. When a developer changes an identity rule, the developer has to rebuild the graph before the corrected decision reaches its communities and summaries. When the read-time matcher makes a false match, it adds an irrelevant chunk to one answer; the next query is unaffected. That difference makes the two jobs call for separate measurements.
 
-Write-time merging is permanent and silent: a rebuilt graph with a wrong merge produces confidently wrong communities, and every summary downstream inherits it. Read-time matching is reversible: a false match adds an irrelevant chunk to one answer, and the next query is unaffected.
+For write-time quality, inspect a sample of nodes and count how many distinct real-world entities were collapsed into one node, with a target of zero, and how many nodes represent one real entity, with a low target. The first count catches over-merging; the second catches repeated nodes for one entity. A database uniqueness check cannot answer either question by itself, because it only tests the stored key. There is no automatic ground truth for those counts, so the sample requires manual review. For read-time quality, measure recall@k on queries that use a different surface form and the false-match rate when a user names something absent from the graph. The shipped thresholds are implementation defaults, and no benchmark here shows that they outperform an alternative.
 
-That asymmetry is the whole argument for keeping write-time rules dumb and putting judgement where it is cheap. It also means the two jobs need different metrics:
+Cross-document coreference, such as resolving “the company” to a particular company, is outside both jobs. It requires the surrounding document as well as the entity table. Namespace isolation also does not make two graphs comparable; merging corpora still requires an explicit decision about which names are shared.
 
-- write-time: **how many distinct real-world entities did I collapse into one node?** (target: zero) and **how many nodes share one real entity?** (target: low, measured on a sample)
-- read-time: **recall@k on queries that use a different surface form**, and the false-match rate when a user names something you do not have
+## Make identity decisions durable
 
-Measuring the first requires reading nodes by hand; there is no automatic ground truth. That is exactly why the expensive machinery belongs on the second.
+The first addition I would make is a persisted alias table with `entity_id`, `alias`, `source`, and `confidence`, written by the ingest path and by read-time misses. Every unmatched query mention of a known entity is a free training label. I would also add candidate adjudication for pairs with matching normalised forms or edit distance under a small bound: ask a model once for each pair and store its verdict. Embedding clustering over the full entity set can over-merge and leaves decisions difficult to review.
 
-## What I would add, in order
-
-1. **A persisted alias table** (`entity_id`, `alias`, `source`, `confidence`) written by the ingest path and by read-time misses. Every unmatched query mention of a known entity is a free training label.
-2. **Candidate adjudication, not clustering.** Take pairs whose normalised forms match or whose edit distance is under a small bound, ask a model once per pair, store the verdict. Embedding clustering over the whole entity set is the version that over-merges and cannot be reviewed.
-3. **A rebuild guarantee**: identity decisions are read from the table, never recomputed from the current extraction prompt. Otherwise a prompt tweak silently reshapes history.
-
-## What this does not solve
-
-- No benchmark is reported here. The numbers above are the thresholds this implementation ships with, not evidence that they beat an alternative.
-- Cross-document coreference ("the company" → which company) is out of scope for both jobs: it needs the surrounding document, not the entity table.
-- Namespace isolation does not make two graphs comparable; merging two corpora still requires an explicit decision about which names are shared.
-
-If you are building this and would rather not rebuild it, that is the kind of work [retrieval engineering](https://ashesborn.cloud/services/retrieval-engineering) covers; the rest of the pipeline is written up in [the GraphRAG-in-TypeScript series](/blog/graphrag-in-typescript-the-series-index).
+Finally, I would make rebuilds read identity decisions from the table instead of recomputing them from the current extraction prompt. Otherwise, a prompt change can silently reshape the graph's history. The entity matching thresholds have no benchmark reported here, and identity across corpora still needs an explicit policy. The related GraphRAG comparison reports 12 min 19 s indexing, 22.5 s average query latency through `query_graph`, 10/12 strict hits, and 95.8% combined lexical recall. The implementation work is covered by [retrieval engineering](https://ashesborn.cloud/services/retrieval-engineering), with the rest of the pipeline in [the GraphRAG-in-TypeScript series](/blog/graphrag-in-typescript-the-series-index).
